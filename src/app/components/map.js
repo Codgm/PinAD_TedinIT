@@ -18,13 +18,13 @@ const Map = () => {
   };
 
   return (
-    <div className="relative w-[500px] h-[500px] mx-auto">
+    <div className="relative w-2/5 h-[800px] mx-auto">
       <div className="absolute inset-0 border border-gray-300 overflow-hidden">
         <Image
           src="/world-map.webp"
           alt="Map"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: 'cover' }}
         />
         {pins['pin1'] && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 rounded">
