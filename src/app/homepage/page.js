@@ -1,9 +1,9 @@
-import Map from "../components/map";
+import HomeScreen from "../components/homescreen";
 
 export default function Home() {
   return (
     <div>
-        <Map></Map>
+        <HomeScreen/>
     </div>
   );
 }
