@@ -1,0 +1,20 @@
+.recommendationItem {
+    padding: 0.75rem;
+    background-color: #f0f4f8;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem; /* text-sm in Tailwind equivalent */
+    color: #4b5563; /* text-gray-600 in Tailwind equivalent */
+}
+
+.recommendation {
+    background-color: #edf2f7; 
+    color: #718096; 
+    display: inline-flex; 
+    height: 2.25rem; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 0.5rem; 
+    padding: 0.25rem; 
+    margin-bottom: 1rem;
+}

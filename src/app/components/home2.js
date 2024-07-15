@@ -5,6 +5,8 @@ import styles from '../styles/Home.module.css';
 import Map from '@/app/components/map';
 import { useRef, useState } from 'react';
 import NotificationModal from './notificationmodal';
+import PopularPinStory from './popularpinstory';
+import RecentPinStory from './recentpinstory';
 
 export default function Home2() {
 
@@ -67,17 +69,8 @@ export default function Home2() {
               <button>인기 핀스토리</button>
               <button>이전 읽은 핀스토리</button>
             </div>
-
-            <div className={styles.recommendations}>
-              <div className={styles.recommendationItem}>
-                <h3>서울 야경 명소</h3>
-                <p>남산에서 바라본 서울의 밤...</p>
-              </div>
-              <div className={styles.recommendationItem}>
-                <h3>제주도 숨은 맛집</h3>
-                <p>현지인만 아는 흑돼지 맛집...</p>
-              </div>
-            </div>
+            <PopularPinStory/>
+            <RecentPinStory/>
           </section>
         </main>
       </div>
