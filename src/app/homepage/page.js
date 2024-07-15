@@ -1,9 +1,10 @@
+import Home2 from "../components/home2";
 import HomeScreen from "../components/homescreen";
 
 export default function Home() {
   return (
     <div>
-        <HomeScreen/>
+        <Home2/>
     </div>
   );
 }

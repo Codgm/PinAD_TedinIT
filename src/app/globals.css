@@ -4,6 +4,7 @@
 
 .bg-primary {
   background-color: #a393f5;
+  min-height: 90vh;
 }
 
 .container {
@@ -11,16 +12,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100vh - 10vh;
   background-color: #f0f0f0;
 }
 
 .map {
   position: absolute;
-  top: 34px;
   left: 42px;
-  width: 622px;
-  height: 680px;
+  width: 38.875rem;
+  height : 90vh;
+  flex-shrink: 0;
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);

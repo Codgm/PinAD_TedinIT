@@ -4,7 +4,7 @@ import Map from './map';
 
 export default function HomeScreen () {
   return (
-    <div className='flex overflow-y-hidden min-h-screen bg-primary'>
+    <div className='flex overflow-y-hidden bg-primary'>
         <Map/>
         <div className="searchBar">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8">
@@ -29,7 +29,7 @@ export default function HomeScreen () {
                 </div>
             </div>
         </div>
-        <div className="feedView" />
+        {/* <div className="feedView" />
         <div className="popularStories">
             <div className='popularText'>인기 스토리</div>
             <div className="popularItem">스토리 1</div>
@@ -37,7 +37,7 @@ export default function HomeScreen () {
         <div className="interestedStories">
             <div className='interestedText'>관심 스토리</div>
             <div className="interestedItem">스토리 2</div>
-        </div>
+        </div> */}
     </div>
   );
 };
