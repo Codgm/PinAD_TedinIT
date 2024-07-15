@@ -1,9 +1,18 @@
 'use client'
 import React, { useState } from 'react';
 import Image from 'next/image';
+import PinstoryModal from './pinstorymodal';
+
 
 const Map = () => {
   const [pins, setPins] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  }
 
   const handleAddPin = () => {
     setPins((prevPins) => {
@@ -19,6 +28,7 @@ const Map = () => {
 
   return (
     <div className="map w-full h-full rounded-full">
+      {isModalOpen && <PinstoryModal onClose={handleCloseModal}></PinstoryModal>}
       <div className="absolute inset-0 overflow-hidden">
         <Image
           src="/world-map.webp"
@@ -27,7 +37,7 @@ const Map = () => {
           style={{ objectFit: 'cover' ,borderRadius:' 20px ' }}
         />
         {pins['pin1'] && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 rounded">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 rounded" onClick={handleModalOpen}>
             Pin: {pins['pin1']}
           </div>
         )}
