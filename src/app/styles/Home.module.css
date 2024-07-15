@@ -63,7 +63,7 @@
   
   .imageSection, .contentSection {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden;
     padding: 20px;
   }
   
