@@ -1,6 +1,7 @@
 // pages/index.js
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+import Map from '@/app/components/map';
 
 export default function Home2() {
   return (
@@ -20,9 +21,11 @@ export default function Home2() {
         </header>
 
         <main className={styles.main}>
+          <div className='w-1/2'>
           <section className={styles.imageSection}>
-            {/* SVG 이미지 컴포넌트 */}
+            <Map/>
           </section>
+          </div>
 
           <section className={styles.contentSection}>
             <div className={styles.searchBar}>
