@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 import NotificationModal from './notificationmodal';
 import PopularPinStory from './popularpinstory';
 import RecentPinStory from './recentpinstory';
+import PopularRecentPinStory from './popular-recent-pinstory';
 
 export default function Home2() {
 
@@ -65,12 +66,7 @@ export default function Home2() {
               ))}
             </div>
 
-            <div className={styles.buttons}>
-              <button>인기 핀스토리</button>
-              <button>이전 읽은 핀스토리</button>
-            </div>
-            <PopularPinStory/>
-            <RecentPinStory/>
+            <PopularRecentPinStory/>
           </section>
         </main>
       </div>
