@@ -53,7 +53,6 @@ export default function Home2() {
         </header>
 
         <main className={styles.main}>
-          <div className='w-1/2'>
           <section className={styles.imageSection}>
             <label className={styles.switch}>
               <input
@@ -65,8 +64,6 @@ export default function Home2() {
             </label>
             {isChecked ? <Map/> : <MapList/>}
           </section>
-          </div>
-
           <section className={styles.contentSection}>
             <div className={styles.searchBar}>
               <input type="text" placeholder="장소, 인물, 스토리 검색" />

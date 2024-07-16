@@ -24,35 +24,31 @@ const articles = [
   }
 ];
 
+
 const MapList = () => {
   return (
-    <div class="flex flex-col" style={{height: "75vh;", overflow:"auto;"}}>
-      
-      {/* 스크롤 가능한 리스트 영역 */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto p-4">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">최신 기사</h1>
-          <div className="space-y-8">
-            {articles.map((article) => (
-              <article key={article.id} className="bg-white rounded-lg shadow-md">
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-blue-600">{article.category}</span>
-                    <span className="text-sm text-gray-500">{article.date}</span>
-                  </div>
-                  <h2 className="text-2xl font-semibold mb-3 text-gray-800">{article.title}</h2>
-                  <p className="text-gray-600 mb-4">{article.excerpt}</p>
-                  <button className="text-blue-600 hover:text-blue-800 font-medium">
-                    자세히 보기 →
-                  </button>
+    <div className="h-full overflow-hidden flex flex-col">
+      <h1 className="text-3xl font-bold p-4 text-gray-800">최신 기사</h1>
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="space-y-8">
+          {articles.map((article) => (
+            <article key={article.id} className="bg-white rounded-lg shadow-md">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-blue-600">{article.category}</span>
+                  <span className="text-sm text-gray-500">{article.date}</span>
                 </div>
-              </article>
-            ))}
-          </div>
+                <h2 className="text-2xl font-semibold mb-3 text-gray-800">{article.title}</h2>
+                <p className="text-gray-600 mb-4">{article.excerpt}</p>
+                <button className="text-blue-600 hover:text-blue-800 font-medium">
+                  자세히 보기 →
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </div>
   );
 };
-
 export default MapList;
