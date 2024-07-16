@@ -4,7 +4,7 @@ import Image from 'next/image';
 import PinstoryModal from './pinstorymodal';
 
 
-const Map = () => {
+const Map = ({data}) => {
   const [pins, setPins] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCloseModal = () => {
