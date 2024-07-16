@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from '@/app/styles/Recommendations.module.css';
 import Image from 'next/image';
-import BusanSunriseHaeundaeImage from '/public/busan-sunrise-haeundae.png';
 import JejuFoodImage from '/public/jeju-food-place.jpg';
 
 const PopularPinStory = () => {
@@ -9,7 +8,7 @@ const PopularPinStory = () => {
         <div className={styles.recommendationList}>
             <div className={styles.recommendationItem}>
                 <div className={styles.image}>
-                    <Image src={BusanSunriseHaeundaeImage} alt="부산 해운대 일출" layout="responsive" width={600} height={400} />
+                    <Image src={JejuFoodImage} alt="부산 해운대 일출" layout="responsive" width={600} height={400} />
                 </div>
                 <div className={styles.text}>
                     <h3>부산 해운대 일출</h3>
