@@ -8,15 +8,19 @@ import NotificationModal from './notificationmodal';
 import PopularPinStory from './popularpinstory';
 import RecentPinStory from './recentpinstory';
 import PopularRecentPinStory from './popular-recent-pinstory';
+import MapList from './maplist';
 
 export default function Home2() {
-
+  const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notifications] = useState([
     "새로운 여행 추천이 도착했습니다!",
     "친구가 당신의 스토리를 좋아합니다.",
     "이번 주 인기 여행지: 제주도"
   ]);
+  const handleChange = () => { 
+    setIsChecked(!isChecked);
+  }
   const notificationIconRef = useRef(null);
 
   const handleNotificationClick = () => {
@@ -51,7 +55,15 @@ export default function Home2() {
         <main className={styles.main}>
           <div className='w-1/2'>
           <section className={styles.imageSection}>
-            <Map/>
+            <label className={styles.switch}>
+              <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleChange}
+              />
+            <span className={styles.slider}></span>
+            </label>
+            {isChecked ? <Map/> : <MapList/>}
           </section>
           </div>
 
