@@ -3,7 +3,9 @@ import React from 'react';
 import Map from './map';
 
 export default function HomeScreen () {
-  return (
+    const [isChecked, setIsChecked] = React.useState(false);
+
+    return (
     <div className='flex overflow-y-hidden bg-primary'>
         <Map/>
         <div className="searchBar">
