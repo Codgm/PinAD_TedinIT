@@ -5,8 +5,6 @@ import styles from '../styles/Home.module.css';
 import Map from '@/app/components/map';
 import { useRef, useState } from 'react';
 import NotificationModal from './notificationmodal';
-import PopularPinStory from './popularpinstory';
-import RecentPinStory from './recentpinstory';
 import PopularRecentPinStory from './popular-recent-pinstory';
 import MapList from './maplist';
 
