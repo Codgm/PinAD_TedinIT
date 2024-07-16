@@ -18,9 +18,8 @@
 
 .map {
   position: relative;
-  left: 42px;
-  width: 38.875rem;
-  height : 90vh;
+  width: 40vw;
+  height : 75vh;
   flex-shrink: 0;
   background-color: #a393f5;
 }

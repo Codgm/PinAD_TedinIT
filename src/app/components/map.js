@@ -29,14 +29,14 @@ const Map = ({ data }) => {
   };
 
   return (
-    <div className="map w-full h-full rounded-full relative">
+    <div className="map relative" style={{height: "75vh;"}}>
       {isPinModalOpen && (
         <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={updatePin} />
       )}
       {isWriteModalOpen && (
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={handleAddPin} />
       )}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0">
         <Image
           src="/world-map.webp"
           alt="Map"
