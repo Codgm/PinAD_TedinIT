@@ -70,8 +70,10 @@
   
   .imageSection {
     display: flex;
+    flex-direction: column; /* 추가 */
     justify-content: center;
     align-items: center;
+    display: flex;
   }
   
   .searchBar input {
@@ -124,12 +126,13 @@
     padding: 15px;
     border-radius: 10px;
   }
-
+  
   .switch {
-    position: absolute;
+    position: sticky;
     top: 1rem;
-    right: 1rem;
-    z-index: 40; /* 다른 요소들보다 위에 표시 */
+    align-self: flex-end; /* 추가 */
+    z-index: 40;
+    margin-bottom: 1rem; /* 추가 */
   }
   
   .switch input {
