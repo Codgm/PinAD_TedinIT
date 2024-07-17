@@ -51,4 +51,5 @@ const MapList = () => {
     </div>
   );
 };
+
 export default MapList;
