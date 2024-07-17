@@ -7,6 +7,7 @@ import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
 import LineIcon from '/public/line_icon.svg';
 import ThreadsIcon from '/public/threads_icon.svg';
 import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'react-icons/fa';
+import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 
 
@@ -114,14 +115,22 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const renderStepIndicator = () => (
     <div className="flex mb-6 justify-start overflow-y-auto">
-      {steps.map((stepItem, index) => (
-        <div key={index} className={`flex flex-col items-center mx-2 ${index === state.step - 1 ? 'text-purple-500' : 'text-gray-400'}`}>
-          <div className={`rounded-full p-2 ${index === state.step - 1 ? 'bg-purple-100' : 'bg-gray-100'}`}>
+    {steps.map((stepItem, index) => (
+      <div key={index} className={`flex flex-col items-center mx-2 ${index === state.step - 1 ? 'text-purple-500' : 'text-gray-400'}`}>
+        <div className="flex flex-row items-center">
+          <div className={`rounded-full py-2 px-1 ${index === state.step - 1 ? 'purple-100' : 'gray-100'}`}>
             {stepItem.icon}
           </div>
-          <span className="text-xs mt-1">{stepItem.label}</span>
+          {/* 마지막 요소에서는 > 표시하지 않음 */}
+          {index !== steps.length - 1 && (
+            <div className={`rounded-full py-2 px-1 ${index === state.step - 1 ? 'purple-100' : 'gray-100'}`}>
+              {<MdKeyboardArrowRight/>}
+            </div>
+          )}
         </div>
-      ))}
+        <span className="text-xs mt-1">{stepItem.label}</span>
+      </div>
+    ))}
     </div>
   );
 
@@ -321,7 +330,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         </div>
         <div className="mt-6 flex justify-between">
           <button
-            onClick={() => setStep(Math.max(1, step - 1))}
+            onClick={() => setStep(Math.max(1, state.step - 1))}
             className={`px-4 py-2 text-gray-600 rounded ${state.step === 1 ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
             disabled={state.step === 1}
           >
