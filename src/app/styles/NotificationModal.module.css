@@ -11,8 +11,8 @@
   
   .modalContent {
     position: absolute;
-    background-color: grey;
-    opacity : 0.5;
+    background-color: white;
+    color : black;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
@@ -35,13 +35,11 @@
   
   .notificationList {
     list-style-type: none;
-    opacity : 1;
     padding: 0;
   }
   
   .notificationItem {
     padding: 10px 0;
-    opacity : 1;
     border-bottom: 1px solid #eee;
   }
   
