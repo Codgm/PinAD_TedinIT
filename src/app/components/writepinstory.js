@@ -71,7 +71,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     }
   };
 
-  const toggleProfileVisibility = () => setProfilePublic(!profilePublic);
+  const toggleProfileVisibility = () => setProfilePublic(!state.profilePublic);
 
   const handleOutsideClick = (e) => {
     if (e.target.classList.contains('modal-overlay')) {
