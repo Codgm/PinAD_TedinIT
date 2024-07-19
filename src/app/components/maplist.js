@@ -1,52 +1,79 @@
-import React from 'react';
-
-const articles = [
-  {
-    id: 1,
-    title: '건강한 노후를 위한 5가지 습관',
-    excerpt: '나이가 들어감에 따라 건강 관리의 중요성은 더욱 커집니다. 이 기사에서는 건강한 노후를 위한 5가지 핵심 습관을 소개합니다. 규칙적인 운동, 균형 잡힌 식단, 충분한 수면, 사회적 활동 참여, 그리고 정기적인 건강 검진이 그 핵심입니다.',
-    date: '2024년 7월 15일',
-    category: '건강'
-  },
-  {
-    id: 2,
-    title: '디지털 시대의 시니어 생활: 스마트폰 활용법',
-    excerpt: '스마트폰은 이제 일상생활의 필수품이 되었습니다. 이 글에서는 시니어들을 위한 유용한 스마트폰 앱과 기본적인 사용법을 알아봅니다. 가족과의 화상 통화, 건강 관리 앱, 뉴스 앱, 그리고 간편한 결제 방법 등 일상을 더욱 편리하게 만드는 기술을 소개합니다.',
-    date: '2024년 7월 14일',
-    category: '기술'
-  },
-  {
-    id: 3,
-    title: '은퇴 후 새로운 취미 찾기: 당신의 열정을 깨우세요',
-    excerpt: '은퇴는 새로운 시작입니다. 이 기사에서는 은퇴 후 시도해볼 만한 다양한 취미 활동과 그 이점에 대해 소개합니다. 가드닝, 요리, 그림 그리기, 악기 연주, 여행 등 다양한 활동을 통해 새로운 즐거움을 발견하고 활기찬 노후 생활을 즐기는 방법을 알아봅니다.',
-    date: '2024년 7월 13일',
-    category: '라이프스타일'
-  }
-];
+'use client'
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 
 
 const MapList = () => {
+
+  const [pins, setPins] = useState([
+    { id: 1, x: 5, y: 5, time: '2024-07-19 9:30:00', isUser: true },
+    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00', isUser: false },
+    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00', isUser: true },
+  ]);
+
+
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [showAllPins, setShowAllPins] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const togglePins = () => {
+    setShowAllPins(!showAllPins);
+  };
+
+  const addPin = () => {
+    const newPin = {
+      id: pins.length + 1,
+      x: Math.floor(Math.random() * 10),
+      y: Math.floor(Math.random() * 10),
+      time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      isUser: true,
+    };
+    setPins([...pins, newPin]);
+  };
+
+  const getTimeDifference = (pinTime) => {
+    const diff = currentTime - new Date(pinTime);
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    return `${minutes}분 ${seconds}초 전`;
+  };
+
+
   return (
-    <div className="h-full overflow-hidden flex flex-col">
-      <h1 className="text-3xl font-bold p-4 text-gray-800">최신 기사</h1>
+    <div className="h-full w-full overflow-hidden flex flex-col">
+      <Image
+        src="/world-map.webp"
+        alt="Map"
+        fill
+        style={{ objectFit: 'cover', borderRadius: '20px' }}
+      />
       <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="space-y-8">
-          {articles.map((article) => (
-            <article key={article.id} className="bg-white rounded-lg shadow-md">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-blue-600">{article.category}</span>
-                  <span className="text-sm text-gray-500">{article.date}</span>
-                </div>
-                <h2 className="text-2xl font-semibold mb-3 text-gray-800">{article.title}</h2>
-                <p className="text-gray-600 mb-4">{article.excerpt}</p>
-                <button className="text-blue-600 hover:text-blue-800 font-medium">
-                  자세히 보기 →
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+      
+      {pins.filter(pin => showAllPins || pin.isUser).map((pin) => (
+          <div 
+            key={pin.id} 
+            className="absolute w-8 h-8 flex items-center justify-center transition-all duration-300 ease-in-out"
+            style={{
+              left: `${pin.x * 10}%`,
+              top: `${pin.y * 10}%`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <div 
+              className={`w-6 h-6 rounded-full ${pin.isUser ? 'bg-red-500' : 'bg-blue-500'} shadow-lg pulse`}
+            />
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded-full shadow-md whitespace-nowrap">
+              {pin.id === pins[pins.length - 1].id 
+                ? getTimeDifference(pin.time)
+                : pin.time.split(' ')[1]}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
