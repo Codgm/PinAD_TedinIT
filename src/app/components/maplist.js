@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 
-const MapList = () => {
+const MapList = ({showAllPins}) => {
 
   const [pins, setPins] = useState([
     { id: 1, x: 5, y: 5, time: '2024-07-19 9:30:00', isUser: true },
@@ -14,16 +14,12 @@ const MapList = () => {
 
 
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [showAllPins, setShowAllPins] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const togglePins = () => {
-    setShowAllPins(!showAllPins);
-  };
 
   const addPin = () => {
     const newPin = {

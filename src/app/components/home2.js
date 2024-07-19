@@ -11,6 +11,7 @@ import MapList from './maplist';
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const [notifications, setNotifications] = useState([
     { text: "새로운 여행 추천이 도착했습니다!", isRead: false },
     { text: "친구가 당신의 스토리를 좋아합니다.", isRead: false },
@@ -61,7 +62,7 @@ export default function Home2() {
               />
             <span className={styles.slider}></span>
             </label>
-            {isChecked ? <Map/> : <MapList/>}
+            {<MapList showAllPins={!isChecked}/>}
           </section>
           <section className={styles.contentSection}>
             <div className={styles.searchBar}>
