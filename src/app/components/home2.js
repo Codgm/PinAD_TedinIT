@@ -62,19 +62,17 @@ export default function Home2() {
               />
             <span className={styles.slider}></span>
             </label>
-            {<MapList showAllPins={!isChecked}/>}
+            <MapList showAllPins={!isChecked}/>
           </section>
           <section className={styles.contentSection}>
             <div className={styles.searchBar}>
               <input type="text" placeholder="장소, 인물, 스토리 검색" />
             </div>
-
             <div className={styles.tags}>
               {['#여행추천', '#숨은명소', '#가성비', '#내돈내산', '#스폰서찾기'].map(tag => (
                 <span key={tag} className={styles.tag}>{tag}</span>
               ))}
             </div>
-
             <PopularRecentPinStory/>
           </section>
         </main>

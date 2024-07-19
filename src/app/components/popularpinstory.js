@@ -33,6 +33,70 @@ const PopularPinStory = () => {
                     <p>현지인만 아는 흑돼지 맛집...</p>
                 </div>
             </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            <div className={`${styles.recommendationItem}`}>
+                <div className={styles.image}>
+                    <Image src={JejuFoodImage} alt="제주도 숨은 맛집" layout="responsive" width={600} height={400} />
+                </div>
+                <div className={styles.text}>
+                    <h3>제주도 숨은 맛집</h3>
+                    <p>현지인만 아는 흑돼지 맛집...</p>
+                </div>
+            </div>
+            
         </div>
     );
 };

@@ -11,16 +11,16 @@ const PopularRecentPinStory = () => {
     };
 
     return (
-        <div className='h-full flex flex-grow overflow-hidden bg-purple-300 rounded-xl shadow-lg px-4'>
-            <div dir='ltr' data-orientation="horizontal">
-                <div className={`${styles.recommendation}`} role="tablist" aria-orientation='horizontal' tabIndex={0} data-orientation="horizontal">
+        <div className="h-full flex flex-grow overflow-hidden bg-purple-300 rounded-xl shadow-lg px-4">
+            <div dir="ltr" data-orientation="horizontal" className="w-full flex flex-col">
+                <div className={`${styles.recommendation} flex-shrink-0`} role="tablist" aria-orientation="horizontal" tabIndex={0} data-orientation="horizontal">
                     <button
-                        type='button'
-                        role='tab'
+                        type="button"
+                        role="tab"
                         aria-selected={activeTab === 'popular'}
-                        aria-controls='radix-:r0:-content-popular'
+                        aria-controls="radix-:r0:-content-popular"
                         data-state={activeTab === 'popular' ? 'active' : 'inactive'}
-                        id='radix-:r0:-trigger-popular'
+                        id="radix-:r0:-trigger-popular"
                         className={`ring-offset-background focus-visible:ring-ring ${activeTab === 'popular' ? 'bg-background text-foreground shadow' : ''} inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`}
                         tabIndex={0}
                         data-orientation="horizontal"
@@ -30,12 +30,12 @@ const PopularRecentPinStory = () => {
                         인기 핀스토리
                     </button>
                     <button
-                        type='button'
-                        role='tab'
+                        type="button"
+                        role="tab"
                         aria-selected={activeTab === 'recent'}
-                        aria-controls='radix-:r0:-content-recent'
+                        aria-controls="radix-:r0:-content-recent"
                         data-state={activeTab === 'recent' ? 'active' : 'inactive'}
-                        id='radix-:r0:-trigger-recent'
+                        id="radix-:r0:-trigger-recent"
                         className={`ring-offset-background focus-visible:ring-ring ${activeTab === 'recent' ? 'bg-background text-foreground shadow' : ''} inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`}
                         tabIndex={0}
                         data-orientation="horizontal"
@@ -45,30 +45,32 @@ const PopularRecentPinStory = () => {
                         이전 읽은 핀스토리
                     </button>
                 </div>
-                <div
-                    data-state={activeTab === 'popular' ? 'active' : 'inactive'}
-                    data-orientation="horizontal"
-                    role='tabpanel'
-                    aria-labelledby='radix-:r0:-trigger-popular'
-                    id='radix-:r0:-content-popular'
-                    tabIndex={0}
-                    className={`ring-offset-background focus-visible:ring-ring mt-2 max-h-[400px] overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'popular' ? 'block' : 'hidden'}`}
-                >
-                    <div className='space-y-4'>
-                        <PopularPinStory />
+                <div className="flex-grow overflow-hidden">
+                    <div
+                        data-state={activeTab === 'popular' ? 'active' : 'inactive'}
+                        data-orientation="horizontal"
+                        role="tabpanel"
+                        aria-labelledby="radix-:r0:-trigger-popular"
+                        id="radix-:r0:-content-popular"
+                        tabIndex={0}
+                        className={`mt-2 h-full overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'popular' ? 'block' : 'hidden'}`}
+                    >
+                        <div className="space-y-4 pb-4">
+                            <PopularPinStory />
+                        </div>
                     </div>
-                </div>
-                <div
-                    data-state={activeTab === 'recent' ? 'active' : 'inactive'}
-                    data-orientation="horizontal"
-                    role='tabpanel'
-                    aria-labelledby='radix-:r0:-trigger-recent'
-                    id='radix-:r0:-content-recent'
-                    tabIndex={0}
-                    className={`ring-offset-background focus-visible:ring-ring mt-2 max-h-[400px] overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'recent' ? 'block' : 'hidden'}`}
-                >
-                    <div className='space-y-4'>
-                        <RecentPinStory />
+                    <div
+                        data-state={activeTab === 'recent' ? 'active' : 'inactive'}
+                        data-orientation="horizontal"
+                        role="tabpanel"
+                        aria-labelledby="radix-:r0:-trigger-recent"
+                        id="radix-:r0:-content-recent"
+                        tabIndex={0}
+                        className={`mt-2 h-full overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'recent' ? 'block' : 'hidden'}`}
+                    >
+                        <div className="space-y-4 pb-4">
+                            <RecentPinStory />
+                        </div>
                     </div>
                 </div>
             </div>

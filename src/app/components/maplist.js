@@ -1,6 +1,8 @@
 'use client'
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import WritePinStory from './writepinstory';
+import PinstoryModal from './pinstorymodal';
 
 
 const MapList = ({showAllPins}) => {
@@ -12,7 +14,9 @@ const MapList = ({showAllPins}) => {
   ]);
 
 
-
+  const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+  const [selectedPin, setSelectedPin] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -20,6 +24,18 @@ const MapList = ({showAllPins}) => {
     return () => clearInterval(timer);
   }, []);
 
+  const openWriteModal = () => setIsWriteModalOpen(true);
+  const closeWriteModal = () => setIsWriteModalOpen(false);
+
+  const openPinModal = (pin) => {
+    setSelectedPin(pin);
+    setIsPinModalOpen(true);
+  };
+  const closePinModal = () => setIsPinModalOpen(false);
+
+  const handleAddPin = (newPin) => {
+    setPins([...pins, { ...newPin, id: pins.length }]);
+  };
 
   const addPin = () => {
     const newPin = {
@@ -42,6 +58,12 @@ const MapList = ({showAllPins}) => {
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col">
+      {isPinModalOpen && (
+        <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={updatePin} />
+      )}
+      {isWriteModalOpen && (
+        <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={handleAddPin} />
+      )}
       <Image
         src="/world-map.webp"
         alt="Map"
@@ -70,6 +92,23 @@ const MapList = ({showAllPins}) => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        <button
+          className="inline-flex items-center justify-center rounded-full bg-purple-400 hover:bg-purple-500 shadow-lg text-white transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:pointer-events-none disabled:opacity-50 h-14 w-14"
+          onClick={openWriteModal}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+          </svg>
+        </button>
       </div>
     </div>
   );

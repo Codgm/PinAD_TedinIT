@@ -88,13 +88,36 @@
       height : 100vh;
     }}
 
+  .contentSection {
+      display: flex;
+      flex-direction: column; /* 추가 */
+      justify-content: center;
+      align-items: center;
+      height : 75vh;    
+  }
+      
+    @media (max-width: 768px) {
+    .contentSection {
+      display: flex;
+      flex-direction: column; /* 추가 */
+      justify-content: center;
+      align-items: center;
+      width : 80vw;
+      height : 100vh;
+    }}
+
     .searchBar input {
-    width: 100%;
+    width: 30vw;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 20px;
   }
   
+  .popup {
+    min-height: 80vh; 
+    overflow-y: auto; 
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -122,29 +145,12 @@
     cursor: pointer;
   }
   
-  .recommendations {
-    display: grid;
-    gap: 20px;
-  }
-  
-  @media (min-width: 768px) {
-    .recommendations {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  .recommendationItem {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
   .switch {
     position: sticky;
     top: 1rem;
-    align-self: flex-end; /* 추가 */
+    align-self: flex-end;
     z-index: 40;
-    margin-bottom: 1rem; /* 추가 */
+    margin-bottom: 1rem; 
   }
   
   .switch input {
