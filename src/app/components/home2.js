@@ -11,13 +11,14 @@ import MapList from './maplist';
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [notifications] = useState([
-    "새로운 여행 추천이 도착했습니다!",
-    "친구가 당신의 스토리를 좋아합니다.",
-    "이번 주 인기 여행지: 제주도"
+  
+  const [notifications, setNotifications] = useState([
+    { text: "새로운 여행 추천이 도착했습니다!", isRead: false },
+    { text: "친구가 당신의 스토리를 좋아합니다.", isRead: false },
+    { text: "이번 주 인기 여행지: 제주도", isRead: false },
   ]);
   const handleChange = () => { 
-    setIsChecked(!isChecked);
+    setIsChecked(!isChecked);``
   }
   const notificationIconRef = useRef(null);
 
@@ -42,9 +43,9 @@ export default function Home2() {
               className={styles.notification} 
               onClick={handleNotificationClick}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-              </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+              <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+            </svg>
 
             </span>
             <span className={styles.profile}>👤</span>
@@ -61,7 +62,7 @@ export default function Home2() {
               />
             <span className={styles.slider}></span>
             </label>
-            {isChecked ? <Map/> : <MapList/>}
+            {<MapList showAllPins={!isChecked}/>}
           </section>
           <section className={styles.contentSection}>
             <div className={styles.searchBar}>

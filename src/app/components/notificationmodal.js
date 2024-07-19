@@ -26,7 +26,7 @@ const NotificationModal = ({ isOpen, onClose, notifications, anchorEl }) => {
           <ul className={styles.notificationList}>
             {notifications.map((notification, index) => (
               <li key={index} className={styles.notificationItem}>
-                {notification}
+                {notification.text}
               </li>
             ))}
           </ul>
