@@ -69,7 +69,13 @@
     position : relative;
     padding: 20px;
   }
-  
+  @media (max-width: 768px) {
+    .imageSection, .contentSection {
+      width: 100%;
+      height: auto;
+    }
+  }
+
   .imageSection {
     display: flex;
     flex-direction: column; /* 추가 */

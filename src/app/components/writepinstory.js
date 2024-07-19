@@ -58,7 +58,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handlePost = () => {
-    // TODO: Implement post creation logic
+    addPin();
     closeModal();
   };
 
