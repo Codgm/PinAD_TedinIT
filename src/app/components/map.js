@@ -29,7 +29,7 @@ const Map = ({ data }) => {
   };
 
   return (
-    <div className="map relative" style={{height: "75vh;"}}>
+    <div className="map relative overflow-hidden" style={{height: "75vh", width: "100%"}}>
       {isPinModalOpen && (
         <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={updatePin} />
       )}
@@ -53,7 +53,7 @@ const Map = ({ data }) => {
           </div>
         ))}
       </div>
-      <div className="fixed bottom-4 md:left-2/5 transform -translate-x-1/2">
+      <div className="absolute bottom-4 left-2/5 transform -translate-x-1/2">
         <button
           className="inline-flex items-center justify-center rounded-full bg-purple-400 hover:bg-purple-500 shadow-lg text-white transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:pointer-events-none disabled:opacity-50 h-14 w-14"
           onClick={openWriteModal}
