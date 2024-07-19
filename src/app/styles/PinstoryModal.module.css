@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensures the modal is above the map */
+    z-index: 1000;
   }
   
   .modalContent {
@@ -18,7 +18,7 @@
     width: 90%;
     max-width: 400px;
     padding: 20px;
-    z-index: 1001; /* Ensures the modal content is above the overlay */
+    z-index: 1000;
   }
   
   .modalHeader {
@@ -38,6 +38,7 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
+    z-index: 1000;
   }
   
   .imageContainer {
