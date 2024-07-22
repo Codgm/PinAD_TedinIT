@@ -70,7 +70,7 @@ const MapList = ({ showAllPins }) => {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden flex flex-col">
+    <div className="h-full w-full overflow-hidden flex flex-col">
       {isPinModalOpen && (
           <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
       )}
@@ -81,7 +81,7 @@ const MapList = ({ showAllPins }) => {
         src="/world-map.webp"
         alt="Map"
         fill
-        style={{ objectFit: 'cover', borderRadius: '20px' }}
+        style={{ objectFit: 'cover'}}
       />
       <div className="relative flex-1 overflow-y-auto px-4 pb-4">
         {pins.filter(pin => showAllPins || pin.isUser).map((pin) => (
