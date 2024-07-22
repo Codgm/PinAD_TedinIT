@@ -34,6 +34,14 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #f0f0f0;
+  position: relative
+}
+
+.header h1 {
+  font-size: 2rem; 
+  font-weight: bold; 
+  color: #333333; 
+  margin: 0;
 }
 
 .icons {
@@ -65,11 +73,30 @@
   padding: 20px;
 }
 
-.searchBar input {
+.searchBarModal {
+  position: absolute;
+  top: 100%; 
+  left: 50%;
+  width: 50%;
+  padding: 16px;
+  background-color: transparent;
+  transform: translateY(-910%);
+  border-radius: 5px;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
+  z-index: 50; 
+}
+
+.searchBarModal.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.searchBarModal input {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 4px;
 }
 
 .tags {

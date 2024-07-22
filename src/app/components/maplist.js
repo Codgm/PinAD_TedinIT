@@ -17,12 +17,12 @@ function formatDateToString(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-const MapList = ({ showAllPins }) => {
-  const [pins, setPins] = useState([
-    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00', isUser: true },
-    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00', isUser: false },
-    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00', isUser: true },
-  ]);
+const MapList = ({ pins,showAllPins }) => {
+  // const [pins, setPins] = useState([
+  //   { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00', isUser: true },
+  //   { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00', isUser: false },
+  //   { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00', isUser: true },
+  // ]);
 
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
@@ -34,8 +34,8 @@ const MapList = ({ showAllPins }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const openWriteModal = () => setIsWriteModalOpen(true);
-  const closeWriteModal = () => setIsWriteModalOpen(false);
+  // const openWriteModal = () => setIsWriteModalOpen(true);
+  // const closeWriteModal = () => setIsWriteModalOpen(false);
 
   const openPinModal = (pin) => {
     setSelectedPin(pin);
@@ -45,22 +45,22 @@ const MapList = ({ showAllPins }) => {
   const closePinModal = () => setIsPinModalOpen(false);
 
 
-  const addPin = () => {
-    const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
-    const koreaTimeDiff = 9 * 60 * 60 * 1000;
-    const korNow = new Date(utc+koreaTimeDiff)
-    const formattedDate = formatDateToString(korNow);
+  // const addPin = () => {
+  //   const now = new Date();
+  //   const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+  //   const koreaTimeDiff = 9 * 60 * 60 * 1000;
+  //   const korNow = new Date(utc+koreaTimeDiff)
+  //   const formattedDate = formatDateToString(korNow);
 
-    const newPin = {
-      id: pins.length + 1,
-      x: Math.floor(Math.random() * 10),
-      y: Math.floor(Math.random() * 10),
-      time: formattedDate,
-      isUser: true,
-    };
-    setPins([...pins, newPin]);
-  };
+  //   const newPin = {
+  //     id: pins.length + 1,
+  //     x: Math.floor(Math.random() * 10),
+  //     y: Math.floor(Math.random() * 10),
+  //     time: formattedDate,
+  //     isUser: true,
+  //   };
+  //   setPins([...pins, newPin]);
+  // };
 
   const getTimeDifference = (pinTime) => {
     const diff = currentTime - new Date(pinTime);
@@ -74,9 +74,9 @@ const MapList = ({ showAllPins }) => {
       {isPinModalOpen && (
           <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
       )}
-      {isWriteModalOpen && (
+      {/* {isWriteModalOpen && (
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
-      )}
+      )} */}
       <Image
         src="/world-map.webp"
         alt="Map"
@@ -106,23 +106,6 @@ const MapList = ({ showAllPins }) => {
             </div>
           </div>
         ))}
-      </div>
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <button
-          className="inline-flex items-center justify-center rounded-full bg-purple-400 hover:bg-purple-500 shadow-lg text-white transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:pointer-events-none disabled:opacity-50 h-14 w-14"
-          onClick={openWriteModal}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
-          </svg>
-        </button>
       </div>
     </div>
   );

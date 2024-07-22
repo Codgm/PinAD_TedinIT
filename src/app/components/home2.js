@@ -6,15 +6,24 @@ import { useRef, useState } from 'react';
 import NotificationModal from './notificationmodal';
 import PopularRecentPinStory from './popular-recent-pinstory';
 import MapList from './maplist';
+import WritePinStory from './writepinstory';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
+
   const [notifications, setNotifications] = useState([
     { text: "새로운 여행 추천이 도착했습니다!", isRead: false },
     { text: "친구가 당신의 스토리를 좋아합니다.", isRead: false },
     { text: "이번 주 인기 여행지: 제주도", isRead: false },
+  ]);
+
+  const [pins, setPins] = useState([
+    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00', isUser: true },
+    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00', isUser: false },
+    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00', isUser: true },
   ]);
 
   const handleChange = () => { 
@@ -27,17 +36,80 @@ export default function Home2() {
     setIsModalOpen(true);
   };
 
+  const handleSearchIconClick = () => {
+    setIsSearchBarOpen(!isSearchBarOpen);
+  };
+  
+  const openWriteModal = () => setIsWriteModalOpen(true);
+  const closeWriteModal = () => setIsWriteModalOpen(false);
+
+  function formatDateToString(date) {
+    // 연, 월, 일, 시, 분, 초를 추출
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    // 포맷팅하여 반환
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  const addPin = () => {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+    const koreaTimeDiff = 9 * 60 * 60 * 1000;
+    const korNow = new Date(utc+koreaTimeDiff)
+    const formattedDate = formatDateToString(korNow);
+
+    const newPin = {
+      id: pins.length + 1,
+      x: Math.floor(Math.random() * 10),
+      y: Math.floor(Math.random() * 10),
+      time: formattedDate,
+      isUser: true,
+    };
+    setPins([...pins, newPin]);
+  };
+
+
   return (
     <div className={styles.pageWrapper}>
       <Head>
         <title>Pinstory</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      {isWriteModalOpen && (
+        <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
+      )}
       <div className={styles.container}>
         <header className={styles.header}>
           <h1>Pinstory</h1>
           <div className={styles.icons}>
+            <span
+              className={styles.notification} 
+              onClick={openWriteModal}
+            >
+              <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+              </svg>
+            </span>
+            <span
+              className={styles.notification} 
+              onClick={handleSearchIconClick}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+            </span>
             <span 
               ref={notificationIconRef}
               className={styles.notification} 
@@ -61,7 +133,12 @@ export default function Home2() {
               />
               <span className={styles.slider}></span>
             </label>
-            <MapList showAllPins={!isChecked}/>
+            <MapList pins={pins} showAllPins={!isChecked} />
+            {isSearchBarOpen && (
+              <div className={styles.searchBarModal}>
+                <input type="text" placeholder="장소, 인물, 스토리 검색" />
+              </div>
+            )}
           </section>
           <section className={styles.contentSection}>
             {/* <div className={styles.searchBar}>
