@@ -1,198 +1,130 @@
 /* styles/Home.module.css */
 .pageWrapper {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  @media (min-width: 768px) and (max-width: 1199px) {
-    .container {
-      height: 100vh;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .container {
-      height: 90vh;
-    }
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  
-  .icons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    overflow: hidden;
-    height : 80vh;
-  }
-  
-  @media (min-width: 768px) {
-    .main {
-      flex-direction: row;
-    }
-  }
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
 
-  .add {
-    border-radius: 20px;
+@media (max-width: 768px) {
+  .pageWrapper {
+    width: 100vw;
+    height: 100vh;
+    padding: 0px;
   }
-  
-  .imageSection, .contentSection {
-    flex: 1;
-    overflow-y: hidden;
-    position : relative;
-    padding: 20px;
-  }
-  @media (max-width: 768px) {
-    .imageSection, .contentSection {
-      width: 100%;
-      height: auto;
-    }
-  }
+}
 
-  .imageSection {
-    display: flex;
-    flex-direction: column; /* 추가 */
-    justify-content: center;
-    align-items: center;
-    height : 75vh;    
-    }
-    
-    @media (max-width: 768px) {
-    .imageSection {
-      display: flex;
-      flex-direction: column; /* 추가 */
-      justify-content: center;
-      align-items: center;
-      width : 80vw;
-      height : 100vh;
-    }}
+.container {
+  width: 100%;
+  max-width: 1200px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-  .contentSection {
-      display: flex;
-      flex-direction: column; /* 추가 */
-      justify-content: center;
-      align-items: center;
-      height : 75vh;    
-  }
-      
-    @media (max-width: 768px) {
-    .contentSection {
-      display: flex;
-      flex-direction: column; /* 추가 */
-      justify-content: center;
-      align-items: center;
-      width : 80vw;
-      height : 100vh;
-    }}
+  background-color: white;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 
-    .searchBar input {
-    width: 30vw;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-  }
-  
-  .popup {
-    min-height: 80vh; 
-    overflow-y: auto; 
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 20px 0;
-  }
-  
-  .tag {
-    background-color: #f0f0f0;
-    padding: 5px 10px;
-    border-radius: 15px;
-  }
-  
-  .buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .buttons button {
-    padding: 10px 15px;
-    border: none;
-    background-color: #f0f0f0;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  
-  .switch {
-    position: sticky;
-    top: 1rem;
-    align-self: flex-end;
-    z-index: 40;
-    margin-bottom: 1rem; 
-  }
-  
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .slider {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-    width: 2.25em;
-    height: 1.25em;
-    background-color: gray;
-    transition: 0.4s;
-    border-radius: 1.25em;
-  }
-  
-  .slider::before {
-    content: "";
-    position: absolute;
-    height: 1em;
-    width: 1em;
-    left: 0.125em;
-    top: 0.125em;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  input:checked + .slider {
-    background-color: tomato;
-  }
-  
-  input:checked + .slider::before {
-    transform: translateX(1em);
-  }
-  
+.icons {
+  display: flex;
+  gap: 10px;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.mapSection, .contentSection {
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  display: flex; /* Enable flex layout */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.mapSection {
+  padding: 20px;
+  position: relative;
+}
+
+.contentSection {
+  padding: 20px;
+}
+
+.searchBar input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 15px;
+}
+
+.switch {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 40;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  width: 2.25em;
+  height: 1.25em;
+  background-color: gray;
+  transition: 0.4s;
+  border-radius: 1.25em;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 1em;
+  width: 1em;
+  left: 0.125em;
+  top: 0.125em;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: tomato;
+}
+
+input:checked + .slider::before {
+  transform: translateX(1em);
+}
