@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useRef } from 'react';
 import InstagramIcon from '/public/instagram_icon.svg';
-import YouTubeIcon from '/public/youtube_icon.svg';
-import TikTokIcon from '/public/tiktok_logo_brand_icon.svg';
 import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
 import LineIcon from '/public/line_icon.svg';
 import ThreadsIcon from '/public/threads_icon.svg';
@@ -58,7 +56,9 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handlePost = () => {
-    addPin();
+    console.log(state.imageFiles)
+    const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+    addPin(fileUrls,true);
     closeModal();
   };
 
@@ -93,6 +93,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       }
     });
   };
+
+  
 
   const renderStepIndicator = () => (
     <div className="flex mb-6 justify-start overflow-y-auto">
