@@ -16,7 +16,7 @@
 }
 
 .container {
-  width: 30%;
+  width: 50%;
   height: 90vh;
   display: flex;
   flex-direction: column;
