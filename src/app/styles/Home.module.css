@@ -28,6 +28,17 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
+@media (max-width: 768px)  {
+  .container {
+    width: 100vw;
+    height: 100vh;
+    padding: 0px;
+    border-radius: 0px;
+
+  }
+}
+
+
 .header {
   display: flex;
   justify-content: space-between;
