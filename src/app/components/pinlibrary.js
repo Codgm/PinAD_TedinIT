@@ -1,14 +1,26 @@
 
 import React, { useState } from 'react';
+import PinstoryModal from './pinstorymodal';
 
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   const [likeCount, setLikeCount] = useState(pin.likes || 0);
   const [comments, setComments] = useState(pin.comments || []);
   const [newComment, setNewComment] = useState('');
+  const [selectedPin, setSelectedPin] = useState(null);
+  
+  const closePinModal = () => setSelectedPin(null);
 
-  const handleImageClick = (imageUrl) => {
-    console.log('Clicked image URL:', imageUrl);
-  };
+
+  const handleImageClick = (image) => {
+    console.log('Clicked image URL:', image);
+    const imageObject = {
+        image: image,
+        content: null
+      };
+    
+      // 객체를 상태로 저장
+      setSelectedPin(imageObject);    
+    };
 
   const handleLike = () => {
     const updatedLikes = likeCount + 1;
@@ -38,6 +50,9 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={handleOutsideClick}
     >
+      {selectedPin && (
+          <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
+      )}
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">사용자의 핀스토리</h2>
