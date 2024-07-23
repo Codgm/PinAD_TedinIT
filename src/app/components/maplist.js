@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import WritePinStory from './writepinstory';
 import PinstoryModal from './pinstorymodal';
+import PinLibraryModal from './pinlibrary';
 
 function formatDateToString(date) {
   // 연, 월, 일, 시, 분, 초를 추출
@@ -72,13 +73,13 @@ const MapList = ({ pins,showAllPins }) => {
   return (
     <div className="h-full w-full overflow-hidden flex flex-col">
       {isPinModalOpen && (
-          <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
+          <PinLibraryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
       )}
       {/* {isWriteModalOpen && (
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
       )} */}
       <Image
-        src="/world-map.webp"
+        src="/gangnam.png"
         alt="Map"
         fill
         style={{ objectFit: 'cover'}}

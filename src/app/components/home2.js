@@ -21,9 +21,9 @@ export default function Home2() {
   ]);
 
   const [pins, setPins] = useState([
-    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00', isUser: true },
-    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00', isUser: false },
-    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00', isUser: true },
+    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true },
+    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false },
+    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00',images :  ["/노래방.jpg"], isUser: true },
   ]);
 
   const handleChange = () => { 
@@ -139,7 +139,8 @@ export default function Home2() {
               />
               <span className={styles.slider}></span>
             </label>
-            <MapList pins={pins} showAllPins={!isChecked} />
+            <MapList pins={pins} showAllPins={!isChecked}/>
+            {/* {isChecked ? <PopularRecentPinStory/> : <MapList pins={pins} showAllPins={!isChecked} />} */}
             {isSearchBarOpen && (
               <div className={styles.searchBarModal}>
                 <input type="text" placeholder="장소, 인물, 스토리 검색" />

@@ -47,7 +47,7 @@ const PinstoryModal = ({ pin, onClose, updatePin }) => {
         <div className="mb-4">
           {pin.image ? (
             <img
-              src={URL.createObjectURL(pin.image)}
+              src={URL.createObjectURL(pin.images[0])}
               alt="Pin Image"
               className="w-full h-auto object-cover rounded-md"
             />
