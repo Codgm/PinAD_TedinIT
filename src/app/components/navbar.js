@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 
-const NavBar = () => {
+const NavBar = ({writeModal}) => {
     
     const Menus = [
         {name: "Home", icon: 
@@ -18,7 +18,9 @@ const NavBar = () => {
             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>)
-          , dis: "translate-x-0"},
+          , dis: "translate-x-0"
+          , action: () => writeModal()
+        },
         {name: "Hot", icon: 
             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
@@ -41,7 +43,7 @@ const NavBar = () => {
                 {Menus.map((menu, i) => (
                     <li key={i} className='w-16'>
                         <div className=' items-center flex flex-col text-center pt-6' 
-                        onClick={() => setActive(i)}
+                        onClick={() => {setActive(i); menu.action && menu.action(); }}
                         >
                             <span className={`text-xl cursor-pointer duration-500 z-30 ${i === active && "-mt-6 text-white"}`}>
                                 {menu.icon}

@@ -57,19 +57,20 @@ export default function Home2() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
-  const addPin = () => {
+  const addPin = (images,isUser) => {
     const now = new Date();
     const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
     const koreaTimeDiff = 9 * 60 * 60 * 1000;
     const korNow = new Date(utc+koreaTimeDiff)
     const formattedDate = formatDateToString(korNow);
-
+    console.log(images)
     const newPin = {
       id: pins.length + 1,
       x: Math.floor(Math.random() * 10),
       y: Math.floor(Math.random() * 10),
       time: formattedDate,
-      isUser: true,
+      images: images,
+      isUser: isUser,
     };
     setPins([...pins, newPin]);
   };
@@ -160,7 +161,7 @@ export default function Home2() {
             {/* <PopularRecentPinStory/> */}
           </section>
         </main>
-        <NavBar />
+        <NavBar writeModal={()=>setIsWriteModalOpen(true)} />
       </div>
 
       <NotificationModal 
