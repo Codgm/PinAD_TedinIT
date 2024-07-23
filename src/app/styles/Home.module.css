@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 @media (max-width: 768px) {
@@ -16,7 +16,7 @@
 }
 
 .container {
-  width: 100%;
+  width: 40%;
   max-width: 1200px;
   height: 100vh;
   display: flex;
@@ -51,7 +51,7 @@
 
 .main {
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   scroll-snap-type: y mandatory;
 }
 
@@ -65,7 +65,6 @@
 }
 
 .mapSection {
-  padding: 20px;
   position: relative;
 }
 
@@ -154,4 +153,11 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(1em);
+}
+
+.notification {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 40; 
 }
