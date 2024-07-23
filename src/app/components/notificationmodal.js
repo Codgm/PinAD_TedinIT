@@ -11,7 +11,7 @@ const NotificationModal = ({ isOpen, onClose, notifications, anchorEl }) => {
       const modalRect = modalRef.current.getBoundingClientRect();
       
       modalRef.current.style.top = `${anchorRect.bottom + window.scrollY}px`;
-      modalRef.current.style.left = `${anchorRect.left + anchorRect.width - modalRect.width}px`;
+      modalRef.current.style.left = `${anchorRect.left}px`;
     }
   }, [isOpen, anchorEl]);
 
