@@ -78,7 +78,7 @@ const MapList = ({ pins,showAllPins }) => {
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
       )} */}
       <Image
-        src="/world-map.webp"
+        src="/gangnam.png"
         alt="Map"
         fill
         style={{ objectFit: 'cover'}}

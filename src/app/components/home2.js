@@ -139,7 +139,8 @@ export default function Home2() {
               />
               <span className={styles.slider}></span>
             </label>
-            <MapList pins={pins} showAllPins={!isChecked} />
+            <MapList pins={pins} showAllPins={!isChecked}/>
+            {/* {isChecked ? <PopularRecentPinStory/> : <MapList pins={pins} showAllPins={!isChecked} />} */}
             {isSearchBarOpen && (
               <div className={styles.searchBarModal}>
                 <input type="text" placeholder="장소, 인물, 스토리 검색" />
