@@ -7,6 +7,7 @@ import NotificationModal from './notificationmodal';
 import PopularRecentPinStory from './popular-recent-pinstory';
 import MapList from './maplist';
 import WritePinStory from './writepinstory';
+import NavBar from './navbar';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
@@ -159,6 +160,7 @@ export default function Home2() {
             {/* <PopularRecentPinStory/> */}
           </section>
         </main>
+        <NavBar />
       </div>
 
       <NotificationModal 
