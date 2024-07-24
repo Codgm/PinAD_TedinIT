@@ -7,7 +7,7 @@ import NotificationModal from './notificationmodal';
 import PopularRecentPinStory from './popular-recent-pinstory';
 import MapList from './maplist';
 import WritePinStory from './writepinstory';
-import NavBar from './navbar';
+import NavBar from './navbar'; 
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
@@ -22,9 +22,9 @@ export default function Home2() {
   ]);
 
   const [pins, setPins] = useState([
-    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true },
-    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false },
-    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00',images :  ["/노래방.jpg"], isUser: true },
+    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, profile: { avatar: '/profileimg1.jpg', name: 'User Name' } },
+    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false, profile: { avatar: '/profileimg2.jpg', name: 'User Name' } },
+    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00',images :  ["/노래방.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
   ]);
 
   const handleChange = () => { 
@@ -71,6 +71,7 @@ export default function Home2() {
       time: formattedDate,
       images: images,
       isUser: isUser,
+      profile: { avatar: '/path/to/avatar.jpg', name: 'User Name' },
     };
     setPins([...pins, newPin]);
   };
@@ -161,7 +162,7 @@ export default function Home2() {
             {/* <PopularRecentPinStory/> */}
           </section>
         </main>
-        <NavBar writeModal={()=>setIsWriteModalOpen(true)} />
+        <NavBar writeModal={()=>setIsWriteModalOpen(true)}/>
       </div>
 
       <NotificationModal 

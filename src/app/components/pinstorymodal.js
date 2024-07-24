@@ -44,6 +44,14 @@ const PinstoryModal = ({ pin, onClose, updatePin }) => {
             ×
           </button>
         </div>
+        {pin.profile && (
+          <div className="flex items-center mb-4">
+            <img src={pin.profile.avatar} alt="프로필 이미지" className="w-10 h-10 rounded-full mr-2" />
+            <div>
+              <p className="text-sm font-semibold">{pin.profile.name}</p>
+            </div>
+          </div>
+        )}
         <div className="mb-4">
           {pin.image ? (
             <img

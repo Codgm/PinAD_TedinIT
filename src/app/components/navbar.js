@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 
-const NavBar = ({writeModal}) => {
+const NavBar = ({writeModal, popularstory}) => {
     
     const Menus = [
         {name: "Home", icon: 

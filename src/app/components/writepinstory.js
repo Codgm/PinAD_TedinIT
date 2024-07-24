@@ -56,7 +56,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handlePost = () => {
-    console.log(state.imageFiles)
     const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
     addPin(fileUrls,true);
     closeModal();

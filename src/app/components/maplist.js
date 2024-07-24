@@ -99,7 +99,15 @@ const MapList = ({ pins,showAllPins }) => {
           >
             <div 
               className={`w-6 h-6 rounded-full ${pin.isUser ? 'bg-red-500' : 'bg-blue-500'} shadow-lg pulse`}
-            />
+            >
+              {pin.profile && pin.profile.avatar && (
+                <img
+                  src={pin.profile.avatar}
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              )}
+            </div>
             <div className="absolute top-full left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded-full shadow-md whitespace-nowrap">
               {pin.id === pins[pins.length - 1].id 
                 ? getTimeDifference(pin.time)
