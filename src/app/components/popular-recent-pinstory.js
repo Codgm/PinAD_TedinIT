@@ -11,7 +11,7 @@ const PopularRecentPinStory = () => {
     };
 
     return (
-        <div className="h-full flex flex-grow overflow-hidden bg-purple-300 rounded-xl shadow-lg px-4">
+        <div className="fixed h-full flex flex-grow overflow-hidden bg-purple-300 rounded-xl shadow-lg px-4">
             <div dir="ltr" data-orientation="horizontal" className="w-full flex flex-col">
                 <div className={`${styles.recommendation} flex-shrink-0`} role="tablist" aria-orientation="horizontal" tabIndex={0} data-orientation="horizontal">
                     <button
