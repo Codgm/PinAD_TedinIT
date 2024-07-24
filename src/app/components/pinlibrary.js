@@ -1,6 +1,9 @@
 
 import React, { useState } from 'react';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import PinstoryModal from './pinstorymodal';
+import Image from 'next/image';
+
 
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   const [likeCount, setLikeCount] = useState(pin.likes || 0);
@@ -44,8 +47,11 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
       onClose();
     }
   };
+  const rating = 4.5;
+  const totalStars = 5;
 
   return (
+    
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={handleOutsideClick}
@@ -59,12 +65,49 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           <button
             className="text-xl font-bold text-gray-700 hover:text-gray-900"
             onClick={onClose}
-          >
-            ×
-          </button>
+          >×</button>
+        </div>
+        <div>
+          <div className="flex justify-between items-start">
+            <div>
+              <button className="mb-4 bg-blue-400 text-sm px-3 py-1 rounded-full">#카페후기</button>
+              <h3 className="mb-2 text-xl font-semibold">카페 달빛</h3>
+              <div className="flex items-center mb-4">
+                {Array.from({ length: totalStars }, (v, i) => (
+                  i < Math.floor(rating) ? 
+                  <span key={i} className={`fas fa-star text-yellow-400`}></span> : null
+                ))}
+                {rating % 1 !== 0 && (
+                  <span className="fas fa-star-half-alt text-yellow-400"></span>
+                )}
+                <span className="ml-2 text-gray-600">{rating.toFixed(1)}</span>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="h-20 w-20 grid grid-cols-2 gap-1">
+                {pin.images.map((image, index) => (
+                  <div key={index} className="h-10 w-10 relative">
+                    <Image
+                      src={image}
+                      alt={`Image ${index}`}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-sm"
+                      onClick={() => handleImageClick(image)}
+                    />
+                  </div>
+                ))}          
+              </div> 
+            </div>
+          </div> 
+        <div>
+          이 카페는 정말 특별해요! 창밖으로 보이는 도시 전경이 환상적이에요. 
+          특히 해질 무렵에 오면 노을과 함께 커피를 즐길 수 있어요. 
+          시그니처 메뉴인 달빛 라떼는 꼭 드셔보세요. 부드러운 우유 거품 위에 은은한 바닐라 향이 어우러져 정말 맛있어요. 
+          조용히 책을 읽거나 여유롭게 대화를 나누기에 완벽한 공간이에요.
         </div>
         <div className="mb-4">
-            {!pin.images || pin.images.length === 0 ? (
+            {/* {!pin.images || pin.images.length === 0 ? (
                 <div className="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-600 rounded-md p-2">
                 400 x 300
                 </div>
@@ -131,21 +174,30 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
                     </div>
                 </div>
                 </div>
-            )}
+            )} */}
         </div>
         <div className="flex gap-4 mb-4">
+          <div>
+            <div className='fa-brands fa-instagram mr-3'></div>
+            <button>
+              Instagram
+            </button>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="fa-brands fa-youtube mr-3"></div>
+            <div>YouTube</div>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <button className="flex-1 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-            유튜브
-          </button>
-          <button className="flex-1 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600">
-            인스타그램
-          </button>
+        <div className="flex items-center">
+          <div className="fa-regular fa-heart mr-2"></div>
+          <div className='mr-2'>23</div>
+          <div className="fa-regular fa-comment mr-2"></div>    
+          <div>56</div>
         </div>
       </div>
     </div>
-  );
+  </div>
+    );
 };
 
 export default PinLibraryModal;
