@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import PinstoryModal from './pinstorymodal';
 import Image from 'next/image';
 
@@ -192,7 +193,8 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           <div className="fa-regular fa-heart mr-2"></div>
           <div className='mr-2'>23</div>
           <div className="fa-regular fa-comment mr-2"></div>    
-          <div>56</div>
+          <div className='mr-2'>56</div>
+          <div className="fas fa-share ml-auto"></div>
         </div>
       </div>
     </div>
