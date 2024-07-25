@@ -4,6 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import PinstoryModal from './pinstorymodal';
 import Image from 'next/image';
+import { Input } from 'postcss';
 
 
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
@@ -11,9 +12,17 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   const [comments, setComments] = useState(pin.comments || []);
   const [newComment, setNewComment] = useState('');
   const [selectedPin, setSelectedPin] = useState(null);
-  
-  const closePinModal = () => setSelectedPin(null);
+  const [showCommentInput, setShowCommentInput] = useState(false);
 
+  const closePinModal = () => setSelectedPin(null);
+  const [comment, setComment] = useState('');
+
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    console.log('Submitted comment:', comment);
+    setComment('');
+    // Here you would typically send the comment to your backend
+  };
 
   const handleImageClick = (image) => {
     console.log('Clicked image URL:', image);
@@ -98,84 +107,19 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
                     />
                   </div>
                 ))}          
+                {pin.images.length<4 && 
+                  <div className="h-10 w-10 bg-gray-200 flex items-center justify-center text-gray-600 rounded-sm">
+                    +
+                  </div>
+                }
               </div> 
             </div>
           </div> 
-        <div>
+        <div className='mb-4'>
           이 카페는 정말 특별해요! 창밖으로 보이는 도시 전경이 환상적이에요. 
           특히 해질 무렵에 오면 노을과 함께 커피를 즐길 수 있어요. 
           시그니처 메뉴인 달빛 라떼는 꼭 드셔보세요. 부드러운 우유 거품 위에 은은한 바닐라 향이 어우러져 정말 맛있어요. 
           조용히 책을 읽거나 여유롭게 대화를 나누기에 완벽한 공간이에요.
-        </div>
-        <div className="mb-4">
-            {/* {!pin.images || pin.images.length === 0 ? (
-                <div className="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-600 rounded-md p-2">
-                400 x 300
-                </div>
-            ) : pin.images.length === 1 ? (
-                <div className="w-full">
-                <img
-                    src={pin.images[0]}
-                    alt="Pin Image"
-                    className="w-full h-72 object-cover rounded-md mb-2 cursor-pointer"
-                    onClick={() => handleImageClick(pin.images[0])}
-                />
-                <div className="w-full h-36 bg-gray-200 flex items-center justify-center text-gray-600 rounded-md">
-                    + 추가
-                </div>
-                </div>
-            ) : pin.images.length === 2 ? (
-                <div className="w-full">
-                <img
-                    src={pin.images[0]}
-                    alt="Pin Image 1"
-                    className="w-full h-72 object-cover rounded-md mb-2 cursor-pointer"
-                    onClick={() => handleImageClick(pin.images[0])}
-                />
-                <div className="flex w-full">
-                    <div className="w-1/2 pr-1">
-                    <img
-                        src={pin.images[1]}
-                        alt="Pin Image 2"
-                        className="w-full h-36 object-cover rounded-md cursor-pointer"
-                        onClick={() => handleImageClick(pin.images[1])}
-                    />
-                    </div>
-                    <div className="w-1/2 pl-1">
-                    <div className="h-36 bg-gray-200 flex items-center justify-center text-gray-600 rounded-md">
-                        + 추가
-                    </div>
-                    </div>
-                </div>
-                </div>
-            ) : (
-                <div className="w-full">
-                <img
-                    src={pin.images[0]}
-                    alt="Pin Image 1"
-                    className="w-full h-72 object-cover rounded-md mb-2 cursor-pointer"
-                    onClick={() => handleImageClick(pin.images[0])}
-                />
-                <div className="flex w-full">
-                    <div className="w-1/2 pr-1">
-                    <img
-                        src={pin.images[1]}
-                        alt="Pin Image 2"
-                        className="w-full h-36 object-cover rounded-md cursor-pointer"
-                        onClick={() => handleImageClick(pin.images[1])}
-                    />
-                    </div>
-                    <div className="w-1/2 pl-1">
-                    <img
-                        src={pin.images[2]}
-                        alt="Pin Image 3"
-                        className="w-full h-36 object-cover rounded-md cursor-pointer"
-                        onClick={() => handleImageClick(pin.images[2])}
-                    />
-                    </div>
-                </div>
-                </div>
-            )} */}
         </div>
         <div className="flex gap-4 mb-4">
           <div>
@@ -192,11 +136,30 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
         <div className="flex items-center">
           <div className="fa-regular fa-heart mr-2"></div>
           <div className='mr-2'>23</div>
-          <div className="fa-regular fa-comment mr-2"></div>    
+          <div className="fa-regular fa-comment mr-2" onClick={() => setShowCommentInput(!showCommentInput)} />    
           <div className='mr-2'>56</div>
           <div className="fas fa-share ml-auto"></div>
         </div>
       </div>
+      {showCommentInput && (
+        <form onSubmit={handleCommentSubmit} className="flex space-x-2 mb-4 mt-2">
+          <input
+            type="text"
+            placeholder="댓글을 입력하세요..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="flex-grow"
+          />
+          <button type="submit">게시</button>
+        </form>
+      )}
+      {
+        comments.length==0 && showCommentInput ? "댓글이 없습니다." :
+                comments.map((comment, index) => (
+          <div key={index} className="p-2 border border-gray-300 rounded-md">
+            {comment}
+          </div>
+        ))}
     </div>
   </div>
     );
