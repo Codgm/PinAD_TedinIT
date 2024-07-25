@@ -22,9 +22,9 @@ export default function Home2() {
   ]);
 
   const [pins, setPins] = useState([
-    { id: 1, x: 5, y: 5, time: '2024-07-19 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, profile: { avatar: '/profileimg1.jpg', name: 'User Name' } },
-    { id: 2, x: 2, y: 3, time: '2024-07-19 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false, profile: { avatar: '/profileimg2.jpg', name: 'User Name' } },
-    { id: 3, x: 8, y: 7, time: '2024-07-19 10:04:00',images :  ["/노래방.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
+    { id: 1, x: 5, y: 5, time: '2024-07-24 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
+    { id: 2, x: 2, y: 3, time: '2024-07-24 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false, profile: { avatar: '/profileimg2.jpg', name: '김오빈' } },
+    { id: 3, x: 8, y: 7, time: '2024-07-25 09:00:00',images :  ["/노래방.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
   ]);
 
   const handleChange = () => { 
