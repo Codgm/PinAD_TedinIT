@@ -8,7 +8,7 @@ import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'rea
 import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 
-const recommendedTags = ['여행', '맛집', '자연', '힐링', '액티비티', '문화', '역사', '쇼핑', '숙소', '교통'];
+const defaultTags = ['팝니다', '삽니다', '고칩니다', '알립니다'];
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -32,9 +32,13 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     setProfilePublic,
     setPlatformLink,
     togglePlatformSelection,
-    addTag,
     setMonetize
   } = usePostCreation();
+
+  const [selectedDefaultTags, setSelectedDefaultTags] = useState([]);
+  const [newTags, setNewTags] = useState([]);
+  const [showMonetizeModal, setShowMonetizeModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -48,7 +52,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleShortVideoChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size <= 50 * 1024 * 1024) { 
+    if (file && file.size <= 50 * 1024 * 1024) {
       setShortVideo(file);
     } else {
       alert('비디오 파일 크기는 50MB 이하로 업로드 해주세요.');
@@ -56,9 +60,13 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handlePost = () => {
-    const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-    addPin(fileUrls,true);
-    closeModal();
+    if (state.type !== '광고' && !showMonetizeModal) {
+      setShowMonetizeModal(true);
+    } else {
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, state.type === '광고' ? true : state.monetize);
+      closeModal();
+    }
   };
 
   const handleOutsideClick = (e) => {
@@ -72,8 +80,24 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     setPlatformLink(platform, value);
   };
 
-  const handleTagClick = (tag) => {
-    addTag(tag);
+  const handleDefaultTagClick = (tag) => {
+    setSelectedDefaultTags(prev => 
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleNewTagInputKeyDown = (e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      const newTag = e.target.value.trim();
+      if (!newTags.includes(newTag) && !selectedDefaultTags.includes(newTag) && (newTags.length + selectedDefaultTags.length) < 10) {
+        setNewTags(prev => [...prev, newTag]);
+        e.target.value = '';
+      }
+    }
+  };
+
+  const removeNewTag = (tag) => {
+    setNewTags(prev => prev.filter(t => t !== tag));
   };
 
   const handleFileUpload = (e) => {
@@ -84,7 +108,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           addImage(file);
         }
       } else if (file.type.startsWith('video/')) {
-        if (file.size <= 50 * 1024 * 1024) { // 50MB 제한
+        if (file.size <= 50 * 1024 * 1024) {
           setShortVideo(file);
         } else {
           alert('비디오 파일 크기는 50MB 이하로 업로드 해주세요.');
@@ -93,7 +117,29 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     });
   };
 
-  
+  const handleMonetizeChoice = (choice) => {
+    if (choice) {
+      setMonetize(true);
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, true);
+      closeModal();
+    } else {
+      setShowConfirmModal(true);
+    }
+  };
+
+  const handleConfirmChoice = (choice) => {
+    if (choice) {
+      setMonetize(false);
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, false);
+      closeModal();
+    } else {
+      setShowConfirmModal(false);
+      setShowMonetizeModal(true);
+    }
+  };
+
 
   const renderStepIndicator = () => (
     <div className="flex mb-6 justify-start overflow-y-auto">
@@ -105,7 +151,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             </div>
             {index !== steps.length - 1 && (
               <div className={`rounded-full py-2 px-1 ${index === state.step - 1 ? 'purple-100' : 'gray-100'}`}>
-                {<MdKeyboardArrowRight/>}
+                {<MdKeyboardArrowRight />}
               </div>
             )}
           </div>
@@ -168,7 +214,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               onChange={handleFileUpload}
             />
             <div className='py-3'>
-              <button 
+              <button
                 className="w-full py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 transition-colors duration-300"
                 onClick={() => fileInputRef.current.click()}
               >
@@ -196,14 +242,60 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               <option value="여행메모">여행메모</option>
               <option value="리뷰">리뷰</option>
             </select>
-            <textarea
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              rows="5"
-              maxLength="500"
-              placeholder="문구 입력... (최대 500자)"
-              value={state.content}
-              onChange={handleContentChange}
-            ></textarea>
+            {state.type === '여행메모' && (
+              <textarea
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                rows="10"
+                placeholder="여행 기록을 입력하세요..."
+                value={state.content}
+                onChange={handleContentChange}
+              ></textarea>
+            )}
+            {state.type === '리뷰' && (
+              <div className="space-y-4">
+                <textarea
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows="5"
+                  placeholder="리뷰 내용을 입력하세요..."
+                  value={state.content}
+                  onChange={handleContentChange}
+                ></textarea>
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="평점 (1-5)"
+                  value={state.rating}
+                  onChange={(e) => setRating(e.target.value)}
+                />
+              </div>
+            )}
+            {state.type === '광고' && (
+              <div className="space-y-4">
+                <textarea
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows="5"
+                  placeholder="광고 내용을 입력하세요..."
+                  value={state.content}
+                  onChange={handleContentChange}
+                ></textarea>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="상품명"
+                  value={state.productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="가격"
+                  value={state.price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         );
       case 3:
@@ -212,31 +304,36 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             <div className="space-y-2">
               <label className="block mb-2 text-sm text-gray-600">태그 (최대 10개)</label>
               <div className="flex flex-wrap">
-                {recommendedTags.map(tag => (
+                {defaultTags.map(tag => (
                   <button
                     key={tag}
-                    className={`p-2 m-1 rounded-md ${state.tags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-                    onClick={() => handleTagClick(tag)}
+                    className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+                    onClick={() => handleDefaultTagClick(tag)}
                   >
                     {tag}
                   </button>
                 ))}
               </div>
+              <div className="flex flex-wrap ">
+                {newTags.map(tag => (
+                  <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
+                    <span>{tag}</span>
+                    <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">&times;</button>
+                  </div>
+                ))}
+              </div>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                placeholder="새 태그를 입력하고 Enter 키를 누르세요"
+                onKeyDown={handleNewTagInputKeyDown}
+              />
             </div>
           </div>
         );
       case 4:
         return (
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <label className="text-sm text-gray-600 mr-2">지도핀을 공개하고 수익화하시겠습니까?</label>
-              <button onClick={() => setMonetize(true)} className={`px-2 py-1 rounded ${state.monetize === true ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}>예</button>
-              <button onClick={() => setMonetize(false)} className={`px-2 py-1 ml-2 rounded ${state.monetize === false ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}>아니오</button>
-            </div>
-            {state.monetize === false && (
-              <p className="text-sm text-gray-600">언제든 공개하고 수익화 가능합니다. 현재 나만의 여정으로 등록됨.</p>
-            )}
-            <div className="space-y-2">
+            <div className="space-y-4">
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -250,7 +347,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 </label>
               </div>
             </div>
-          </div>
         );
       case 5:
         return (
@@ -307,6 +403,39 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     );
   };
 
+  const renderMonetizeModal = () => {
+    if (!showMonetizeModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold w-[300px] h-[50px] mb-4">지도핀 공개로 수익화를 하겠습니까?</h2>
+          <div className="flex justify-end space-x-4">
+            <button onClick={() => handleMonetizeChoice(true)} className="px-4 py-2 bg-green-500 text-white rounded">Yes</button>
+            <button onClick={() => handleMonetizeChoice(false)} className="px-4 py-2 bg-red-500 text-white rounded">No</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderConfirmModal = () => {
+    if (!showConfirmModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold w-[300px] h-[50px] mb-4">수익화를 포기하겠습니까?</h2>
+          <div className="flex justify-end space-x-4">
+            <button onClick={() => handleConfirmChoice(true)} className="px-4 py-2 bg-green-500 text-white rounded">Yes</button>
+            <button onClick={() => handleConfirmChoice(false)} className="px-4 py-2 bg-red-500 text-white rounded">No</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
   if (!isOpen) return null;
 
   return (
@@ -327,6 +456,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           {renderStepButtons()}
         </div>
       </div>
+      {renderMonetizeModal()}
+      {renderConfirmModal()}
     </div>
   );
 }

@@ -118,8 +118,6 @@ function postReducer(state, action) {
       return { ...state, platformLinks: { ...state.platformLinks, ...action.payload } };
     case 'TOGGLE_PLATFORM_SELECTION':
       return { ...state, showPlatformSelection: !state.showPlatformSelection };
-    case 'ADD_TAG':
-      return { ...state, tags: [...state.tags, action.payload] };
     case 'SET_MONETIZE':
       return { ...state, monetize: action.payload };
     case 'CLEAR_ERRORS':
@@ -142,7 +140,6 @@ function usePostCreation() {
   const setProfilePublic = (isPublic) => dispatch({ type: 'SET_PROFILE_PUBLIC', payload: isPublic });
   const setPlatformLink = (platform, link) => dispatch({ type: 'SET_PLATFORM_LINKS', payload: { [platform]: link } });
   const togglePlatformSelection = () => dispatch({ type: 'TOGGLE_PLATFORM_SELECTION' });
-  const addTag = (tag) => dispatch({ type: 'ADD_TAG', payload: tag });
   const setMonetize = (monetize) => dispatch({ type: 'SET_MONETIZE', payload: monetize });
 
   return {
@@ -158,7 +155,6 @@ function usePostCreation() {
     setProfilePublic,
     setPlatformLink,
     togglePlatformSelection,
-    addTag,
     setMonetize,
   };
 }
