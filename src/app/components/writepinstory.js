@@ -36,7 +36,9 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     setProfilePublic,
     setPlatformLink,
     togglePlatformSelection,
-    setMonetize
+    setMonetize,
+    setAdOption,
+    setBoost,
   } = usePostCreation();
 
   const [selectedDefaultTags, setSelectedDefaultTags] = useState([]);
