@@ -130,6 +130,10 @@ function postReducer(state, action) {
       return { ...state, monetize: action.payload };
     case 'CLEAR_ERRORS':
       return { ...state, errors: initialState.errors };
+    case 'SET_AD_OPTION':
+      return { ...state, adOption: action.payload };
+    case 'SET_BOOST':
+      return { ...state, boost: action.payload };
     default:
       return state;
   }
@@ -154,6 +158,8 @@ function usePostCreation() {
   const setDiscountValue = (discountValue) => dispatch({ type: 'SET_DISCOUNTVALUE', payload: discountValue });
   const setBundleDiscountType = (bundleDiscountType) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_TYPE', payload: bundleDiscountType });
   const setBundleDiscountValue = (bundleDiscountValue) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_VALUE', payload: bundleDiscountValue });
+  const setAdOption = (adOption) => dispatch({ type: 'SET_AD_OPTION', payload: adOption });
+  const setBoost = (boost) => dispatch({ type: 'SET_BOOST', payload: boost });
 
   return {
     state,
@@ -173,6 +179,8 @@ function usePostCreation() {
     setPlatformLink,
     togglePlatformSelection,
     setMonetize,
+    setAdOption,
+    setBoost,
   };
 }
 
