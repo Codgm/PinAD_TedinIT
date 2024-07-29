@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import styles from '../styles/LanguageSwitcher.module.css'; // 스타일 파일도 함께 생성해야 합니다.
+import styles from '../styles/LanguageSwitcher.module.css'; 
 
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
