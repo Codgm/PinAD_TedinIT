@@ -46,6 +46,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const [newTags, setNewTags] = useState([]);
   const [showMonetizeModal, setShowMonetizeModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [industryType, setIndustryType] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const fileInputRef = useRef(null);
 
@@ -149,6 +151,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleStep = (nextStep) => {
     setStep(nextStep);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setIndustryType('');
   };
 
 
@@ -276,83 +283,132 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               </div>
             )}
             {state.type === '광고' && (
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="상품명 입력"
-                  onChange={(e) => setProductName(e.target.value)}
-                  className="w-full h-12 border rounded-lg p-2"
-                />
-                <input
-                  type="number"
-                  placeholder="재고 수량 입력"
-                  onChange={(e) => setStock(e.target.value)}
-                  className="w-full h-12 border rounded-lg p-2"
-                />
-                <div className="flex flex-col space-y-4">
-                  <label className="text-sm">할인 형태 선택</label>
-                  <select onChange={(e) => setDiscountType(e.target.value)} className="w-full border rounded-lg p-2">
-                    <option value="">선택</option>
-                    <option value="단순 할인">단순 할인</option>
-                    <option value="묶음 할인">묶음 할인</option>
-                  </select>
-                </div>
+            <div className="space-y-4">
+              <select
+                className="w-full border rounded-lg p-2"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+              >
+                <option value="">선택</option>
+                <option value="유통">유통</option>
+                <option value="요식업">요식업</option>
+                <option value="이동형 판매">이동형 판매</option>
+                <option value="서비스업">서비스업</option>
+              </select>
+              {selectedCategory === '유통' && (
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="상품명 입력"
+                    onChange={(e) => setIndustryType(e.target.value)}
+                    className="w-full h-12 border rounded-lg p-2"
+                  />
+                  <input
+                    type="number"
+                    placeholder="재고 수량 입력"
+                    onChange={(e) => setStock(e.target.value)}
+                    className="w-full h-12 border rounded-lg p-2"
+                  />
+                  <div className="flex flex-col space-y-4">
+                    <label className="text-sm">할인 형태 선택</label>
+                    <select onChange={(e) => setDiscountType(e.target.value)} className="w-full border rounded-lg p-2">
+                      <option value="">선택</option>
+                      <option value="단순 할인">단순 할인</option>
+                      <option value="묶음 할인">묶음 할인</option>
+                    </select>
+                  </div>
+                  {state.discountType === '단순 할인' && (
+                    <input
+                      type="text"
+                      placeholder="할인율 또는 할인가 입력"
+                      onChange={(e) => setDiscountValue(e.target.value)}
+                      className="w-full h-12 border rounded-lg p-2"
+                    />
+                  )}
+                  {state.discountType === '묶음 할인' && (
+                    <div>
+                      <label className="text-sm">묶음 할인 유형 선택</label>
+                      <select onChange={(e) => setBundleType(e.target.value)} className="w-full border rounded-lg p-2">
+                        <option value="">선택</option>
+                        <option value="1+1">1+1</option>
+                        <option value="2+1">2+1</option>
+                        <option value="N+1">N+1</option>
+                      </select>
+                      {bundleType === '1+1' && (
+                        <input
+                          type="text"
+                          placeholder="1+1 설정"
+                          onChange={(e) => setBundleDiscountValue(e.target.value)}
+                          className="w-full h-12 border rounded-lg p-2"
+                        />
+                      )}
+                      {bundleType === '2+1' && (
+                        <input
+                          type="text"
+                          placeholder="2+1 설정"
+                          onChange={(e) => setBundleDiscountValue(e.target.value)}
+                          className="w-full h-12 border rounded-lg p-2"
+                        />
+                      )}
+                      {bundleType === 'N+1' && (
+                        <input
+                          type="text"
+                          placeholder="N값 입력 및 설정"
+                          onChange={(e) => setBundleDiscountValue(e.target.value)}
+                          className="w-full h-12 border rounded-lg p-2"
+                        />
+                      )}
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="할인 기간 설정"
+                    className="w-full h-12 border rounded-lg p-2"
+                  />
               </div>
-            )}
+              )}
+            </div>
+          )}
           </div>
         );
       case 3:
         return (
-          <div className="px-4 md:px-6 space-y-4">
-            {state.discountType === '단순 할인' && (
-              <input
-                type="text"
-                placeholder="할인율 또는 할인가 입력"
-                onChange={(e) => setDiscountValue(e.target.value)}
-                className="w-full h-12 border rounded-lg p-2"
-              />
-            )}
-            {state.discountType === '묶음 할인' && (
-              <div>
-                <label className="text-sm">묶음 할인 유형 선택</label>
-                <select onChange={(e) => setBundleType(e.target.value)} className="w-full border rounded-lg p-2">
+          state.type === '광고' && (
+            <div className="px-4 md:px-6 space-y-4">
+              <div className="flex flex-col space-y-4">
+                <label className="text-sm">광고 옵션 설정</label>
+                <select onChange={(e) => setAdOption(e.target.value)} className="w-full border rounded-lg p-2">
                   <option value="">선택</option>
-                  <option value="1+1">1+1</option>
-                  <option value="2+1">2+1</option>
-                  <option value="N+1">N+1</option>
+                  <option value="광고1">광고1</option>
+                  <option value="광고2">광고2</option>
                 </select>
-                {bundleType === '1+1' && (
-                  <input
-                    type="text"
-                    placeholder="1+1 설정"
-                    onChange={(e) => setBundleDiscountValue(e.target.value)}
-                    className="w-full h-12 border rounded-lg p-2"
-                  />
-                )}
-                {bundleType === '2+1' && (
-                  <input
-                    type="text"
-                    placeholder="2+1 설정"
-                    onChange={(e) => setBundleDiscountValue(e.target.value)}
-                    className="w-full h-12 border rounded-lg p-2"
-                  />
-                )}
-                {bundleType === 'N+1' && (
-                  <input
-                    type="text"
-                    placeholder="N값 입력 및 설정"
-                    onChange={(e) => setBundleDiscountValue(e.target.value)}
-                    className="w-full h-12 border rounded-lg p-2"
-                  />
-                )}
+                <input
+                  type="text"
+                  placeholder="알림 반경 선택"
+                  onChange={(e) => setRadius(e.target.value)}
+                  className="w-full h-12 border rounded-lg p-2"
+                />
+                <label className="text-sm">광고 부스트 사용 여부</label>
+                <select onChange={(e) => setBoost(e.target.value)} className="w-full border rounded-lg p-2">
+                  <option value="">선택</option>
+                  <option value="사용">사용</option>
+                  <option value="사용 안함">사용 안함</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="지도에서 위치 선택"
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full h-12 border rounded-lg p-2"
+                />
+                <input
+                  type="text"
+                  placeholder="결제 정보 입력"
+                  onChange={(e) => setPayment(e.target.value)}
+                  className="w-full h-12 border rounded-lg p-2"
+                />
               </div>
-            )}
-            <input
-              type="text"
-              placeholder="할인 기간 설정"
-              className="w-full h-12 border rounded-lg p-2"
-            />
-          </div>
+            </div>
+          )
         );
       case 4:
         return (
@@ -389,67 +445,33 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         );
       case 5:
         return (
-          <div className="px-4 md:px-6 space-y-4">
-          <div className="flex flex-col space-y-4">
-            <label className="text-sm">광고 옵션 설정</label>
-            <select onChange={(e) => setAdOption(e.target.value)} className="w-full border rounded-lg p-2">
-              <option value="">선택</option>
-              <option value="광고1">광고1</option>
-              <option value="광고2">광고2</option>
-            </select>
-            <input
-              type="text"
-              placeholder="알림 반경 선택"
-              onChange={(e) => setRadius(e.target.value)}
-              className="w-full h-12 border rounded-lg p-2"
-            />
-            <label className="text-sm">광고 부스트 사용 여부</label>
-            <select onChange={(e) => setBoost(e.target.value)} className="w-full border rounded-lg p-2">
-              <option value="">선택</option>
-              <option value="사용">사용</option>
-              <option value="사용 안함">사용 안함</option>
-            </select>
-            <input
-              type="text"
-              placeholder="지도에서 위치 선택"
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full h-12 border rounded-lg p-2"
-            />
-            <input
-              type="text"
-              placeholder="결제 정보 입력"
-              onChange={(e) => setPayment(e.target.value)}
-              className="w-full h-12 border rounded-lg p-2"
-            />
+          <div className="space-y-4">
+            <label className="block mb-2 text-sm text-gray-600">SNS 공유</label>
+            <div className="flex space-x-2">
+              <button className="p-2 rounded bg-yellow-300 text-white"><KakaoTalkIcon className="w-6 h-6" /></button>
+              <button className="p-2 rounded bg-green-300 text-white"><LineIcon className="w-6 h-6" /></button>
+              <button className="p-2 rounded bg-pink-300 text-white"><InstagramIcon className="w-6 h-6" /></button>
+              <button className="p-2 rounded bg-gray-300 text-white"><ThreadsIcon className="w-6 h-6" /></button>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="block text-sm text-gray-600">YouTube 프로필</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="YouTube URL"
+                value={state.platformLinks['youtube'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
+              />
+              <label className="block text-sm text-gray-600">Instagram 프로필</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Instagram URL"
+                value={state.platformLinks['instagram'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
+              />
+            </div>
           </div>
-        </div>
-          // <div className="space-y-4">
-          //   <label className="block mb-2 text-sm text-gray-600">SNS 공유</label>
-          //   <div className="flex space-x-2">
-          //     <button className="p-2 rounded bg-yellow-300 text-white"><KakaoTalkIcon className="w-6 h-6" /></button>
-          //     <button className="p-2 rounded bg-green-300 text-white"><LineIcon className="w-6 h-6" /></button>
-          //     <button className="p-2 rounded bg-pink-300 text-white"><InstagramIcon className="w-6 h-6" /></button>
-          //     <button className="p-2 rounded bg-gray-300 text-white"><ThreadsIcon className="w-6 h-6" /></button>
-          //   </div>
-          //   <div className="flex flex-col space-y-2">
-          //     <label className="block text-sm text-gray-600">YouTube 프로필</label>
-          //     <input
-          //       type="text"
-          //       className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          //       placeholder="YouTube URL"
-          //       value={state.platformLinks['youtube'] || ''}
-          //       onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
-          //     />
-          //     <label className="block text-sm text-gray-600">Instagram 프로필</label>
-          //     <input
-          //       type="text"
-          //       className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          //       placeholder="Instagram URL"
-          //       value={state.platformLinks['instagram'] || ''}
-          //       onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
-          //     />
-          //   </div>
-          // </div>
         );
       default:
         return null;
