@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import styles from '../styles/LanguageSwitcher.module.css'; 
+import styles from '../styles/Languageswitcher.module.css';
 
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
