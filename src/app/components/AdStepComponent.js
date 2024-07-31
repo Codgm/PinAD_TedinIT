@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useMyContext } from '@/app/context/myContext';
 import Styles from '@/app/styles/PointDisplay.module.css';
+import MapExample from '@/app/components/mapExample';
 
 const defaultTags = ['#한정특가', '#오늘단하루', '#점심타임딜', '#막차세일', '#반값찬스', '#골든타임특가', '#긴급할인', '#번개세일', '#타임어택',
 '#초특가_1시간', '#지금이기회', '#순간최저가', '#마감임박할인', '#깜짝특가', '#득템찬스'];
@@ -59,6 +60,23 @@ const AdStepComponent = ({
   setSubscriptionDetails
 }) => {
   const { point, setPoint } = useMyContext();
+  const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
+  const [maplocation, setmapLocation] = useState('');
+
+  const convertLocationToPosition = (location) => {
+    // 위치에 따라 좌표 변환 로직을 추가합니다. 여기에 임시 로직을 추가했습니다.
+    if (location === '서울') return { top: 100, left: 150 };
+    if (location === '강남') return { top: 200, left: 300 };
+    return { top: 0, left: 0 };
+  };
+
+  const handleLocationChange = (e) => {
+    const maplocation = e.target.value;
+    setmapLocation(maplocation);
+    const position = convertLocationToPosition(maplocation);
+    setMarkerPosition(position);
+  };
+
   const calculateAdditionalCost = () => {
     if (state.startDate && state.endDate) {
       const start = new Date(state.startDate);
@@ -68,6 +86,7 @@ const AdStepComponent = ({
     }
     return 0;
   };
+
   const handleRadiusChange = (value) => {
     setRadius(value);
     const costs = {
@@ -212,9 +231,10 @@ const AdStepComponent = ({
               <input
                 type="text"
                 placeholder="지도에서 위치 선택"
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={handleLocationChange}
                 className="w-full h-12 border rounded-lg p-2"
               />
+              <MapExample markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} /> 
             </div>
           </div>
         )
