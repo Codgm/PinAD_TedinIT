@@ -74,7 +74,9 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handlePost = () => {
-    if (state.type !== '광고' && !showMonetizeModal) {
+    if (state.type === '광고') {
+      renderAdMonetizeModal(true); 
+    } else if (state.type !== '광고' && !showMonetizeModal) {
       setShowMonetizeModal(true);
     } else {
       const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
@@ -524,6 +526,25 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     );
   };
 
+  const renderAdMonetizeModal = () => {
+  
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
+          <h2 className="text-xl font-bold mb-4">광고 진행하겠습니다</h2>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => handleMonetizeChoice(true)}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
 
   if (!isOpen) return null;
 
@@ -545,6 +566,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           {renderStepButtons()}
         </div>
       </div>
+      {renderAdMonetizeModal()}
       {renderMonetizeModal()}
       {renderConfirmModal()}
     </div>
