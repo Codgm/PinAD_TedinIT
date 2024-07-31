@@ -13,8 +13,8 @@ const steps = [
   { icon: <FaCamera />, label: '미디어' },
   { icon: <FaPen />, label: '내용' },
   { icon: <FaShare />, label: '설정' },
-  { icon: <FaTags />, label: '태그' },
-  { icon: <FaCheck />, label: '공유' },
+  { icon: <FaTags />, label: '실행' },
+  { icon: <FaCheck />, label: '결제 및 공유' },
 ];
 
 export default function WritePinStory({ isOpen, closeModal, addPin }) {
@@ -95,10 +95,19 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const handleDefaultTagClick = (tag) => {
-    setSelectedDefaultTags(prev => 
-      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
-    );
+    setSelectedDefaultTags(prev => {
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      } 
+      else if (prev.length < 5) {
+        return [...prev, tag];
+      } 
+      else {
+        return prev;
+      }
+    });
   };
+  
 
   const handleNewTagInputKeyDown = (e) => {
     if (e.key === 'Enter' && e.target.value.trim()) {
