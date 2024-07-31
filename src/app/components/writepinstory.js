@@ -53,6 +53,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const [showMonetizeModal, setShowMonetizeModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [industryType, setIndustryType] = useState('');
+  const [showAdMonetizeModal, setshowAdMonetizeModal] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -75,7 +76,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handlePost = () => {
     if (state.type === '광고') {
-      renderAdMonetizeModal(true); 
+      setshowAdMonetizeModal(true); 
     } else if (state.type !== '광고' && !showMonetizeModal) {
       setShowMonetizeModal(true);
     } else {
@@ -150,6 +151,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       closeModal();
     } else {
       setShowConfirmModal(true);
+      setshowAdMonetizeModal(true);
     }
   };
 
@@ -270,16 +272,32 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         );
       case 2:
         return (
-          <div className="space-y-4">
-            <select
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              value={state.type}
-              onChange={handleTypeChange}
-            >
-              <option value="광고">광고</option>
-              <option value="여행메모">여행메모</option>
-              <option value="리뷰">리뷰</option>
-            </select>
+          <div className="space-y-2">
+            <div className="flex items-center w-full space-x-2">
+              <select
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={state.type}
+                onChange={handleTypeChange}
+              >
+                <option value="광고">광고</option>
+                <option value="여행메모">여행메모</option>
+                <option value="리뷰">리뷰</option>
+              </select>
+              {state.type === '광고' && (
+                <select
+                  className="w-full border rounded-lg p-2"
+                  value={state.selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">선택</option>
+                  <option value="유통">유통</option>
+                  <option value="요식업">요식업</option>
+                  <option value="이동형 판매">이동형 판매</option>
+                  <option value="서비스업">서비스업</option>
+                </select>
+              )}
+            </div>
+            
             {state.type === '여행메모' && (
               <textarea
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -312,6 +330,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             { <AdStepComponent
                 state={state}
                 setStep={setStep}
+                setContent={setContent}
                 handleCategoryChange={handleCategoryChange}
                 setSelectedCategory={setSelectedCategory}
                 setIndustryType={setIndustryType}
@@ -527,17 +546,24 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
 
   const renderAdMonetizeModal = () => {
+    if (!showAdMonetizeModal) return null;
   
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
-          <h2 className="text-xl font-bold mb-4">광고 진행하겠습니다</h2>
+          <h2 className="text-xl font-bold mb-4">광고를 실행하겠습니까?</h2>
           <div className="flex justify-end space-x-4">
             <button
               onClick={() => handleMonetizeChoice(true)}
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
             >
-              확인
+              예
+            </button>
+            <button
+              onClick={() => handleMonetizeChoice(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
+            >
+              아니오
             </button>
           </div>
         </div>

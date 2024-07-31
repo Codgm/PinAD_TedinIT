@@ -32,6 +32,7 @@ const PointDisplay = () => {
 const AdStepComponent = ({
   state,
   setStep,
+  setContent,
   handleCategoryChange,
   setSelectedCategory,
   setIndustryType,
@@ -84,36 +85,35 @@ const AdStepComponent = ({
     const additionalCost = calculateAdditionalCost();
     setPoint((prevPoint) => prevPoint - additionalCost);
   };
+  
   switch (state.step) {
     case 2:
       return (
         state.type === '광고' && (
-          <div className="space-y-4">
-            <select
-              className="w-full border rounded-lg p-2"
-              value={state.selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)} 
-            >
-              <option value="">선택</option>
-              <option value="유통">유통</option>
-              <option value="요식업">요식업</option>
-              <option value="이동형 판매">이동형 판매</option>
-              <option value="서비스업">서비스업</option>
-            </select>
+          <div className="space-y-2">
             {state.selectedCategory === '유통' && (
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="상품명 입력"
-                  onChange={(e) => setIndustryType(e.target.value)}
-                  className="w-full h-12 border rounded-lg p-2"
-                />
-                <input
-                  type="number"
-                  placeholder="판매 수량 입력"
-                  onChange={(e) => setStock(e.target.value)}
-                  className="w-full h-12 border rounded-lg p-2"
-                />
+              <div className="space-y-2">
+                <div className="flex items-center w-full space-x-2">
+                  <input
+                    type="text"
+                    placeholder="상품명 입력"
+                    onChange={(e) => setIndustryType(e.target.value)}
+                    className="w-full h-12 border rounded-lg p-2"
+                  />
+                  <input
+                    type="number"
+                    placeholder="판매 수량 입력"
+                    onChange={(e) => setStock(e.target.value)}
+                    className="w-full h-12 border rounded-lg p-2"
+                  />
+                </div>
+                <textarea
+                    type="text"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    rows="3"
+                    placeholder="세부 사항"
+                    onChange={(e) => setContent(e.target.value)}
+                  />
                 <div className="flex flex-col space-y-4">
                   <label className="text-sm">할인 형태 선택</label>
                   <select onChange={(e) => setDiscountType(e.target.value)} className="w-full border rounded-lg p-2">
