@@ -552,6 +552,24 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
           <h2 className="text-xl font-bold mb-4">광고를 실행하겠습니까?</h2>
+          <div className="flex flex-col space-y-2">
+              <label className="block text-sm text-gray-600">기존 판매 채널 링크</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="ex.YouTube URL"
+                value={state.platformLinks['youtube'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
+              />
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="ex.Instagram URL"
+                value={state.platformLinks['instagram'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
+              />
+              <p className="p-2 text-sm text-gray-500">최대 2개 작성</p>
+          </div>
           <div className="flex justify-end space-x-4">
             <button
               onClick={() => handleMonetizeChoice(true)}
@@ -561,7 +579,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             </button>
             <button
               onClick={() => handleMonetizeChoice(false)}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-300"
             >
               아니오
             </button>

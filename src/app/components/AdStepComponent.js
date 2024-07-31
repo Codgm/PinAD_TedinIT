@@ -159,15 +159,15 @@ const AdStepComponent = ({
     case 3:
       return (
         state.type === '광고' && (
-          <div className="px-4 md:px-6 space-y-4">
+          <div className="px-4 md:px-6 space-y-2">
             <div className="flex flex-col space-y-4">
-              <label className="text-sm">광고 옵션 설정</label>
+              {/* <label className="text-sm">광고 옵션 설정</label>
               <select onChange={handleAdOptionChange} className="w-full border rounded-lg p-2">
                 <option value="">선택</option>
                 <option value="광고1">광고1</option>
                 <option value="광고2">광고2</option>
-              </select>
-              <div className="flex flex-col space-y-2">
+              </select> */}
+              <div className="flex flex-col space-y-1">
                 <label className="text-sm">광고 전파 반경</label>
                   <select
                     onChange={(e) => setRadius(e.target.value)}
@@ -178,26 +178,30 @@ const AdStepComponent = ({
                     <option value="km">5km</option>
                     <option value="km">10km</option>
                   </select>
+                  <p className="pl-1 text-sm text-gray-500">500m 무료 제공</p>
               </div>
-              <div className="space-y-4">
-                <div className="flex flex-col space-y-2">
-                  <label htmlFor="start-datetime" className="text-sm">광고 시작일시</label>
-                  <input
-                    type="datetime-local"
-                    id="start-datetime"
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full h-12 border rounded-lg p-2"
-                  />
+              <div className="space-y-2">
+                <div className="flex items-center w-full space-x-2">
+                  <div className="w-1/2 flex flex-col space-y-2">
+                    <label htmlFor="start-datetime" className="text-sm">광고 시작일시</label>
+                    <input
+                      type="datetime-local"
+                      id="start-datetime"
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full h-12 border rounded-lg p-2"
+                    />
+                  </div>
+                  <div className="w-1/2 flex flex-col space-y-2">
+                    <label htmlFor="end-datetime" className="text-sm">광고 종료일시</label>
+                    <input
+                      type="datetime-local"
+                      id="end-datetime"
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="w-full h-12 border rounded-lg p-2"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <label htmlFor="end-datetime" className="text-sm">광고 종료일시</label>
-                  <input
-                    type="datetime-local"
-                    id="end-datetime"
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full h-12 border rounded-lg p-2"
-                  />
-                </div>
+                <p className="pl-2 text-sm text-gray-500">2시간 이내 무료 제공</p>
               </div>
               <label className="text-sm">광고 부스트 사용 여부</label>
               <select onChange={(e) => setBoost(e.target.value)} className="w-full border rounded-lg p-2">
@@ -345,7 +349,7 @@ const AdStepComponent = ({
                 />
               </div>
             </div>
-            <div className="flex flex-col space-y-2">
+            {/* <div className="flex flex-col space-y-2">
               <label className="block text-sm text-gray-600">YouTube 프로필</label>
               <input
                 type="text"
@@ -362,7 +366,7 @@ const AdStepComponent = ({
                 value={state.platformLinks['instagram'] || ''}
                 onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
               />
-            </div>
+            </div> */}
           </div>
         )
       );
