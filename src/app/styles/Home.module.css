@@ -177,3 +177,4 @@ input:checked + .slider::before {
   left: 1rem;
   z-index: 40; 
 }
+
