@@ -1,3 +1,4 @@
+import { Radius } from 'lucide';
 import { useReducer } from 'react';
 
 const MAX_IMAGES = 4;
@@ -12,10 +13,21 @@ const initialState = {
   title: '',
   type: '광고',
   content: '',
+  location: '',
+  radius: 0,
+  paymentMode: 'one-time',  // Can be 'one-time' or 'subscription'
+  subscriptionDetails: {
+    interval: '', // e.g., 'monthly', 'yearly'
+    amount: ''    // subscription amount
+  },
+  payment: '',
   discountType: '',
   discountValue: '',
   bundleDiscountType: '',
   bundleDiscountValue: '',
+  bundleNValue: '',
+  bundleType: '',
+  selectedCategory: '',
   imageFiles: [],
   shortVideo: null,
   platforms: [],
@@ -134,6 +146,35 @@ function postReducer(state, action) {
       return { ...state, adOption: action.payload };
     case 'SET_BOOST':
       return { ...state, boost: action.payload };
+    case 'SET_STOCK': 
+      return { ...state, stock: action.payload };
+    case 'SET_RADIUS':
+      return { ...state, radius: action.payload };
+    case 'SET_LOCATION':
+      return { ...state, location: action.payload };
+    case 'SET_PAYMENT':
+      return { ...state, payment: action.payload };
+    case 'SET_SELECTED_CATEGORY':
+      return { ...state, selectedCategory: action.payload };
+    case 'SET_BUNDLE_N_VALUE':
+      return { ...state, bundleNValue: action.payload };
+    case 'SET_BUNDLE_TYPE':
+      return { ...state, bundleType: action.payload };
+    case 'SET_PAYMENT_MODE':
+      return { ...state, paymentMode: action.payload };
+  
+    case 'SET_SUBSCRIPTION_DETAILS':
+      return { ...state, subscriptionDetails: { ...state.subscriptionDetails, ...action.payload } };
+  
+    case 'SET_PAYMENT':
+      return { 
+        ...state, 
+        payment: action.payload,
+        errors: {
+          ...state.errors,
+          payment: state.paymentMode === 'subscription' ? '' : (isNaN(action.payload) ? '결제 금액이 올바르지 않습니다.' : '')
+        }
+      };
     default:
       return state;
   }
@@ -160,6 +201,16 @@ function usePostCreation() {
   const setBundleDiscountValue = (bundleDiscountValue) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_VALUE', payload: bundleDiscountValue });
   const setAdOption = (adOption) => dispatch({ type: 'SET_AD_OPTION', payload: adOption });
   const setBoost = (boost) => dispatch({ type: 'SET_BOOST', payload: boost });
+  const setStock = (stock) => dispatch({ type: 'SET_STOCK', payload: stock });
+  const setRadius = (radius) => dispatch({ type: 'SET_RADIUS', payload: radius });
+  const setLocation = (location) => dispatch({ type: 'SET_LOCATION', payload: location });
+  const setPaymentMode = (mode) => dispatch({ type: 'SET_PAYMENT_MODE', payload: mode });
+  const setSubscriptionDetails = (details) => dispatch({ type: 'SET_SUBSCRIPTION_DETAILS', payload: details });
+  const setPayment = (payment) => dispatch({ type: 'SET_PAYMENT', payload: payment });
+  const setSelectedCategory = (category) => dispatch({ type: 'SET_SELECTED_CATEGORY', payload: category });
+  const setBundleNValue = (bundleNValue) => dispatch({ type: 'SET_BUNDLE_N_VALUE', payload: bundleNValue });
+  const setBundleType = (bundleType) => dispatch({ type: 'SET_BUNDLE_TYPE', payload: bundleType });
+  
 
   return {
     state,
@@ -171,6 +222,9 @@ function usePostCreation() {
     setDiscountValue,
     setBundleDiscountType,
     setBundleDiscountValue,
+    setBundleNValue,
+    setBundleType,
+    setSelectedCategory,
     setContent,
     addImage,
     setShortVideo,
@@ -181,6 +235,12 @@ function usePostCreation() {
     setMonetize,
     setAdOption,
     setBoost,
+    setStock,
+    setRadius,
+    setLocation,
+    setPayment,
+    setPaymentMode,
+    setSubscriptionDetails,
   };
 }
 

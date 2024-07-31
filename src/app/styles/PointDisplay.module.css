@@ -1,0 +1,68 @@
+.pointContainer {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffc6fc; /* 색상을 더 부드럽게 조정 */
+    color: white;
+    display: flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 강도를 줄임 */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .pointContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2), transparent);
+    z-index: 1;
+  }
+  
+  .pointText {
+    flex: 1;
+    z-index: 2;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .animatedIcon {
+    animation: pulse 2s infinite; 
+    width: 48px;
+    height: 48px;
+    z-index: 2;
+  }
+  
+  .pointText h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.3); 
+  }
+  
+  .pointText p {
+    font-size: 1.875rem; /* 폰트 크기를 약간 줄임 */
+    font-weight: 800; /* 폰트 두께를 약간 줄임 */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 텍스트 그림자의 강도를 줄임 */
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.05); /* 스케일 조정을 약간 부드럽게 */
+      opacity: 0.6; /* 애니메이션의 중앙 투명도를 부드럽게 조정 */
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.9; /* 애니메이션의 끝 투명도를 부드럽게 조정 */
+    }
+  }
+  

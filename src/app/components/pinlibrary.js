@@ -4,10 +4,14 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import PinstoryModal from './pinstorymodal';
 import Image from 'next/image';
-import { Input } from 'postcss';
+import { useTranslation } from 'react-i18next';
+
 
 
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
+
+  const { t } = useTranslation();
+
   const [likeCount, setLikeCount] = useState(pin.likes || 0);
   const [comments, setComments] = useState(pin.comments || []);
   const [newComment, setNewComment] = useState('');
@@ -61,27 +65,26 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   const totalStars = 5;
 
   return (
-    
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={handleOutsideClick}
-    >
-      {selectedPin && (
-          <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
-      )}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">사용자의 핀스토리</h2>
-          <button
-            className="text-xl font-bold text-gray-700 hover:text-gray-900"
-            onClick={onClose}
-          >×</button>
-        </div>
-        <div>
+    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    onClick={handleOutsideClick}
+  >
+    {selectedPin && (
+        <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
+    )}
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">{t('userPinStory')}</h2>
+        <button
+          className="text-xl font-bold text-gray-700 hover:text-gray-900"
+          onClick={onClose}
+        >×</button>
+      </div>
+      <div>
           <div className="flex justify-between items-start">
             <div>
-              <button className="mb-4 bg-blue-400 text-sm px-3 py-1 rounded-full">#카페후기</button>
-              <h3 className="mb-2 text-xl font-semibold">카페 달빛</h3>
+              <button className="mb-4 bg-blue-400 text-sm px-3 py-1 rounded-full">{t('cafeReview')}</button>
+              <h3 className="mb-2 text-xl font-semibold">{t('cafeMoonlight')}</h3>
               <div className="flex items-center mb-4">
                 {Array.from({ length: totalStars }, (v, i) => (
                   i < Math.floor(rating) ? 
@@ -116,10 +119,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
             </div>
           </div> 
         <div className='mb-4'>
-          이 카페는 정말 특별해요! 창밖으로 보이는 도시 전경이 환상적이에요. 
-          특히 해질 무렵에 오면 노을과 함께 커피를 즐길 수 있어요. 
-          시그니처 메뉴인 달빛 라떼는 꼭 드셔보세요. 부드러운 우유 거품 위에 은은한 바닐라 향이 어우러져 정말 맛있어요. 
-          조용히 책을 읽거나 여유롭게 대화를 나누기에 완벽한 공간이에요.
+          {t('cafeDescription')}
         </div>
         <div className="flex gap-4 mb-4">
           <div>
@@ -145,24 +145,25 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
         <form onSubmit={handleCommentSubmit} className="flex space-x-2 mb-4 mt-2">
           <input
             type="text"
-            placeholder="댓글을 입력하세요..."
+            placeholder={t('enterComment')}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="flex-grow"
           />
-          <button type="submit">게시</button>
+          <button type="submit">{t('post')}</button>
         </form>
       )}
       {
-        comments.length==0 && showCommentInput ? "댓글이 없습니다." :
-                comments.map((comment, index) => (
-          <div key={index} className="p-2 border border-gray-300 rounded-md">
-            {comment}
-          </div>
-        ))}
+        comments.length == 0 && showCommentInput ? t('noComments') :
+          comments.map((comment, index) => (
+            <div key={index} className="p-2 border border-gray-300 rounded-md">
+              {comment}
+            </div>
+          ))
+      }
     </div>
   </div>
-    );
+  );
 };
 
 export default PinLibraryModal;
