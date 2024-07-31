@@ -349,24 +349,24 @@ const AdStepComponent = ({
                 />
               </div>
             </div>
-            {/* <div className="flex flex-col space-y-2">
-              <label className="block text-sm text-gray-600">YouTube 프로필</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="YouTube URL"
-                value={state.platformLinks['youtube'] || ''}
-                onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
-              />
-              <label className="block text-sm text-gray-600">Instagram 프로필</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="Instagram URL"
-                value={state.platformLinks['instagram'] || ''}
-                onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
-              />
-            </div> */}
+              {/* <div className="flex flex-col space-y-2">
+                <label className="block text-sm text-gray-600">YouTube 프로필</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="YouTube URL"
+                  value={state.platformLinks['youtube'] || ''}
+                  onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
+                />
+                <label className="block text-sm text-gray-600">Instagram 프로필</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Instagram URL"
+                  value={state.platformLinks['instagram'] || ''}
+                  onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
+                />
+              </div> */}
           </div>
         )
       );
