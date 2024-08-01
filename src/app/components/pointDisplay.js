@@ -1,3 +1,4 @@
+import Styles from '@/app/styles/PointDisplay.module.css';
 const { useMyContext } = require("../context/myContext");
 
 const PointDisplay = () => {
