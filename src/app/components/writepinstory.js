@@ -146,10 +146,17 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleMonetizeChoice = (choice) => {
     if (choice) {
-      setMonetize(true);
-      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-      addPin(fileUrls, true);
-      closeModal();
+      const confirmation = window.confirm('광고를 실행하시겠습니까?');
+      if (confirmation) {
+        setMonetize(false);
+        const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+        addPin(fileUrls, false);
+        closeModal();
+      }else{
+        setShowConfirmModal(false);
+        setshowAdMonetizeModal(false);
+        setMonetize(false);
+      }
     } else {
       setShowConfirmModal(true);
       setshowAdMonetizeModal(true);
@@ -158,10 +165,17 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleConfirmChoice = (choice) => {
     if (choice) {
-      setMonetize(false);
-      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-      addPin(fileUrls, false);
-      closeModal();
+      const confirmation = window.confirm('광고를 실행하시겠습니까?');
+      if (confirmation) {
+        setMonetize(false);
+        const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+        addPin(fileUrls, false);
+        closeModal();
+      }else{
+        setShowConfirmModal(false);
+        setshowAdMonetizeModal(false);
+        setMonetize(false);
+      }
     } else {
       setShowConfirmModal(false);
       setShowMonetizeModal(true);
@@ -560,20 +574,20 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
-          <h2 className="text-xl font-bold mb-4">광고를 실행하겠습니까?</h2>
+          <h2 className="text-xl font-bold mb-4">자신의 기존 광고 채널을 등록하세요</h2>
           <div className="flex flex-col space-y-2">
               <label className="block text-sm text-gray-600">기존 판매 채널 링크</label>
               <input
                 type="text"
                 className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="ex.YouTube URL"
+                placeholder="Channel URL-1"
                 value={state.platformLinks['youtube'] || ''}
                 onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
               />
               <input
                 type="text"
                 className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="ex.Instagram URL"
+                placeholder="Channel URL-2"
                 value={state.platformLinks['instagram'] || ''}
                 onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
               />
