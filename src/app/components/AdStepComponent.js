@@ -1,33 +1,10 @@
 import React from 'react';
 import { useMyContext } from '@/app/context/myContext';
 import Styles from '@/app/styles/PointDisplay.module.css';
+import PointDisplay from './pointDisplay';
 
 const defaultTags = ['#한정특가', '#오늘단하루', '#점심타임딜', '#막차세일', '#반값찬스', '#골든타임특가', '#긴급할인', '#번개세일', '#타임어택',
 '#초특가_1시간', '#지금이기회', '#순간최저가', '#마감임박할인', '#깜짝특가', '#득템찬스'];
-
-const PointDisplay = () => {
-  const { point } = useMyContext();
-
-  return (
-    <div className={Styles.pointContainer}>
-      <div className={Styles.pointText}>
-        <h2 className="text-lg font-bold">현재 보유 포인트</h2>
-        <p className="text-2xl font-extrabold">{point}</p>
-      </div>
-      <div className={Styles.animationIcon}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-          <defs>
-            <linearGradient id="purple-yellow-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#8e2de2" stopOpacity="1" />
-              <stop offset="100%" stopColor="#f1c40f" stopOpacity="1" />
-            </linearGradient>
-          </defs>
-          <path fill="url(#purple-yellow-gradient)" d="M12,3C7.038,3,3,7.037,3,12s4.038,9,9,9,9-4.037,9-9S16.962,3,12,3Zm0,17c-4.411,0-8-3.589-8-8S7.589,4,12,4s8,3.589,8,8-3.589,8-8,8Zm3.495-10h-1.75l-.618-1.66c-.169-.472-.623-.789-1.126-.789s-.957.317-1.125.784l-.619,1.665h-1.75c-.503,0-.956.316-1.126.788-.168.465-.027.995.361,1.328l1.4,1.138-.554,1.777c-.158.488.012,1.021.42,1.324.173.131.5.225.72.245.242,0,.472-.068.667-.198l1.618-1.084,1.651,1.074c.431.273.988.25,1.375-.051.407-.302.574-.835.414-1.328l-.579-1.757,1.389-1.133s.007-.006.011-.009c.378-.327.519-.859.35-1.327-.17-.472-.623-.788-1.126-.788Zm.127,1.354l-1.648,1.345c-.161.131-.224.348-.159.544l.686,2.081c.026.081.002.169-.068.222-.067.051-.156.053-.229.006l-1.923-1.251c-.167-.108-.384-.107-.551.004l-1.892,1.266c-.017.012-.039.02-.062.025-.059-.005-.126-.007-.172-.041-.064-.048-.092-.137-.065-.221l.656-2.106c.061-.195-.003-.407-.162-.536l-1.653-1.342c-.065-.057-.09-.144-.062-.222.027-.074.105-.128.186-.128h2.098c.209,0,.396-.13.469-.326l.742-1.996c.055-.148.316-.153.374.005l.74,1.991c.073.196.26.326.469.326h2.098c.081,0,.159.054.186.128.028.077.004.17-.059.227ZM12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm0,23c-6.065,0-11-4.935-11-11S5.935,1,12,1s11,4.935,11,11-4.935,11-11,11Z"/>
-        </svg>
-      </div>
-    </div>
-  );
-};
 
 const AdStepComponent = ({
   state,
@@ -161,7 +138,8 @@ const AdStepComponent = ({
         state.type === '광고' && (
           <div className="px-4 md:px-6 space-y-2">
             <div className="flex flex-col space-y-4">
-              {/* <label className="text-sm">광고 옵션 설정</label>
+              <PointDisplay/>
+            {/* <label className="text-sm">광고 옵션 설정</label>
               <select onChange={handleAdOptionChange} className="w-full border rounded-lg p-2">
                 <option value="">선택</option>
                 <option value="광고1">광고1</option>
