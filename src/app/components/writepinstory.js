@@ -12,8 +12,8 @@ import AdStepComponent from './AdStepComponent';
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
   { icon: <FaPen />, label: '내용' },
-  { icon: <FaCheck />, label: '설정' },
-  { icon: <FaTags />, label: '실행' },
+  { icon: <FaTags />, label: '태그' },
+  { icon: <FaCheck />, label: '설정 및 실행' },
 ];
 
 export default function WritePinStory({ isOpen, closeModal, addPin }) {
