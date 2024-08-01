@@ -146,7 +146,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleMonetizeChoice = (choice) => {
     if (choice) {
-      const confirmation = window.confirm('광고를 실행하시겠습니까?');
+      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
@@ -165,7 +165,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleConfirmChoice = (choice) => {
     if (choice) {
-      const confirmation = window.confirm('광고를 실행하시겠습니까?');
+      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
