@@ -7,7 +7,7 @@ const MyContext = createContext();
 export const useMyContext = () => useContext(MyContext);
 
 export function MyContextProvider({ children }) {
-  const [point, setPoint] = useState(1000);
+  const [point, setPoint] = useState(10);
 
   return (
     <MyContext.Provider value={{ point, setPoint }}>

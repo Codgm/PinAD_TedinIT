@@ -175,6 +175,10 @@ function postReducer(state, action) {
           payment: state.paymentMode === 'subscription' ? '' : (isNaN(action.payload) ? '결제 금액이 올바르지 않습니다.' : '')
         }
       };
+    case 'SET_START_DATE':
+      return { ...state, startDate: action.payload };
+    case 'SET_END_DATE':
+      return { ...state, EndDate: action.payload };
     default:
       return state;
   }
@@ -210,6 +214,8 @@ function usePostCreation() {
   const setSelectedCategory = (category) => dispatch({ type: 'SET_SELECTED_CATEGORY', payload: category });
   const setBundleNValue = (bundleNValue) => dispatch({ type: 'SET_BUNDLE_N_VALUE', payload: bundleNValue });
   const setBundleType = (bundleType) => dispatch({ type: 'SET_BUNDLE_TYPE', payload: bundleType });
+  const setStartDate = (date) => dispatch({ type: 'SET_START_DATE', payload: date });
+  const setEndDate = (date) => dispatch({ type: 'SET_END_DATE', payload: date });
   
 
   return {
@@ -241,6 +247,8 @@ function usePostCreation() {
     setPayment,
     setPaymentMode,
     setSubscriptionDetails,
+    setStartDate,
+    setEndDate,
   };
 }
 
