@@ -1,0 +1,131 @@
+.paymentContainer {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .paymentConfirmation {
+    text-align: center;
+  }
+  
+  .paymentTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .paymentDescription {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  .paymentQuestion {
+    font-size: 1.125rem;
+    margin: 20px 0;
+    color: #333;
+  }
+
+  .paymentConfirmButtons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .paymentConfirmBtn,
+  .paymentCancelBtn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .paymentConfirmBtn:hover,
+  .paymentCancelBtn:hover {
+    background-color: #0056b3;
+    transform: scale(1.02);
+  }
+  
+  .paymentCancelBtn {
+    background-color: #dc3545;
+  }
+  
+  .paymentCancelBtn:hover {
+    background-color: #c82333;
+  }
+  
+  .paymentFormContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .paymentForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .paymentInput,
+  .paymentSelect,
+  .paymentDate,
+  .paymentNotes {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.875rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .paymentInput:focus,
+  .paymentSelect:focus,
+  .paymentDate:focus,
+  .paymentNotes:focus {
+    border-color: #e100ff;
+    outline: none;
+  }
+  
+  .paymentSelectGroup,
+  .paymentDateGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .paymentLabel {
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    font-weight: 400;
+    color: #333;
+  }
+  
+  .paymentNotes {
+    height: 100px;
+    resize: vertical;
+  }
+  
+  .paymentSubmit {
+    background-color: #c300ff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .paymentSubmit:hover {
+    background-color: #9e00b3;
+    transform: scale(1.02);
+  }
+  .paymentSubmit:active {
+    background-color: #830094;
+    transform: scale(0.98);
+  }
+  

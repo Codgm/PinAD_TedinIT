@@ -3,6 +3,7 @@ import { useMyContext } from '@/app/context/myContext';
 import Styles from '@/app/styles/PointDisplay.module.css';
 import MapExample from '@/app/components/mapExample';
 import PointDisplay from './pointDisplay';
+import PaymentSection from './paymentsection';
 
 const defaultTags = ['#한정특가', '#오늘단하루', '#점심타임딜', '#막차세일', '#반값찬스', '#골든타임특가', '#긴급할인', '#번개세일', '#타임어택',
 '#초특가_1시간', '#지금이기회', '#순간최저가', '#마감임박할인', '#깜짝특가', '#득템찬스'];
@@ -41,7 +42,7 @@ const AdStepComponent = ({
   const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
   const [maplocation, setmapLocation] = useState('');
   const [timemoney, setTimemoney] = useState(0);
-  const [isPaymentRequired, setIsPaymentRequired] = useState(true);
+  const [isPaymentRequired, setIsPaymentRequired] = useState(false);
 
   const convertLocationToPosition = (location) => {
     // 위치에 따라 좌표 변환 로직을 추가합니다. 여기에 임시 로직을 추가했습니다.
@@ -69,31 +70,6 @@ const AdStepComponent = ({
     return 0;
   };
   
-  const handleSubmit = (event) => {
-    event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
-  
-    const { amount, method, date, notes } = state.payment;
-  
-    // 결제 정보를 확인하거나 처리하는 로직을 여기에 추가
-    if (!amount || !method || !date) {
-      // 필수 입력값 확인
-      alert("모든 필수 필드를 입력해 주세요.");
-      return;
-    }
-  
-    // 예를 들어, 결제 API 호출을 여기에 추가할 수 있습니다
-    console.log("결제 정보:", {
-      amount,
-      method,
-      date,
-      notes
-    });
-  
-    // 결제 처리 후 필요한 상태 업데이트
-    setIsPaymentRequired(false); // 결제 완료 후 상태 업데이트
-    setPoint((prevPoint) => prevPoint - parseFloat(amount)); // 포인트 차감
-  };
-  
 
   const handleRadiusChange = (value) => {
 
@@ -110,6 +86,11 @@ const AdStepComponent = ({
     const cost = costs[valuetemp] || 0;
     console.log(cost)
     setRadius(cost);
+    if (point < cost) {
+      setIsPaymentRequired(true);
+    } else {
+      setIsPaymentRequired(false);
+    }
   };
 
   const handleDatesChange = (startDate, endDate) => {
@@ -119,6 +100,11 @@ const AdStepComponent = ({
     setEndDate(endDate);
     const additionalCost = calculateAdditionalCost(startDate,endDate);
     setTimemoney(additionalCost)
+    if (point < cost) {
+      setIsPaymentRequired(true);
+    } else {
+      setIsPaymentRequired(false);
+    }
   };
   
   switch (state.step) {
@@ -248,59 +234,11 @@ const AdStepComponent = ({
                 className="w-full h-12 border rounded-lg p-2"
               />
               <MapExample markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} /> 
-              {isPaymentRequired && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-bold">결제 정보</h3>
-                  <p className="text-sm">포인트가 부족하여 결제가 필요합니다.</p>
-                  <form onSubmit={handleSubmit}>
-                    <input
-                      type="number"
-                      placeholder="결제 금액 입력"
-                      onChange={(e) => setPayment({ ...state.payment, amount: e.target.value })}
-                      value={state.payment.amount || ''}
-                      className="border rounded-lg p-2 w-full mt-2"
-                    />
-                    {/* 결제 방법 선택 */}
-                    <div className="flex flex-col space-y-2">
-                      <label className="text-sm">결제 방법 선택</label>
-                      <select
-                        onChange={(e) => setPayment({ ...state.payment, method: e.target.value })}
-                        value={state.payment.method || ''}
-                        className="w-full border rounded-lg p-2"
-                      >
-                        <option value="">선택</option>
-                        <option value="신용카드">신용카드</option>
-                        <option value="계좌이체">계좌이체</option>
-                        <option value="간편결제">간편결제</option>
-                        <option value="기타">기타</option>
-                      </select>
-                    </div>
-                    {/* 결제 날짜 선택 */}
-                    <div className="flex flex-col space-y-2">
-                      <label className="text-sm">결제 날짜</label>
-                      <input
-                        type="date"
-                        onChange={(e) => setPayment({ ...state.payment, date: e.target.value })}
-                        value={state.payment.date || ''}
-                        className="w-full border rounded-lg p-2"
-                      />
-                    </div>
-                    {/* 결제 참고사항 */}
-                    <textarea
-                      placeholder="결제 참고사항 입력"
-                      onChange={(e) => setPayment({ ...state.payment, notes: e.target.value })}
-                      value={state.payment.notes || ''}
-                      className="w-full border rounded-lg p-2 h-24"
-                    />
-                    <button
-                      type="submit"
-                      className="bg-blue-500 text-white rounded-lg p-2 w-full mt-2"
-                    >
-                      결제하기
-                    </button>
-                  </form>
-                </div>
-              )}
+              <PaymentSection
+              setPayment={setPayment}
+              state={state}
+              isPaymentRequired={isPaymentRequired}
+              />
             </div>
           </div>
         )
