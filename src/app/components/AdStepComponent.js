@@ -40,6 +40,7 @@ const AdStepComponent = ({
   const { point, setPoint } = useMyContext();
   const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
   const [maplocation, setmapLocation] = useState('');
+  const [timemoney, setTimemoney] = useState(0);
   const [isPaymentRequired, setIsPaymentRequired] = useState(true);
 
   const convertLocationToPosition = (location) => {
@@ -56,10 +57,12 @@ const AdStepComponent = ({
     setMarkerPosition(position);
   };
 
-  const calculateAdditionalCost = () => {
-    if (state.startDate && state.endDate) {
-      const start = new Date(state.startDate);
-      const end = new Date(state.endDate);
+  const calculateAdditionalCost = (startDate,endDate) => {
+    console.log(startDate)
+    console.log(endDate)
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
       const diffInHours = Math.ceil((end - start) / (1000 * 60 * 60));
       return diffInHours > 2 ? (diffInHours - 2) * 10 : 0;
     }
@@ -93,34 +96,29 @@ const AdStepComponent = ({
   
 
   const handleRadiusChange = (value) => {
+
     const costs = {
-      '500m': 100,
-      '1km': 200,
+      '500m': 0,
+      '1km': 100,
+      '3km': 300,
       '5km': 500,
-      '10km': 1000
+      '10km': 700
     };
-    const cost = costs[value] || 0;
-    
-    setRadius(value);
-    
-    if (point < cost) {
-      setIsPaymentRequired(true);
-    } else {
-      setPoint((prevPoint) => prevPoint - cost);
-      setIsPaymentRequired(false);
-    }
+
+    console.log(value.target.value)
+    const valuetemp = value.target.value
+    const cost = costs[valuetemp] || 0;
+    console.log(cost)
+    setRadius(cost);
   };
 
   const handleDatesChange = (startDate, endDate) => {
+    console.log(startDate)
+    console.log(endDate)
     setStartDate(startDate);
     setEndDate(endDate);
-    const additionalCost = calculateAdditionalCost();
-    if (point < additionalCost) {
-      setIsPaymentRequired(true);
-    } else {
-      setPoint((prevPoint) => prevPoint - additionalCost);
-      setIsPaymentRequired(false);
-    }
+    const additionalCost = calculateAdditionalCost(startDate,endDate);
+    setTimemoney(additionalCost)
   };
   
   switch (state.step) {
@@ -130,7 +128,7 @@ const AdStepComponent = ({
           <div className="space-y-2">
             {state.selectedCategory === '유통' && (
               <div className="space-y-2">
-                <div className="flex items-center w-full space-x-2">
+                <div  className="flex items-center w-full space-x-2">
                   <input
                     type="text"
                     placeholder="상품명 입력"
@@ -198,7 +196,7 @@ const AdStepComponent = ({
         state.type === '광고' && (
           <div className="px-4 md:px-6 space-y-2">
             <div className="flex flex-col space-y-4">
-                <PointDisplay/>
+                <PointDisplay loc={state.radius} time={timemoney}/>
               {/* <label className="text-sm">광고 옵션 설정</label>
               <select onChange={handleAdOptionChange} className="w-full border rounded-lg p-2">
                 <option value="">선택</option>
@@ -211,10 +209,11 @@ const AdStepComponent = ({
                     onChange={handleRadiusChange}
                     className="w-1/3 border rounded-lg p-2"
                   >
-                    <option value="m">500m</option>
-                    <option value="km">1km</option>
-                    <option value="km">5km</option>
-                    <option value="km">10km</option>
+                    <option value="500m">500m</option>
+                    <option value="1km">1km</option>
+                    <option value="3km">3km</option>
+                    <option value="5km">5km</option>
+                    <option value="10km">10km</option>
                   </select>
                   <p className="pl-1 text-sm text-gray-500">500m 무료 제공</p>
               </div>
@@ -225,7 +224,7 @@ const AdStepComponent = ({
                   <input
                     type="datetime-local"
                     onChange={(e) => handleDatesChange(e.target.value, state.endDate)}
-                    className="w-full border rounded-lg p-2"
+                    className="w-1/2 border rounded-lg p-2"
                   />
                   <input
                     type="datetime-local"

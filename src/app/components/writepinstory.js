@@ -330,6 +330,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             )}
             { <AdStepComponent
                 state={state}
+                radius={state.radius}
                 setStep={setStep}
                 setContent={setContent}
                 handleCategoryChange={handleCategoryChange}
