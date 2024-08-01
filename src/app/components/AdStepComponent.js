@@ -229,7 +229,7 @@ const AdStepComponent = ({
                   <input
                     type="datetime-local"
                     onChange={(e) => handleDatesChange(state.startDate, e.target.value)}
-                    className="w-full border rounded-lg p-2"
+                    className="w-1/2 border rounded-lg p-2"
                   />
                 </div>
               </div>
