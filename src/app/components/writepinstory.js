@@ -483,16 +483,16 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     }
   };
 
-  const handleNextStep = () => {
-    if (state.step === 3 && state.type === '광고') {
-      const confirmation = window.confirm('광고를 실행하시겠습니까?');
-      if (confirmation) {
-        setStep(4);
-      }
-    } else {
-      setStep(state.step < 5 ? state.step + 1 : 1);
-    }
-  };
+  // const handleNextStep = () => {
+  //   if (state.step === 3 && state.type === '광고') {
+  //     const confirmation = window.confirm('광고를 실행하시겠습니까?');
+  //     if (confirmation) {
+  //       setStep(4);
+  //     }
+  //   } else {
+  //     setStep(state.step < 5 ? state.step + 1 : 1);
+  //   }
+  // };
   
 
   const renderStepButtons = () => {
@@ -507,9 +507,10 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         </button>
         <button
           onClick={() => {
-            if (state.step === 3 && state.type === '광고') {
-              handleNextStep();
-            }else {
+            // if (state.step === 3 && state.type === '광고') {
+            //   handleNextStep();
+            // }
+             {
               state.step < 4 ? setStep(state.step + 1) : handlePost();
             }
           }}
