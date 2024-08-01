@@ -12,9 +12,8 @@ import AdStepComponent from './AdStepComponent';
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
   { icon: <FaPen />, label: '내용' },
-  { icon: <FaShare />, label: '설정' },
+  { icon: <FaCheck />, label: '설정' },
   { icon: <FaTags />, label: '실행' },
-  { icon: <FaCheck />, label: '결제 및 공유' },
 ];
 
 export default function WritePinStory({ isOpen, closeModal, addPin }) {
@@ -38,6 +37,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     setMonetize,
     setAdOption,
     setBoost,
+    setStartDate,
+    setEndDate,
     setStock,
     setRadius,
     setLocation,
@@ -343,6 +344,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 handleAdOptionChange={handleAdOptionChange}
                 setRadius={setRadius}
                 setBoost={setBoost}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
                 setLocation={setLocation}
                 setPayment={setPayment}
                 handleDefaultTagClick={handleDefaultTagClick}
@@ -374,6 +377,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             setRadius={setRadius}
             setBoost={setBoost}
             setLocation={setLocation}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
             setPayment={setPayment}
             handleDefaultTagClick={handleDefaultTagClick}
             handleNewTagInputKeyDown={handleNewTagInputKeyDown}
@@ -401,6 +406,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             handleAdOptionChange={handleAdOptionChange}
             setRadius={setRadius}
             setBoost={setBoost}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
             setLocation={setLocation}
             setPayment={setPayment}
             handleDefaultTagClick={handleDefaultTagClick}
@@ -442,34 +449,34 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         //   </div>
         // </div>
         );
-      case 5:
-        return (
-          <AdStepComponent
-            state={state}
-            setStep={setStep}
-            handleCategoryChange={handleCategoryChange}
-            setSelectedCategory={setSelectedCategory}
-            setIndustryType={setIndustryType}
-            setStock={setStock}
-            setDiscountType={setDiscountType}
-            setDiscountValue={setDiscountValue}
-            setBundleType={setBundleType}
-            setBundleNValue = {setBundleNValue}
-            setBundleDiscountValue={setBundleDiscountValue}
-            handleAdOptionChange={handleAdOptionChange}
-            setRadius={setRadius}
-            setBoost={setBoost}
-            setLocation={setLocation}
-            setPayment={setPayment}
-            handleDefaultTagClick={handleDefaultTagClick}
-            handleNewTagInputKeyDown={handleNewTagInputKeyDown}
-            removeNewTag={removeNewTag}
-            newTags={newTags}
-            selectedDefaultTags={selectedDefaultTags}
-            handlePlatformLinkChange={handlePlatformLinkChange}
-            handlePaymentModeChange = {handlePaymentModeChange}
-          />
-        );
+      // case 5:
+      //   return (
+      //     <AdStepComponent
+      //       state={state}
+      //       setStep={setStep}
+      //       handleCategoryChange={handleCategoryChange}
+      //       setSelectedCategory={setSelectedCategory}
+      //       setIndustryType={setIndustryType}
+      //       setStock={setStock}
+      //       setDiscountType={setDiscountType}
+      //       setDiscountValue={setDiscountValue}
+      //       setBundleType={setBundleType}
+      //       setBundleNValue = {setBundleNValue}
+      //       setBundleDiscountValue={setBundleDiscountValue}
+      //       handleAdOptionChange={handleAdOptionChange}
+      //       setRadius={setRadius}
+      //       setBoost={setBoost}
+      //       setLocation={setLocation}
+      //       setPayment={setPayment}
+      //       handleDefaultTagClick={handleDefaultTagClick}
+      //       handleNewTagInputKeyDown={handleNewTagInputKeyDown}
+      //       removeNewTag={removeNewTag}
+      //       newTags={newTags}
+      //       selectedDefaultTags={selectedDefaultTags}
+      //       handlePlatformLinkChange={handlePlatformLinkChange}
+      //       handlePaymentModeChange = {handlePaymentModeChange}
+      //     />
+      //   );
       default:
         return null;
     }
@@ -502,12 +509,12 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             if (state.step === 3 && state.type === '광고') {
               handleNextStep();
             }else {
-              state.step < 5 ? setStep(state.step + 1) : handlePost();
+              state.step < 4 ? setStep(state.step + 1) : handlePost();
             }
           }}
           className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors duration-300"
         >
-          {state.step < 5 ? '다음' : '완료'}
+          {state.step < 4 ? '다음' : '완료'}
         </button>
       </div>
     );
