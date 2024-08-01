@@ -1,19 +1,27 @@
 .pointContainer {
+    width:100%; 
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
     background: #ffc6fc; /* 색상을 더 부드럽게 조정 */
     color: white;
     display: flex;
-    align-items: center;
+    justify-content: end;
+    align-items: flex-end;
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 강도를 줄임 */
-    position: relative;
     overflow: hidden;
+    position: sticky; /* Sticky positioning */
+    top: 0; /* 화면 상단에서 0px 위치에 고정 */
+    z-index: 10; /* 필요에 따라 z-index를 조정하여 다른 요소 위에 표시되도록 함 */
   }
   
   .pointContainer::before {
     content: '';
     position: absolute;
+    display: flex;
+    justify-content: right;
+    align-items: flex-end;
+    border-radius: 0.5rem;
     top: 0;
     left: 0;
     width: 100%;
@@ -25,10 +33,10 @@
   .pointText {
     flex: 1;
     z-index: 2;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
   }
   
   .animatedIcon {
@@ -39,17 +47,12 @@
   }
   
   .pointText h2 {
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem;
     text-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.3); 
   }
   
-  .pointText p {
-    font-size: 1.875rem; /* 폰트 크기를 약간 줄임 */
-    font-weight: 800; /* 폰트 두께를 약간 줄임 */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 텍스트 그림자의 강도를 줄임 */
-  }
   
   @keyframes pulse {
     0% {
