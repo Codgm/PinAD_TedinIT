@@ -182,7 +182,7 @@ className="w-full h-12 border rounded-lg p-2"
 <div className="flex items-center w-full space-x-2">
 <input
 type="text"
-placeholder="식당 이름 입력"
+placeholder="업소명 입력"
 onChange={(e) => setIndustryType(e.target.value)}
 className="w-full h-12 border rounded-lg p-2"
 />
