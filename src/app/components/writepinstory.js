@@ -573,7 +573,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const renderStepButtons = () => {
     return (
-      <div className="mt-6 flex justify-between">
+      <div className="m-4 flex justify-between">
         <button
           onClick={() => setStep(Math.max(1, state.step - 1))}
           className={`px-4 py-2 text-gray-600 rounded ${state.step === 1 ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
@@ -683,7 +683,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
         
         <div
-            className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+            className="relative bg-white rounded-lg shadow-lg max-w-lg p-2 md:mx-2  md:max-w-xl z-10 flex flex-col"
             style={{
               height: `87vh`, // padding을 제외한 높이
               backgroundColor: '#f0f0f0', // 배경색
