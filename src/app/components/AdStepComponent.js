@@ -5,8 +5,10 @@ import MapExample from '@/app/components/mapExample';
 import PointDisplay from './pointDisplay';
 import PaymentSection from './paymentsection';
 
-const defaultTags = ['#한정특가', '#오늘단하루', '#점심타임딜', '#막차세일', '#반값찬스', '#골든타임특가', '#긴급할인', '#번개세일', '#타임어택',
-'#초특가_1시간', '#지금이기회', '#순간최저가', '#마감임박할인', '#깜짝특가', '#득템찬스'];
+const defaultTags = {
+  '유통': ['#한정특가', '#오늘단하루', '#점심타임딜', '#막차세일', '#반값찬스', '#골든타임특가', '#긴급할인', '#번개세일', '#타임어택','#초특가_1시간', '#지금이기회', '#순간최저가', '#마감임박할인', '#깜짝특가', '#득템찬스'],
+  '요식업' :[ "#맛집", "#데이트", "#미슐랭", "#오마카세", "#가성비", "#브런치", "#디저트", "#커피스타그램", "#카페투어", "#인스타감성", "#술스타그램", "#칵테일", "#혼술", "#안주", "#펍", "#혼밥", "#친구모임", "#뷰맛집", "#숨은맛집", "#야식"],
+};
 
 const AdStepComponent = ({
 state,
@@ -72,28 +74,24 @@ return 0;
 
 const handleRadiusChange = (value) => {
 
-```
-const costs = {
-  '500m': 0,
-  '1km': 100,
-  '3km': 300,
-  '5km': 500,
-  '10km': 700
-};
+  const costs = {
+    '500m': 0,
+    '1km': 100,
+    '3km': 300,
+    '5km': 500,
+    '10km': 700
+  };
 
-console.log(value.target.value)
-const valuetemp = value.target.value
-const cost = costs[valuetemp] || 0;
-console.log(cost)
-setRadius(cost);
-if (point < cost) {
-  setIsPaymentRequired(true);
-} else {
-  setIsPaymentRequired(false);
-}
-
-```
-
+  console.log(value.target.value)
+  const valuetemp = value.target.value
+  const cost = costs[valuetemp] || 0;
+  console.log(cost)
+  setRadius(cost);
+  if (point < cost) {
+    setIsPaymentRequired(true);
+  } else {
+    setIsPaymentRequired(false);
+  }
 };
 
 const handleDatesChange = (startDate, endDate) => {
@@ -291,7 +289,7 @@ state.type === '광고' && (
 <div className="space-y-2">
 <label className="block mb-2 text-sm text-gray-600">기본 태그 (최대 5개), 입력 태그(최대 10개)</label>
 <div className="flex flex-wrap">
-{defaultTags.map(tag => (
+{defaultTags[state.selectedCategory].map(tag => (
 <button
 key={tag}
 className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
