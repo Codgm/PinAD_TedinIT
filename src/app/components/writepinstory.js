@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import InstagramIcon from '/public/instagram_icon.svg';
 import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
 import LineIcon from '/public/line_icon.svg';
@@ -8,6 +8,7 @@ import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'rea
 import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
+import Image from 'next/image';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -201,10 +202,65 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       paymentMode: e.target.value,
     }));
   };
+
+  const [wallpaper, setWallpaper] = useState("");
+
+  const wallpaperStyles = {
+    "유통": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+      `,
+      backgroundSize: '20px 20px, 20px 20px, 60px 60px', /* 각 패턴의 크기 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 */
+      backgroundRepeat: 'repeat', /* 배경 반복 설정 */      // backgroundImage: 'url(/box.jpg)',
+      // backgroundSize: 'contain',
+      // backgroundRepeat: 'norepeat',
+    },
+    "이동형 판매": {
+      backgroundColor: '#B22222', /* 기본 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        radial-gradient(circle, rgba(0, 0, 0, 0.2) 25%, transparent 50%)
+      `,
+      backgroundSize: '40px 40px, 40px 40px, 100px 100px', /* 각 패턴의 크기 설정 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 설정 */
+      backgroundRepeat: 'repeat', /* 패턴 반복 설정 */
+    },
+    "요식업": {
+      backgroundColor: '#8B4513', /* 벽돌 색상 */
+      backgroundImage: `
+        linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%)
+      `,
+      backgroundSize: '13px 13px, 29px 29px, 37px 37px, 53px 53px', /* 각 gradient의 크기 설정 */
+      backgroundPosition: '0 0, 0 0, 0 0, 0 0', /* 각 gradient의 위치 설정 */
+      backgroundRepeat: 'repeat', /* 배경 반복 설정 */
+    },
+    "서비스업": {
+      backgroundColor: '#4CAF50',
+      backgroundImage: 'linear-gradient(135deg, #45a247 25%, transparent 25%), linear-gradient(225deg, #45a247 25%, transparent 25%), linear-gradient(45deg, #45a247 25%, transparent 25%), linear-gradient(315deg, #45a247 25%, #4CAF50 25%)',
+      backgroundPosition: '10px 0, 10px 0, 0 0, 0 0',
+      backgroundSize: '20px 20px',
+      backgroundRepeat: 'repeat'
+    }
+  };
   
+  useEffect(() => {
+    if (state.type !== '광고') {
+      setWallpaper(null);
+    }else{
+      setWallpaper(state.selectedCategory);
+    }
+  }, [state.type]);
 
   const renderStepIndicator = () => (
-    <div className="flex mb-6 justify-start overflow-y-auto">
+    <div className="flex mb-6 justify-around items-center overflow-y-auto">
+      <div className='flex flex-rows'>
       {steps.map((stepItem, index) => (
         <div key={index} className={`flex flex-col items-center mx-2 ${index === state.step - 1 ? 'text-purple-500' : 'text-gray-400'}`}>
           <div className="flex flex-row items-center">
@@ -220,6 +276,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           <span className="text-xs mt-1">{stepItem.label}</span>
         </div>
       ))}
+      </div>
+      <span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
     </div>
   );
 
@@ -302,7 +360,10 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 <select
                   className="w-full border rounded-lg p-2"
                   value={state.selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value)
+                    setWallpaper(e.target.value)
+                  }}
                 >
                   <option value="">선택</option>
                   <option value="유통">유통</option>
@@ -313,7 +374,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               )}
             </div>
             
-            {state.type === '여행메모' && (
+            {state.type === '여행메모' && 
+            (
               <textarea
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 rows="10"
@@ -618,22 +680,31 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
       <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
-        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-4 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' }}>
-          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-purple-500">새 핀스토리 작성</h3>
-            <button onClick={closeModal} className="text-gray-500 hover:text-gray-800">
-              &times;
-            </button>
+        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
+        
+        <div
+            className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+            style={{
+              height: `87vh`, // padding을 제외한 높이
+              backgroundColor: '#f0f0f0', // 배경색
+            }}
+          >
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+              <div className="text-xl font-semibold text-purple-500">새 핀스토리 작성</div>
+              <button onClick={closeModal} className="text-gray-500 hover:text-gray-800">
+                &times;
+              </button>
+            </div>
+          <div className='mt-4 flex-1 overflow-auto'>
+            {renderStepIndicator()}
+            {renderStep()}
+          </div>
+          <div className="mt-4"> 
+            {renderStepButtons()}
+          </div>
+          </div>
         </div>
-        <div className='mt-4 flex-1 overflow-auto'>
-          {renderStepIndicator()}
-          {renderStep()}
-        </div>
-        <div className="mt-4">
-          {renderStepButtons()}
-        </div>
-      </div>
-      {renderAdMonetizeModal()}
+        {renderAdMonetizeModal()}
       {renderMonetizeModal()}
       {renderConfirmModal()}
     </div>

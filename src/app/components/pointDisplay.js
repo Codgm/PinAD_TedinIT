@@ -4,7 +4,7 @@ const { useMyContext } = require("../context/myContext");
 
 const PointDisplay = ({loc,time}) => {
     const { point } = useMyContext();
-    const [usePoint, setUsePoint] = useState(10);
+        const [usePoint, setUsePoint] = useState(10);
     const [residue, setResidue] = useState(point - usePoint);
 
     useEffect(() => {
