@@ -1,1 +1,534 @@
- BsFillDice3Fill: function() { return /* binding */ BsFillDice3Fill; },\n/* harmony export */   BsFillDice4Fill: function() { return /* binding */ BsFillDice4Fill; },\n/* harmony export */   BsFillDice5Fill: function() { return /* binding */ BsFillDice5Fill; },\n/* harmony export */   BsFillDice6Fill: function() { return /* binding */ BsFillDice6Fill; },\n/* harmony export */   BsFillDiscFill: function() { return /* binding */ BsFillDiscFill; },\n/* harmony export */   BsFillDisplayFill: function() { return /* binding */ BsFillDisplayFill; },\n/* harmony export */   BsFillDisplayportFill: function() { return /* binding */ BsFillDisplayportFill; },\n/* harmony export */   BsFillDoorClosedFill: function() { return /* binding */ BsFillDoorClosedFill; },\n/* harmony export */   BsFillDoorOpenFill: function() { return /* binding */ BsFillDoorOpenFill; },\n/* harmony export */   BsFillDpadFill: function() { return /* binding */ BsFillDpadFill; },\n/* harmony export */   BsFillDropletFill: function() { return /* binding */ BsFillDropletFill; },\n/* harmony export */   BsFillDuffleFill: function() { return /* binding */ BsFillDuffleFill; },\n/* harmony export */   BsFillEarFill: function() { return /* binding */ BsFillEarFill; },\n/* harmony export */   BsFillEasel2Fill: function() { return /* binding */ BsFillEasel2Fill; },\n/* harmony export */   BsFillEasel3Fill: function() { return /* binding */ BsFillEasel3Fill; },\n/* harmony export */   BsFillEaselFill: function() { return /* binding */ BsFillEaselFill; },\n/* harmony export */   BsFillEggFill: function() { return /* binding */ BsFillEggFill; },\n/* harmony export */   BsFillEjectFill: function() { return /* binding */ BsFillEjectFill; },\n/* harmony export */   BsFillEmojiAngryFill: function() { return /* binding */ BsFillEmojiAngryFill; },\n/* harmony export */   BsFillEmojiAstonishedFill: function() { return /* binding */ BsFillEmojiAstonishedFill; },\n/* harmony export */   BsFillEmojiDizzyFill: function() { return /* binding */ BsFillEmojiDizzyFill; },\n/* harmony export */   BsFillEmojiExpressionlessFill: function() { return /* binding */ BsFillEmojiExpressionlessFill; },\n/* harmony export */   BsFillEmojiFrownFill: function() { return /* binding */ BsFillEmojiFrownFill; },\n/* harmony export */   BsFillEmojiGrimaceFill: function() { return /* binding */ BsFillEmojiGrimaceFill; },\n/* harmony export */   BsFillEmojiGrinFill: function() { return /* binding */ BsFillEmojiGrinFill; },\n/* harmony export */   BsFillEmojiHeartEyesFill: function() { return /* binding */ BsFillEmojiHeartEyesFill; },\n/* harmony export */   BsFillEmojiKissFill: function() { return /* binding */ BsFillEmojiKissFill; },\n/* harmony export */   BsFillEmojiLaughingFill: function() { return /* binding */ BsFillEmojiLaughingFill; },\n/* harmony export */   BsFillEmojiNeutralFill: function() { return /* binding */ BsFillEmojiNeutralFill; },\n/* harmony export */   BsFillEmojiSmileFill: function() { return /* binding */ BsFillEmojiSmileFill; },\n/* harmony export */   BsFillEmojiSmileUpsideDownFill: function() { return /* binding */ BsFillEmojiSmileUpsideDownFill; },\n/* harmony export */   BsFillEmojiSunglassesFill: function() { return /* binding */ BsFillEmojiSunglassesFill; },\n/* harmony export */   BsFillEmojiSurpriseFill: function() { return /* binding */ BsFillEmojiSurpriseFill; },\n/* harmony export */   BsFillEmojiTearFill: function() { return /* binding */ BsFillEmojiTearFill; },\n/* harmony export */   BsFillEmojiWinkFill: function() { return /* binding */ BsFillEmojiWinkFill; },\n/* harmony export */   BsFillEnvelopeArrowDownFill: function() { return /* binding */ BsFillEnvelopeArrowDownFill; },\n/* harmony export */   BsFillEnvelopeArrowUpFill: function() { return /* binding */ BsFillEnvelopeArrowUpFill; },\n/* harmony export */   BsFillEnvelopeAtFill: function() { return /* binding */ BsFillEnvelopeAtFill; },\n/* harmony export */   BsFillEnvelopeCheckFill: function() { return /* binding */ BsFillEnvelopeCheckFill; },\n/* harmony export */   BsFillEnvelopeDashFill: function() { return /* binding */ BsFillEnvelopeDashFill; },\n/* harmony export */   BsFillEnvelopeExclamationFill: function() { return /* binding */ BsFillEnvelopeExclamationFill; },\n/* harmony export */   BsFillEnvelopeFill: function() { return /* binding */ BsFillEnvelopeFill; },\n/* harmony export */   BsFillEnvelopeHeartFill: function() { return /* binding */ BsFillEnvelopeHeartFill; },\n/* harmony export */   BsFillEnvelopeOpenFill: function() { return /* binding */ BsFillEnvelopeOpenFill; },\n/* harmony export */   BsFillEnvelopeOpenHeartFill: function() { return /* binding */ BsFillEnvelopeOpenHeartFill; },\n/* harmony export */   BsFillEnvelopePaperFill: function() { return /* binding */ BsFillEnvelopePaperFill; },\n/* harmony export */   BsFillEnvelopePaperHeartFill: function() { return /* binding */ BsFillEnvelopePaperHeartFill; },\n/* harmony export */   BsFillEnvelopePlusFill: function() { return /* binding */ BsFillEnvelopePlusFill; },\n/* harmony export */   BsFillEnvelopeSlashFill: function() { return /* binding */ BsFillEnvelopeSlashFill; },\n/* harmony export */   BsFillEnvelopeXFill: function() { return /* binding */ BsFillEnvelopeXFill; },\n/* harmony export */   BsFillEraserFill: function() { return /* binding */ BsFillEraserFill; },\n/* harmony export */   BsFillEvFrontFill: function() { return /* binding */ BsFillEvFrontFill; },\n/* harmony export */   BsFillEvStationFill: function() { return /* binding */ BsFillEvStationFill; },\n/* harmony export */   BsFillExclamationCircleFill: function() { return /* binding */ BsFillExclamationCircleFill; },\n/* harmony export */   BsFillExclamationDiamondFill: function() { return /* binding */ BsFillExclamationDiamondFill; },\n/* harmony export */   BsFillExclamationOctagonFill: function() { return /* binding */ BsFillExclamationOctagonFill; },\n/* harmony export */   BsFillExclamationSquareFill: function() { return /* binding */ BsFillExclamationSquareFill; },\n/* harmony export */   BsFillExclamationTriangleFill: function() { return /* binding */ BsFillExclamationTriangleFill; },\n/* harmony export */   BsFillExplicitFill: function() { return /* binding */ BsFillExplicitFill; },\n/* harmony export */   BsFillEyeFill: function() { return /* binding */ BsFillEyeFill; },\n/* harmony export */   BsFillEyeSlashFill: function() { return /* binding */ BsFillEyeSlashFill; },\n/* harmony export */   BsFillFastForwardBtnFill: function() { return /* binding */ BsFillFastForwardBtnFill; },\n/* harmony export */   BsFillFastForwardCircleFill: function() { return /* binding */ BsFillFastForwardCircleFill; },\n/* harmony export */   BsFillFastForwardFill: function() { return /* binding */ BsFillFastForwardFill; },\n/* harmony export */   BsFillFileArrowDownFill: function() { return /* binding */ BsFillFileArrowDownFill; },\n/* harmony export */   BsFillFileArrowUpFill: function() { return /* binding */ BsFillFileArrowUpFill; },\n/* harmony export */   BsFillFileBarGraphFill: function() { return /* binding */ BsFillFileBarGraphFill; },\n/* harmony export */   BsFillFileBinaryFill: function() { return /* binding */ BsFillFileBinaryFill; },\n/* harmony export */   BsFillFileBreakFill: function() { return /* binding */ BsFillFileBreakFill; },\n/* harmony export */   BsFillFileCheckFill: function() { return /* binding */ BsFillFileCheckFill; },\n/* harmony export */   BsFillFileCodeFill: function() { return /* binding */ BsFillFileCodeFill; },\n/* harmony export */   BsFillFileDiffFill: function() { return /* binding */ BsFillFileDiffFill; },\n/* harmony export */   BsFillFileEarmarkArrowDownFill: function() { return /* binding */ BsFillFileEarmarkArrowDownFill; },\n/* harmony export */   BsFillFileEarmarkArrowUpFill: function() { return /* binding */ BsFillFileEarmarkArrowUpFill; },\n/* harmony export */   BsFillFileEarmarkBarGraphFill: function() { return /* binding */ BsFillFileEarmarkBarGraphFill; },\n/* harmony export */   BsFillFileEarmarkBinaryFill: function() { return /* binding */ BsFillFileEarmarkBinaryFill; },\n/* harmony export */   BsFillFileEarmarkBreakFill: function() { return /* binding */ BsFillFileEarmarkBreakFill; },\n/* harmony export */   BsFillFileEarmarkCheckFill: function() { return /* binding */ BsFillFileEarmarkCheckFill; },\n/* harmony export */   BsFillFileEarmarkCodeFill: function() { return /* binding */ BsFillFileEarmarkCodeFill; },\n/* harmony export */   BsFillFileEarmarkDiffFill: function() { return /* binding */ BsFillFileEarmarkDiffFill; },\n/* harmony export */   BsFillFileEarmarkEaselFill: function() { return /* binding */ BsFillFileEarmarkEaselFill; },\n/* harmony export */   BsFillFileEarmarkExcelFill: function() { return /* binding */ BsFillFileEarmarkExcelFill; },\n/* harmony export */   BsFillFileEarmarkFill: function() { return /* binding */ BsFillFileEarmarkFill; },\n/* harmony export */   BsFillFileEarmarkFontFill: function() { return /* binding */ BsFillFileEarmarkFontFill; },\n/* harmony export */   BsFillFileEarmarkImageFill: function() { return /* binding */ BsFillFileEarmarkImageFill; },\n/* harmony export */   BsFillFileEarmarkLock2Fill: function() { return /* binding */ BsFillFileEarmarkLock2Fill; },\n/* harmony export */   BsFillFileEarmarkLockFill: function() { return /* binding */ BsFillFileEarmarkLockFill; },\n/* harmony export */   BsFillFileEarmarkMedicalFill: function() { return /* binding */ BsFillFileEarmarkMedicalFill; },\n/* harmony export */   BsFillFileEarmarkMinusFill: function() { return /* binding */ BsFillFileEarmarkMinusFill; },\n/* harmony export */   BsFillFileEarmarkMusicFill: function() { return /* binding */ BsFillFileEarmarkMusicFill; },\n/* harmony export */   BsFillFileEarmarkPdfFill: function() { return /* binding */ BsFillFileEarmarkPdfFill; },\n/* harmony export */   BsFillFileEarmarkPersonFill: function() { return /* binding */ BsFillFileEarmarkPersonFill; },\n/* harmony export */   BsFillFileEarmarkPlayFill: function() { return /* binding */ BsFillFileEarmarkPlayFill; },\n/* harmony export */   BsFillFileEarmarkPlusFill: function() { return /* binding */ BsFillFileEarmarkPlusFill; },\n/* harmony export */   BsFillFileEarmarkPostFill: function() { return /* binding */ BsFillFileEarmarkPostFill; },\n/* harmony export */   BsFillFileEarmarkPptFill: function() { return /* binding */ BsFillFileEarmarkPptFill; },\n/* harmony export */   BsFillFileEarmarkRichtextFill: function() { return /* binding */ BsFillFileEarmarkRichtextFill; },\n/* harmony export */   BsFillFileEarmarkRuledFill: function() { return /* binding */ BsFillFileEarmarkRuledFill; },\n/* harmony export */   BsFillFileEarmarkSlidesFill: function() { return /* binding */ BsFillFileEarmarkSlidesFill; },\n/* harmony export */   BsFillFileEarmarkSpreadsheetFill: function() { return /* binding */ BsFillFileEarmarkSpreadsheetFill; },\n/* harmony export */   BsFillFileEarmarkTextFill: function() { return /* binding */ BsFillFileEarmarkTextFill; },\n/* harmony export */   BsFillFileEarmarkWordFill: function() { return /* binding */ BsFillFileEarmarkWordFill; },\n/* harmony export */   BsFillFileEarmarkXFill: function() { return /* binding */ BsFillFileEarmarkXFill; },\n/* harmony export */   BsFillFileEarmarkZipFill: function() { return /* binding */ BsFillFileEarmarkZipFill; },\n/* harmony export */   BsFillFileEaselFill: function() { return /* binding */ BsFi
+import { Radius } from 'lucide';
+import { useReducer } from 'react';
+
+const MAX_IMAGES = 4;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+const MAX_TITLE_LENGTH = 100;
+const MAX_CONTENT_LENGTH = 1000;
+const MAX_SHORT_VIDEO_DURATION = 60; // 1 minute in seconds
+const MAX_SHORT_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB in bytes
+
+const initialState = {
+<<<<<<< HEAD
+  step: 1,
+  title: '',
+  type: '광고',
+  content: '',
+  location: '',
+  radius: 0,
+  paymentMode: 'one-time',  // Can be 'one-time' or 'subscription'
+  subscriptionDetails: {
+    interval: '', // e.g., 'monthly', 'yearly'
+    amount: ''    // subscription amount
+  },
+  payment: '',
+  discountType: '',
+  discountValue: '',
+  bundleDiscountType: '',
+  bundleDiscountValue: '',
+  bundleNValue: '',
+  bundleType: '',
+  selectedCategory: '',
+  imageFiles: [],
+  shortVideo: null,
+  platforms: [],
+  profilePublic: false,
+  platformLinks: {},
+  showPlatformSelection: false,
+  tags: [],
+  monetize: null,
+  errors: {
+    title: '',
+    content: '',
+    images: [],
+    shortVideo: '',
+  },
+};
+
+function postReducer(state, action) {
+  switch (action.type) {
+    case 'SET_STEP':
+      return { ...state, step: action.payload };
+    case 'SET_TITLE':
+      return { 
+        ...state, 
+        title: action.payload.slice(0, MAX_TITLE_LENGTH),
+        errors: {
+          ...state.errors,
+          title: action.payload.length > MAX_TITLE_LENGTH ? '제목은 최대 100자까지 입력 가능합니다.' : ''
+        }
+      };
+    case 'SET_TYPE':
+      return { ...state, type: action.payload };
+    case 'SET_CONTENT':
+      return { 
+        ...state, 
+        content: action.payload.slice(0, MAX_CONTENT_LENGTH),
+        errors: {
+          ...state.errors,
+          content: action.payload.length > MAX_CONTENT_LENGTH ? '내용은 최대 1000자까지 입력 가능합니다.' : ''
+        }
+      };
+    case 'ADD_IMAGE':
+      if (state.imageFiles.length >= MAX_IMAGES) {
+        return {
+          ...state,
+          errors: {
+            ...state.errors,
+            images: [...state.errors.images, "최대 4개의 이미지만 업로드할 수 있습니다."]
+          }
+        };
+      }
+      if (action.payload.size > MAX_IMAGE_SIZE) {
+        return {
+          ...state,
+          errors: {
+            ...state.errors,
+            images: [...state.errors.images, `${action.payload.name}의 크기가 5MB를 초과합니다.`]
+          }
+        };
+      }
+      return {
+        ...state,
+        imageFiles: [...state.imageFiles, action.payload],
+        errors: {
+          ...state.errors,
+          images: []
+        }
+      };
+    case 'SET_SHORT_VIDEO':
+      if (action.payload.duration > MAX_SHORT_VIDEO_DURATION) {
+        return {
+          ...state,
+          errors: {
+            ...state.errors,
+            shortVideo: '숏폼 영상은 1분을 초과할 수 없습니다.'
+          }
+        };
+      }
+      if (action.payload.size > MAX_SHORT_VIDEO_SIZE) {
+        return {
+          ...state,
+          errors: {
+            ...state.errors,
+            shortVideo: '숏폼 영상의 크기가 100MB를 초과합니다.'
+          }
+        };
+      }
+      return {
+        ...state,
+        shortVideo: action.payload,
+        errors: {
+          ...state.errors,
+          shortVideo: ''
+        }
+      };
+    case 'SET_PLATFORMS':
+      return { ...state, platforms: action.payload };
+    case 'SET_DISCOUNTTYPE':
+      return { ...state, discountType: action.payload };
+    case 'SET_DISCOUNTVALUE':
+      return { ...state, discountValue: action.payload };
+    case 'SET_BUNDLE_DISCOUNT_TYPE':
+      return { ...state, bundleDiscountType: action.payload };
+    case 'SET_BUNDLE_DISCOUNT_VALUE':
+      return { ...state, bundleDiscountValue: action.payload };
+    case 'SET_PROFILE_PUBLIC':
+      return { ...state, profilePublic: action.payload };
+    case 'SET_PLATFORM_LINKS':
+      return { ...state, platformLinks: { ...state.platformLinks, ...action.payload } };
+    case 'TOGGLE_PLATFORM_SELECTION':
+      return { ...state, showPlatformSelection: !state.showPlatformSelection };
+    case 'SET_MONETIZE':
+      return { ...state, monetize: action.payload };
+    case 'CLEAR_ERRORS':
+      return { ...state, errors: initialState.errors };
+    case 'SET_AD_OPTION':
+      return { ...state, adOption: action.payload };
+    case 'SET_BOOST':
+      return { ...state, boost: action.payload };
+    case 'SET_STOCK': 
+      return { ...state, stock: action.payload };
+    case 'SET_RADIUS':
+      return { ...state, radius: action.payload };
+    case 'SET_LOCATION':
+      return { ...state, location: action.payload };
+    case 'SET_PAYMENT':
+      return { ...state, payment: action.payload };
+    case 'SET_SELECTED_CATEGORY':
+      return { ...state, selectedCategory: action.payload };
+    case 'SET_BUNDLE_N_VALUE':
+      return { ...state, bundleNValue: action.payload };
+    case 'SET_BUNDLE_TYPE':
+      return { ...state, bundleType: action.payload };
+    case 'SET_PAYMENT_MODE':
+      return { ...state, paymentMode: action.payload };
+  
+    case 'SET_SUBSCRIPTION_DETAILS':
+      return { ...state, subscriptionDetails: { ...state.subscriptionDetails, ...action.payload } };
+  
+    case 'SET_PAYMENT':
+      return { 
+        ...state, 
+        payment: action.payload,
+        errors: {
+          ...state.errors,
+          payment: state.paymentMode === 'subscription' ? '' : (isNaN(action.payload) ? '결제 금액이 올바르지 않습니다.' : '')
+        }
+      };
+    case 'SET_START_DATE':
+      return { ...state, startDate: action.payload };
+    case 'SET_END_DATE':
+      return { ...state, endDate: action.payload };
+    default:
+      return state;
+  }
+}
+
+function usePostCreation() {
+  const [state, dispatch] = useReducer(postReducer, initialState);
+
+  const setStep = (step) => dispatch({ type: 'SET_STEP', payload: step });
+  const setTitle = (title) => dispatch({ type: 'SET_TITLE', payload: title });
+  const setContent = (content) => dispatch({ type: 'SET_CONTENT', payload: content });
+  const addImage = (image) => dispatch({ type: 'ADD_IMAGE', payload: image });
+  const setShortVideo = (video) => dispatch({ type: 'SET_SHORT_VIDEO', payload: video });
+  const clearErrors = () => dispatch({ type: 'CLEAR_ERRORS' });
+  const setType = (type) => dispatch({ type: 'SET_TYPE', payload: type });
+  const setPlatforms = (platforms) => dispatch({ type: 'SET_PLATFORMS', payload: platforms });
+  const setProfilePublic = (isPublic) => dispatch({ type: 'SET_PROFILE_PUBLIC', payload: isPublic });
+  const setPlatformLink = (platform, link) => dispatch({ type: 'SET_PLATFORM_LINKS', payload: { [platform]: link } });
+  const togglePlatformSelection = () => dispatch({ type: 'TOGGLE_PLATFORM_SELECTION' });
+  const setMonetize = (monetize) => dispatch({ type: 'SET_MONETIZE', payload: monetize });
+  const setDiscountType = (discountType) => dispatch({ type: 'SET_DISCOUNTTYPE', payload: discountType });
+  const setDiscountValue = (discountValue) => dispatch({ type: 'SET_DISCOUNTVALUE', payload: discountValue });
+  const setBundleDiscountType = (bundleDiscountType) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_TYPE', payload: bundleDiscountType });
+  const setBundleDiscountValue = (bundleDiscountValue) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_VALUE', payload: bundleDiscountValue });
+  const setAdOption = (adOption) => dispatch({ type: 'SET_AD_OPTION', payload: adOption });
+  const setBoost = (boost) => dispatch({ type: 'SET_BOOST', payload: boost });
+  const setStock = (stock) => dispatch({ type: 'SET_STOCK', payload: stock });
+  const setRadius = (radius) => dispatch({ type: 'SET_RADIUS', payload: radius });
+  const setLocation = (location) => dispatch({ type: 'SET_LOCATION', payload: location });
+  const setPaymentMode = (mode) => dispatch({ type: 'SET_PAYMENT_MODE', payload: mode });
+  const setSubscriptionDetails = (details) => dispatch({ type: 'SET_SUBSCRIPTION_DETAILS', payload: details });
+  const setPayment = (payment) => dispatch({ type: 'SET_PAYMENT', payload: payment });
+  const setSelectedCategory = (category) => dispatch({ type: 'SET_SELECTED_CATEGORY', payload: category });
+  const setBundleNValue = (bundleNValue) => dispatch({ type: 'SET_BUNDLE_N_VALUE', payload: bundleNValue });
+  const setBundleType = (bundleType) => dispatch({ type: 'SET_BUNDLE_TYPE', payload: bundleType });
+  const setStartDate = (startDate) => dispatch({ type: 'SET_START_DATE', payload: startDate });
+  const setEndDate = (endDate) => dispatch({ type: 'SET_END_DATE', payload: endDate });
+  
+
+  return {
+    state,
+    setStep,
+    clearErrors,
+    setTitle,
+    setType,
+    setDiscountType,
+    setDiscountValue,
+    setBundleDiscountType,
+    setBundleDiscountValue,
+    setBundleNValue,
+    setBundleType,
+    setSelectedCategory,
+    setContent,
+    addImage,
+    setShortVideo,
+    setPlatforms,
+    setProfilePublic,
+    setPlatformLink,
+    togglePlatformSelection,
+    setMonetize,
+    setAdOption,
+    setBoost,
+    setStock,
+    setRadius,
+    setLocation,
+    setPayment,
+    setPaymentMode,
+    setSubscriptionDetails,
+    setStartDate,
+    setEndDate,
+  };
+}
+
+export default usePostCreation;
+=======
+step: 1,
+title: '',
+type: '광고',
+content: '',
+location: '',
+radius: 0,
+paymentMode: 'one-time',
+subscriptionDetails: {
+interval: '',
+amount: ''
+
+},
+payment: '',
+discountType: '',
+discountValue: '',
+bundleDiscountType: '',
+bundleDiscountValue: '',
+bundleNValue: '',
+bundleType: '',
+selectedCategory: '',
+imageFiles: [],
+shortVideo: null,
+platforms: [],
+profilePublic: false,
+platformLinks: {},
+showPlatformSelection: false,
+tags: [],
+monetize: null,
+errors: {
+title: '',
+content: '',
+images: [],
+shortVideo: '',
+},
+};
+
+function postReducer(state, action) {
+switch (action.type) {
+case 'SET_STEP':
+return { ...state, step: action.payload };
+case 'SET_TITLE':
+return {
+...state,
+title: action.payload.slice(0, MAX_TITLE_LENGTH),
+errors: {
+...state.errors,
+title: action.payload.length > MAX_TITLE_LENGTH ? '제목은 최대 100자까지 입력 가능합니다.' : ''
+}
+};
+case 'SET_TYPE':
+return { ...state, type: action.payload };
+case 'SET_CONTENT':
+return {
+...state,
+content: action.payload.slice(0, MAX_CONTENT_LENGTH),
+errors: {
+...state.errors,
+content: action.payload.length > MAX_CONTENT_LENGTH ? '내용은 최대 1000자까지 입력 가능합니다.' : ''
+}
+};
+case 'ADD_IMAGE':
+if (state.imageFiles.length >= MAX_IMAGES) {
+return {
+...state,
+errors: {
+...state.errors,
+images: [...state.errors.images, "최대 4개의 이미지만 업로드할 수 있습니다."]
+}
+};
+}
+if (action.payload.size > MAX_IMAGE_SIZE) {
+return {
+...state,
+errors: {
+...state.errors,
+images: [...state.errors.images, `${action.payload.name}의 크기가 5MB를 초과합니다.`]
+}
+};
+}
+return {
+...state,
+imageFiles: [...state.imageFiles, action.payload],
+errors: {
+...state.errors,
+images: []
+}
+};
+case 'SET_SHORT_VIDEO':
+if (action.payload.duration > MAX_SHORT_VIDEO_DURATION) {
+return {
+...state,
+errors: {
+...state.errors,
+shortVideo: '숏폼 영상은 1분을 초과할 수 없습니다.'
+}
+};
+}
+if (action.payload.size > MAX_SHORT_VIDEO_SIZE) {
+return {
+...state,
+errors: {
+...state.errors,
+shortVideo: '숏폼 영상의 크기가 100MB를 초과합니다.'
+}
+};
+}
+return {
+...state,
+shortVideo: action.payload,
+errors: {
+...state.errors,
+shortVideo: ''
+}
+};
+case 'SET_PLATFORMS':
+return { ...state, platforms: action.payload };
+case 'SET_DISCOUNTTYPE':
+return { ...state, discountType: action.payload };
+case 'SET_DISCOUNTVALUE':
+return { ...state, discountValue: action.payload };
+case 'SET_BUNDLE_DISCOUNT_TYPE':
+return { ...state, bundleDiscountType: action.payload };
+case 'SET_BUNDLE_DISCOUNT_VALUE':
+return { ...state, bundleDiscountValue: action.payload };
+case 'SET_PROFILE_PUBLIC':
+return { ...state, profilePublic: action.payload };
+case 'SET_PLATFORM_LINKS':
+return { ...state, platformLinks: { ...state.platformLinks, ...action.payload } };
+case 'TOGGLE_PLATFORM_SELECTION':
+return { ...state, showPlatformSelection: !state.showPlatformSelection };
+case 'SET_MONETIZE':
+return { ...state, monetize: action.payload };
+case 'CLEAR_ERRORS':
+return { ...state, errors: initialState.errors };
+case 'SET_AD_OPTION':
+return { ...state, adOption: action.payload };
+case 'SET_BOOST':
+return { ...state, boost: action.payload };
+case 'SET_STOCK':
+return { ...state, stock: action.payload };
+case 'SET_RADIUS':
+return { ...state, radius: action.payload };
+case 'SET_LOCATION':
+return { ...state, location: action.payload };
+case 'SET_PAYMENT':
+return { ...state, payment: action.payload };
+case 'SET_SELECTED_CATEGORY':
+return { ...state, selectedCategory: action.payload };
+case 'SET_BUNDLE_N_VALUE':
+return { ...state, bundleNValue: action.payload };
+case 'SET_BUNDLE_TYPE':
+return { ...state, bundleType: action.payload };
+case 'SET_PAYMENT_MODE':
+return { ...state, paymentMode: action.payload };
+
+```
+case 'SET_SUBSCRIPTION_DETAILS':
+  return { ...state, subscriptionDetails: { ...state.subscriptionDetails, ...action.payload } };
+
+case 'SET_PAYMENT':
+  return {
+    ...state,
+    payment: action.payload,
+    errors: {
+      ...state.errors,
+      payment: state.paymentMode === 'subscription' ? '' : (isNaN(action.payload) ? '결제 금액이 올바르지 않습니다.' : '')
+    }
+  };
+case 'SET_START_DATE':
+  return { ...state, startDate: action.payload };
+case 'SET_END_DATE':
+  return { ...state, endDate: action.payload };
+case 'SET_RESERVATION_METHOD':
+  return { ...state, reservationMethod: action.payload };
+case 'ADD_MENU_ITEM':
+  return {
+    ...state,
+    menuItems: [...state.menuItems, action.payload]
+  };
+case 'UPDATE_MENU_ITEM':
+  return {
+    ...state,
+    menuItems: state.menuItems.map(item =>
+      item.id === action.payload.id ? { ...item, ...action.payload.updates } : item
+    )
+  };
+case 'REMOVE_MENU_ITEM':
+  return {
+    ...state,
+    menuItems: state.menuItems.filter(item => item.id !== action.payload)
+  };
+
+default:
+  return state;
+
+```
+
+}
+}
+
+function usePostCreation() {
+const [state, dispatch] = useReducer(postReducer, initialState);
+
+const setStep = (step) => dispatch({ type: 'SET_STEP', payload: step });
+const setTitle = (title) => dispatch({ type: 'SET_TITLE', payload: title });
+const setContent = (content) => dispatch({ type: 'SET_CONTENT', payload: content });
+const addImage = (image) => dispatch({ type: 'ADD_IMAGE', payload: image });
+const setShortVideo = (video) => dispatch({ type: 'SET_SHORT_VIDEO', payload: video });
+const clearErrors = () => dispatch({ type: 'CLEAR_ERRORS' });
+const setType = (type) => dispatch({ type: 'SET_TYPE', payload: type });
+const setPlatforms = (platforms) => dispatch({ type: 'SET_PLATFORMS', payload: platforms });
+const setProfilePublic = (isPublic) => dispatch({ type: 'SET_PROFILE_PUBLIC', payload: isPublic });
+const setPlatformLink = (platform, link) => dispatch({ type: 'SET_PLATFORM_LINKS', payload: { [platform]: link } });
+const togglePlatformSelection = () => dispatch({ type: 'TOGGLE_PLATFORM_SELECTION' });
+const setMonetize = (monetize) => dispatch({ type: 'SET_MONETIZE', payload: monetize });
+const setDiscountType = (discountType) => dispatch({ type: 'SET_DISCOUNTTYPE', payload: discountType });
+const setDiscountValue = (discountValue) => dispatch({ type: 'SET_DISCOUNTVALUE', payload: discountValue });
+const setBundleDiscountType = (bundleDiscountType) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_TYPE', payload: bundleDiscountType });
+const setBundleDiscountValue = (bundleDiscountValue) => dispatch({ type: 'SET_BUNDLE_DISCOUNT_VALUE', payload: bundleDiscountValue });
+const setAdOption = (adOption) => dispatch({ type: 'SET_AD_OPTION', payload: adOption });
+const setBoost = (boost) => dispatch({ type: 'SET_BOOST', payload: boost });
+const setStock = (stock) => dispatch({ type: 'SET_STOCK', payload: stock });
+const setRadius = (radius) => dispatch({ type: 'SET_RADIUS', payload: radius });
+const setLocation = (location) => dispatch({ type: 'SET_LOCATION', payload: location });
+const setPaymentMode = (mode) => dispatch({ type: 'SET_PAYMENT_MODE', payload: mode });
+const setSubscriptionDetails = (details) => dispatch({ type: 'SET_SUBSCRIPTION_DETAILS', payload: details });
+const setPayment = (payment) => dispatch({ type: 'SET_PAYMENT', payload: payment });
+const setSelectedCategory = (category) => dispatch({ type: 'SET_SELECTED_CATEGORY', payload: category });
+const setBundleNValue = (bundleNValue) => dispatch({ type: 'SET_BUNDLE_N_VALUE', payload: bundleNValue });
+const setBundleType = (bundleType) => dispatch({ type: 'SET_BUNDLE_TYPE', payload: bundleType });
+const setStartDate = (startDate) => dispatch({ type: 'SET_START_DATE', payload: startDate });
+const setEndDate = (endDate) => dispatch({ type: 'SET_END_DATE', payload: endDate });
+const setReservationMethod = (method) => dispatch({ type: 'SET_RESERVATION_METHOD', payload: method });
+const addMenuItem = (item) => dispatch({ type: 'ADD_MENU_ITEM', payload: item });
+const updateMenuItem = (id, updates) => dispatch({ type: 'UPDATE_MENU_ITEM', payload: { id, updates } });
+const removeMenuItem = (id) => dispatch({ type: 'REMOVE_MENU_ITEM', payload: id });
+
+return {
+state,
+setStep,
+clearErrors,
+setTitle,
+setType,
+setDiscountType,
+setDiscountValue,
+setBundleDiscountType,
+setBundleDiscountValue,
+setBundleNValue,
+setBundleType,
+setSelectedCategory,
+setContent,
+addImage,
+setShortVideo,
+setPlatforms,
+setProfilePublic,
+setPlatformLink,
+togglePlatformSelection,
+setMonetize,
+setAdOption,
+setBoost,
+setStock,
+setRadius,
+setLocation,
+setPayment,
+setPaymentMode,
+setSubscriptionDetails,
+setStartDate,
+setEndDate,
+setReservationMethod,
+addMenuItem,
+updateMenuItem,
+removeMenuItem,
+};
+}
+
+export default usePostCreation;
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35

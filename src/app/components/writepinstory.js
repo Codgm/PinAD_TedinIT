@@ -1,1 +1,782 @@
-jk3OCAxNS43MTEgNi40MjcgMTYgOCAxNmMuNTM2IDAgMS4wNTgtLjAzNCAxLjU1NS0uMDk3YTQuNSA0LjUgMCAwIDEtMS4zLTEuOTA1XCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlRmlsbEV4Y2xhbWF0aW9uIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcImZpbGxcIjpcImN1cnJlbnRDb2xvclwiLFwidmlld0JveFwiOlwiMCAwIDE2IDE2XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTggMWMtMS41NzMgMC0zLjAyMi4yODktNC4wOTYuNzc3QzIuODc1IDIuMjQ1IDIgMi45OTMgMiA0cy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggNi43MTEgNi40MjcgNyA4IDdzMy4wMjItLjI4OSA0LjA5Ni0uNzc3QzEzLjEyNSA1Ljc1NSAxNCA1LjAwNyAxNCA0cy0uODc1LTEuNzU1LTEuOTA0LTIuMjIzQzExLjAyMiAxLjI4OSA5LjU3MyAxIDggMVwifSxcImNoaWxkXCI6W119LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0yIDd2LS44MzljLjQ1Ny40MzIgMS4wMDQuNzUxIDEuNDkuOTcyQzQuNzIyIDcuNjkzIDYuMzE4IDggOCA4czMuMjc4LS4zMDcgNC41MS0uODY3Yy40ODYtLjIyIDEuMDMzLS41NCAxLjQ5LS45NzJWN2MwIC40MjQtLjE1NS44MDItLjQxMSAxLjEzM2E0LjUxIDQuNTEgMCAwIDAtNC44MTUgMS44NDNBMTIgMTIgMCAwIDEgOCAxMGMtMS41NzMgMC0zLjAyMi0uMjg5LTQuMDk2LS43NzdDMi44NzUgOC43NTUgMiA4LjAwNyAyIDdtNi4yNTcgMy45OThMOCAxMWMtMS42ODIgMC0zLjI3OC0uMzA3LTQuNTEtLjg2Ny0uNDg2LS4yMi0xLjAzMy0uNTQtMS40OS0uOTcyVjEwYzAgMS4wMDcuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDEyLjcxMSA2LjQyNyAxMyA4IDEzaC4wMjdhNC41NSA0LjU1IDAgMCAxIC4yMy0yLjAwMm0tLjAwMiAzTDggMTRjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxM2MwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MTEgNi40MjcgMTYgOCAxNmMuNTM2IDAgMS4wNTgtLjAzNCAxLjU1NS0uMDk3YTQuNSA0LjUgMCAwIDEtMS4zLTEuOTA1XCJ9LFwiY2hpbGRcIjpbXX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTE2IDEyLjVhMy41IDMuNSAwIDEgMS03IDAgMy41IDMuNSAwIDAgMSA3IDBtLTMuNS0yYS41LjUgMCAwIDAtLjUuNXYxLjVhLjUuNSAwIDAgMCAxIDBWMTFhLjUuNSAwIDAgMC0uNS0uNW0wIDRhLjUuNSAwIDEgMCAwLTEgLjUuNSAwIDAgMCAwIDFcIn0sXCJjaGlsZFwiOltdfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEJzRGF0YWJhc2VGaWxsR2VhciAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk04IDFjLTEuNTczIDAtMy4wMjIuMjg5LTQuMDk2Ljc3N0MyLjg3NSAyLjI0NSAyIDIuOTkzIDIgNHMuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDYuNzExIDYuNDI3IDcgOCA3czMuMDIyLS4yODkgNC4wOTYtLjc3N0MxMy4xMjUgNS43NTUgMTQgNS4wMDcgMTQgNHMtLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMiA3di0uODM5Yy40NTcuNDMyIDEuMDA0Ljc1MSAxLjQ5Ljk3MkM0LjcyMiA3LjY5MyA2LjMxOCA4IDggOHMzLjI3OC0uMzA3IDQuNTEtLjg2N2MuNDg2LS4yMiAxLjAzMy0uNTQgMS40OS0uOTcyVjdjMCAuNDI0LS4xNTUuODAyLS40MTEgMS4xMzNhNC41MSA0LjUxIDAgMCAwLTQuODE1IDEuODQzQTEyIDEyIDAgMCAxIDggMTBjLTEuNTczIDAtMy4wMjItLjI4OS00LjA5Ni0uNzc3QzIuODc1IDguNzU1IDIgOC4wMDcgMiA3bTYuMjU3IDMuOTk4TDggMTFjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxMGMwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxMi43MTEgNi40MjcgMTMgOCAxM2guMDI3YTQuNTUgNC41NSAwIDAgMSAuMjMtMi4wMDJtLS4wMDIgM0w4IDE0Yy0xLjY4MiAwLTMuMjc4LS4zMDctNC41MS0uODY3LS40ODYtLjIyLTEuMDMzLS41NC0xLjQ5LS45NzJWMTNjMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzExIDYuNDI3IDE2IDggMTZjLjUzNiAwIDEuMDU4LS4wMzQgMS41NTUtLjA5N2E0LjUgNC41IDAgMCAxLTEuMy0xLjkwNW0zLjYzMS00LjUzOGMuMTgtLjYxMyAxLjA0OC0uNjEzIDEuMjI5IDBsLjA0My4xNDhhLjY0LjY0IDAgMCAwIC45MjEuMzgybC4xMzYtLjA3NGMuNTYxLS4zMDYgMS4xNzUuMzA4Ljg3Ljg2OWwtLjA3NS4xMzZhLjY0LjY0IDAgMCAwIC4zODIuOTJsLjE0OS4wNDVjLjYxMi4xOC42MTIgMS4wNDggMCAxLjIyOWwtLjE1LjA0M2EuNjQuNjQgMCAwIDAtLjM4LjkyMWwuMDc0LjEzNmMuMzA1LjU2MS0uMzA5IDEuMTc1LS44Ny44N2wtLjEzNi0uMDc1YS42NC42NCAwIDAgMC0uOTIuMzgybC0uMDQ1LjE0OWMtLjE4LjYxMi0xLjA0OC42MTItMS4yMjkgMGwtLjA0My0uMTVhLjY0LjY0IDAgMCAwLS45MjEtLjM4bC0uMTM2LjA3NGMtLjU2MS4zMDUtMS4xNzUtLjMwOS0uODctLjg3bC4wNzUtLjEzNmEuNjQuNjQgMCAwIDAtLjM4Mi0uOTJsLS4xNDgtLjA0NWMtLjYxMy0uMTgtLjYxMy0xLjA0OCAwLTEuMjI5bC4xNDgtLjA0M2EuNjQuNjQgMCAwIDAgLjM4Mi0uOTIxbC0uMDc0LS4xMzZjLS4zMDYtLjU2MS4zMDgtMS4xNzUuODY5LS44N2wuMTM2LjA3NWEuNjQuNjQgMCAwIDAgLjkyLS4zODJ6TTE0IDEyLjVhMS41IDEuNSAwIDEgMC0zIDAgMS41IDEuNSAwIDAgMCAzIDBcIn0sXCJjaGlsZFwiOltdfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEJzRGF0YWJhc2VGaWxsTG9jayAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk04IDFjLTEuNTczIDAtMy4wMjIuMjg5LTQuMDk2Ljc3N0MyLjg3NSAyLjI0NSAyIDIuOTkzIDIgNHMuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDYuNzExIDYuNDI3IDcgOCA3czMuMDIyLS4yODkgNC4wOTYtLjc3N0MxMy4xMjUgNS43NTUgMTQgNS4wMDcgMTQgNHMtLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMy45MDQgOS4yMjNDMi44NzUgOC43NTUgMiA4LjAwNyAyIDd2LS44MzljLjQ1Ny40MzIgMS4wMDQuNzUxIDEuNDkuOTcyQzQuNzIyIDcuNjkzIDYuMzE4IDggOCA4czMuMjc4LS4zMDcgNC41MS0uODY3Yy40ODYtLjIyIDEuMDMzLS41NCAxLjQ5LS45NzJWN2MwIC40MjQtLjE1NS44MDItLjQxMSAxLjEzM2E0LjUgNC41IDAgMCAwLTEuMzY0LS4xMjUgMyAzIDAgMCAwLTIuMTk3LjczMSA0LjUgNC41IDAgMCAwLTEuMjU0IDEuMjM3QTEyIDEyIDAgMCAxIDggMTBjLTEuNTczIDAtMy4wMjItLjI4OS00LjA5Ni0uNzc3TTggMTRjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxM2MwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MTEgNi40MjcgMTYgOCAxNnEuMTM0IDAgLjI2Ni0uMDAzQTIgMiAwIDAgMSA4IDE1em0wLTEuNXEwIC4xNS4wMS4zQTIgMiAwIDAgMCA4IDEzYy0xLjU3MyAwLTMuMDIyLS4yODktNC4wOTYtLjc3N0MyLjg3NSAxMS43NTUgMiAxMS4wMDcgMiAxMHYtLjgzOWMuNDU3LjQzMiAxLjAwNC43NTEgMS40OS45NzJDNC43MjIgMTAuNjkzIDYuMzE4IDExIDggMTFxLjEzIDAgLjI1Ny0uMDAyQTQuNSA0LjUgMCAwIDAgOCAxMi41XCJ9LFwiY2hpbGRcIjpbXX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTkgMTNhMSAxIDAgMCAxIDEtMXYtMWEyIDIgMCAxIDEgNCAwdjFhMSAxIDAgMCAxIDEgMXYyYTEgMSAwIDAgMS0xIDFoLTRhMSAxIDAgMCAxLTEtMXptMy0zYTEgMSAwIDAgMC0xIDF2MWgydi0xYTEgMSAwIDAgMC0xLTFcIn0sXCJjaGlsZFwiOltdfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEJzRGF0YWJhc2VGaWxsU2xhc2ggKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwiY3VycmVudENvbG9yXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMTYgMTZcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTMuODc5IDEwLjQxNGEyLjUwMSAyLjUwMSAwIDAgMC0zLjQ2NSAzLjQ2NXptLjcwNy43MDctMy40NjUgMy40NjVhMi41MDEgMi41MDEgMCAwIDAgMy40NjUtMy40NjVtLTQuNTYtMS4wOTZhMy41IDMuNSAwIDEgMSA0Ljk0OSA0Ljk1IDMuNSAzLjUgMCAwIDEtNC45NS00Ljk1Wk04IDFjLTEuNTczIDAtMy4wMjIuMjg5LTQuMDk2Ljc3N0MyLjg3NSAyLjI0NSAyIDIuOTkzIDIgNHMuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDYuNzExIDYuNDI3IDcgOCA3czMuMDIyLS4yODkgNC4wOTYtLjc3N0MxMy4xMjUgNS43NTUgMTQgNS4wMDcgMTQgNHMtLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMiA3di0uODM5Yy40NTcuNDMyIDEuMDA0Ljc1MSAxLjQ5Ljk3MkM0LjcyMiA3LjY5MyA2LjMxOCA4IDggOHMzLjI3OC0uMzA3IDQuNTEtLjg2N2MuNDg2LS4yMiAxLjAzMy0uNTQgMS40OS0uOTcyVjdjMCAuNDI0LS4xNTUuODAyLS40MTEgMS4xMzNhNC41MSA0LjUxIDAgMCAwLTQuODE1IDEuODQzQTEyIDEyIDAgMCAxIDggMTBjLTEuNTczIDAtMy4wMjItLjI4OS00LjA5Ni0uNzc3QzIuODc1IDguNzU1IDIgOC4wMDcgMiA3bTYuMjU3IDMuOTk4TDggMTFjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxMGMwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxMi43MTEgNi40MjcgMTMgOCAxM2guMDI3YTQuNTUgNC41NSAwIDAgMSAuMjMtMi4wMDJtLS4wMDIgM0w4IDE0Yy0xLjY4MiAwLTMuMjc4LS4zMDctNC41MS0uODY3LS40ODYtLjIyLTEuMDMzLS41NC0xLjQ5LS45NzJWMTNjMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzExIDYuNDI3IDE2IDggMTZjLjUzNiAwIDEuMDU4LS4wMzQgMS41NTUtLjA5N2E0LjUgNC41IDAgMCAxLTEuMy0xLjkwNVwifSxcImNoaWxkXCI6W119XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gQnNEYXRhYmFzZUZpbGxVcCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0xMi41IDE2YTMuNSAzLjUgMCAxIDAgMC03IDMuNSAzLjUgMCAwIDAgMCA3bS4zNTQtNS44NTQgMS41IDEuNWEuNS41IDAgMCAxLS43MDguNzA4TDEzIDExLjcwN1YxNC41YS41LjUgMCAwIDEtMSAwdi0yLjc5M2wtLjY0Ni42NDdhLjUuNSAwIDAgMS0uNzA4LS43MDhsMS41LTEuNWEuNS41IDAgMCAxIC43MDggME04IDFjLTEuNTczIDAtMy4wMjIuMjg5LTQuMDk2Ljc3N0MyLjg3NSAyLjI0NSAyIDIuOTkzIDIgNHMuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDYuNzExIDYuNDI3IDcgOCA3czMuMDIyLS4yODkgNC4wOTYtLjc3N0MxMy4xMjUgNS43NTUgMTQgNS4wMDcgMTQgNHMtLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMiA3di0uODM5Yy40NTcuNDMyIDEuMDA0Ljc1MSAxLjQ5Ljk3MkM0LjcyMiA3LjY5MyA2LjMxOCA4IDggOHMzLjI3OC0uMzA3IDQuNTEtLjg2N2MuNDg2LS4yMiAxLjAzMy0uNTQgMS40OS0uOTcyVjdjMCAuNDI0LS4xNTUuODAyLS40MTEgMS4xMzNhNC41MSA0LjUxIDAgMCAwLTQuODE1IDEuODQzQTEyIDEyIDAgMCAxIDggMTBjLTEuNTczIDAtMy4wMjItLjI4OS00LjA5Ni0uNzc3QzIuODc1IDguNzU1IDIgOC4wMDcgMiA3bTYuMjU3IDMuOTk4TDggMTFjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxMGMwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxMi43MTEgNi40MjcgMTMgOCAxM2guMDI3YTQuNTUgNC41NSAwIDAgMSAuMjMtMi4wMDJtLS4wMDIgM0w4IDE0Yy0xLjY4MiAwLTMuMjc4LS4zMDctNC41MS0uODY3LS40ODYtLjIyLTEuMDMzLS41NC0xLjQ5LS45NzJWMTNjMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzExIDYuNDI3IDE2IDggMTZjLjUzNiAwIDEuMDU4LS4wMzQgMS41NTUtLjA5N2E0LjUgNC41IDAgMCAxLTEuMy0xLjkwNVwifSxcImNoaWxkXCI6W119XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gQnNEYXRhYmFzZUZpbGxYIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcImZpbGxcIjpcImN1cnJlbnRDb2xvclwiLFwidmlld0JveFwiOlwiMCAwIDE2IDE2XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTggMWMtMS41NzMgMC0zLjAyMi4yODktNC4wOTYuNzc3QzIuODc1IDIuMjQ1IDIgMi45OTMgMiA0cy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggNi43MTEgNi40MjcgNyA4IDdzMy4wMjItLjI4OSA0LjA5Ni0uNzc3QzEzLjEyNSA1Ljc1NSAxNCA1LjAwNyAxNCA0cy0uODc1LTEuNzU1LTEuOTA0LTIuMjIzQzExLjAyMiAxLjI4OSA5LjU3MyAxIDggMVwifSxcImNoaWxkXCI6W119LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0yIDd2LS44MzljLjQ1Ny40MzIgMS4wMDQuNzUxIDEuNDkuOTcyQzQuNzIyIDcuNjkzIDYuMzE4IDggOCA4czMuMjc4LS4zMDcgNC41MS0uODY3Yy40ODYtLjIyIDEuMDMzLS41NCAxLjQ5LS45NzJWN2MwIC40MjQtLjE1NS44MDItLjQxMSAxLjEzM2E0LjUxIDQuNTEgMCAwIDAtNC44MTUgMS44NDNBMTIgMTIgMCAwIDEgOCAxMGMtMS41NzMgMC0zLjAyMi0uMjg5LTQuMDk2LS43NzdDMi44NzUgOC43NTUgMiA4LjAwNyAyIDdtNi4yNTcgMy45OThMOCAxMWMtMS42ODIgMC0zLjI3OC0uMzA3LTQuNTEtLjg2Ny0uNDg2LS4yMi0xLjAzMy0uNTQtMS40OS0uOTcyVjEwYzAgMS4wMDcuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDEyLjcxMSA2LjQyNyAxMyA4IDEzaC4wMjdhNC41NSA0LjU1IDAgMCAxIC4yMy0yLjAwMm0tLjAwMiAzTDggMTRjLTEuNjgyIDAtMy4yNzgtLjMwNy00LjUxLS44NjctLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlYxM2MwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MTEgNi40MjcgMTYgOCAxNmMuNTM2IDAgMS4wNTgtLjAzNCAxLjU1NS0uMDk3YTQuNSA0LjUgMCAwIDEtMS4zLTEuOTA1XCJ9LFwiY2hpbGRcIjpbXX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTEyLjUgMTZhMy41IDMuNSAwIDEgMCAwLTcgMy41IDMuNSAwIDAgMCAwIDdtLS42NDYtNC44NTQuNjQ2LjY0Ny42NDYtLjY0N2EuNS41IDAgMCAxIC43MDguNzA4bC0uNjQ3LjY0Ni42NDcuNjQ2YS41LjUgMCAwIDEtLjcwOC43MDhsLS42NDYtLjY0Ny0uNjQ2LjY0N2EuNS41IDAgMCAxLS43MDgtLjcwOGwuNjQ3LS42NDYtLjY0Ny0uNjQ2YS41LjUgMCAwIDEgLjcwOC0uNzA4XCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlRmlsbCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0zLjkwNCAxLjc3N0M0Ljk3OCAxLjI4OSA2LjQyNyAxIDggMXMzLjAyMi4yODkgNC4wOTYuNzc3QzEzLjEyNSAyLjI0NSAxNCAyLjk5MyAxNCA0cy0uODc1IDEuNzU1LTEuOTA0IDIuMjIzQzExLjAyMiA2LjcxMSA5LjU3MyA3IDggN3MtMy4wMjItLjI4OS00LjA5Ni0uNzc3QzIuODc1IDUuNzU1IDIgNS4wMDcgMiA0cy44NzUtMS43NTUgMS45MDQtMi4yMjNcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMiA2LjE2MVY3YzAgMS4wMDcuODc1IDEuNzU1IDEuOTA0IDIuMjIzQzQuOTc4IDkuNzEgNi40MjcgMTAgOCAxMHMzLjAyMi0uMjg5IDQuMDk2LS43NzdDMTMuMTI1IDguNzU1IDE0IDguMDA3IDE0IDd2LS44MzljLS40NTcuNDMyLTEuMDA0Ljc1MS0xLjQ5Ljk3MkMxMS4yNzggNy42OTMgOS42ODIgOCA4IDhzLTMuMjc4LS4zMDctNC41MS0uODY3Yy0uNDg2LS4yMi0xLjAzMy0uNTQtMS40OS0uOTcyXCJ9LFwiY2hpbGRcIjpbXX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTIgOS4xNjFWMTBjMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTIuNzExIDYuNDI3IDEzIDggMTNzMy4wMjItLjI4OSA0LjA5Ni0uNzc3QzEzLjEyNSAxMS43NTUgMTQgMTEuMDA3IDE0IDEwdi0uODM5Yy0uNDU3LjQzMi0xLjAwNC43NTEtMS40OS45NzItMS4yMzIuNTYtMi44MjguODY3LTQuNTEuODY3cy0zLjI3OC0uMzA3LTQuNTEtLjg2N2MtLjQ4Ni0uMjItMS4wMzMtLjU0LTEuNDktLjk3MlwifSxcImNoaWxkXCI6W119LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0yIDEyLjE2MVYxM2MwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MTEgNi40MjcgMTYgOCAxNnMzLjAyMi0uMjg5IDQuMDk2LS43NzdDMTMuMTI1IDE0Ljc1NSAxNCAxNC4wMDcgMTQgMTN2LS44MzljLS40NTcuNDMyLTEuMDA0Ljc1MS0xLjQ5Ljk3Mi0xLjIzMi41Ni0yLjgyOC44NjctNC41MS44NjdzLTMuMjc4LS4zMDctNC41MS0uODY3Yy0uNDg2LS4yMi0xLjAzMy0uNTQtMS40OS0uOTcyXCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlR2VhciAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0xMi4wOTYgNi4yMjNBNSA1IDAgMCAwIDEzIDUuNjk4VjdjMCAuMjg5LS4yMTMuNjU0LS43NTMgMS4wMDdhNC41IDQuNSAwIDAgMSAxLjc1My4yNVY0YzAtMS4wMDctLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFzLTMuMDIyLjI4OS00LjA5Ni43NzdDMi44NzUgMi4yNDUgMiAyLjk5MyAyIDR2OWMwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MSA2LjQyNyAxNiA4IDE2Yy41MzYgMCAxLjA1OC0uMDM0IDEuNTU1LS4wOTdhNC41IDQuNSAwIDAgMS0uODEzLS45MjdROC4zNzggMTUgOCAxNWMtMS40NjQgMC0yLjc2Ni0uMjctMy42ODItLjY4N0MzLjM1NiAxMy44NzUgMyAxMy4zNzMgMyAxM3YtMS4zMDJjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggMTIuNzEgNi40MjcgMTMgOCAxM2guMDI3YTQuNiA0LjYgMCAwIDEgMC0xSDhjLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgMTAuODc1IDMgMTAuMzczIDMgMTBWOC42OThjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggOS43MSA2LjQyNyAxMCA4IDEwcS4zOTMgMCAuNzc0LS4wMjRhNC41IDQuNSAwIDAgMSAxLjEwMi0xLjEzMkM5LjI5OCA4Ljk0NCA4LjY2NiA5IDggOWMtMS40NjQgMC0yLjc2Ni0uMjctMy42ODItLjY4N0MzLjM1NiA3Ljg3NSAzIDcuMzczIDMgN1Y1LjY5OGMuMjcxLjIwMi41OC4zNzguOTA0LjUyNUM0Ljk3OCA2LjcxMSA2LjQyNyA3IDggN3MzLjAyMi0uMjg5IDQuMDk2LS43NzdNMyA0YzAtLjM3NC4zNTYtLjg3NSAxLjMxOC0xLjMxM0M1LjIzNCAyLjI3MSA2LjUzNiAyIDggMnMyLjc2Ni4yNyAzLjY4Mi42ODdDMTIuNjQ0IDMuMTI1IDEzIDMuNjI3IDEzIDRjMCAuMzc0LS4zNTYuODc1LTEuMzE4IDEuMzEzQzEwLjc2NiA1LjcyOSA5LjQ2NCA2IDggNnMtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgNC44NzUgMyA0LjM3MyAzIDRcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTEuODg2IDkuNDZjLjE4LS42MTMgMS4wNDgtLjYxMyAxLjIyOSAwbC4wNDMuMTQ4YS42NC42NCAwIDAgMCAuOTIxLjM4MmwuMTM2LS4wNzRjLjU2MS0uMzA2IDEuMTc1LjMwOC44Ny44NjlsLS4wNzUuMTM2YS42NC42NCAwIDAgMCAuMzgyLjkybC4xNDkuMDQ1Yy42MTIuMTguNjEyIDEuMDQ4IDAgMS4yMjlsLS4xNS4wNDNhLjY0LjY0IDAgMCAwLS4zOC45MjFsLjA3NC4xMzZjLjMwNS41NjEtLjMwOSAxLjE3NS0uODcuODdsLS4xMzYtLjA3NWEuNjQuNjQgMCAwIDAtLjkyLjM4MmwtLjA0NS4xNDljLS4xOC42MTItMS4wNDguNjEyLTEuMjI5IDBsLS4wNDMtLjE1YS42NC42NCAwIDAgMC0uOTIxLS4zOGwtLjEzNi4wNzRjLS41NjEuMzA1LTEuMTc1LS4zMDktLjg3LS44N2wuMDc1LS4xMzZhLjY0LjY0IDAgMCAwLS4zODItLjkybC0uMTQ4LS4wNDVjLS42MTMtLjE4LS42MTMtMS4wNDggMC0xLjIyOWwuMTQ4LS4wNDNhLjY0LjY0IDAgMCAwIC4zODItLjkyMWwtLjA3NC0uMTM2Yy0uMzA2LS41NjEuMzA4LTEuMTc1Ljg2OS0uODdsLjEzNi4wNzVhLjY0LjY0IDAgMCAwIC45Mi0uMzgyek0xNCAxMi41YTEuNSAxLjUgMCAxIDEtMyAwIDEuNSAxLjUgMCAwIDEgMyAwXCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlTG9jayAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0xMyA1LjY5OGE1IDUgMCAwIDEtLjkwNC41MjVDMTEuMDIyIDYuNzExIDkuNTczIDcgOCA3cy0zLjAyMi0uMjg5LTQuMDk2LS43NzdBNSA1IDAgMCAxIDMgNS42OThWN2MwIC4zNzQuMzU2Ljg3NSAxLjMxOCAxLjMxM0M1LjIzNCA4LjcyOSA2LjUzNiA5IDggOWMuNjY2IDAgMS4yOTgtLjA1NiAxLjg3Ni0uMTU2LS40My4zMS0uODA0LjY5My0xLjEwMiAxLjEzMkExMiAxMiAwIDAgMSA4IDEwYy0xLjU3MyAwLTMuMDIyLS4yODktNC4wOTYtLjc3N0E1IDUgMCAwIDEgMyA4LjY5OFYxMGMwIC4zNzQuMzU2Ljg3NSAxLjMxOCAxLjMxM0M1LjIzNCAxMS43MjkgNi41MzYgMTIgOCAxMmguMDI3YTQuNiA0LjYgMCAwIDAtLjAxNy44QTIgMiAwIDAgMCA4IDEzYy0xLjU3MyAwLTMuMDIyLS4yODktNC4wOTYtLjc3N0E1IDUgMCAwIDEgMyAxMS42OThWMTNjMCAuMzc0LjM1Ni44NzUgMS4zMTggMS4zMTNDNS4yMzQgMTQuNzI5IDYuNTM2IDE1IDggMTVjMCAuMzYzLjA5Ny43MDQuMjY2Ljk5N1E4LjEzNCAxNi4wMDEgOCAxNmMtMS41NzMgMC0zLjAyMi0uMjg5LTQuMDk2LS43NzdDMi44NzUgMTQuNzU1IDIgMTQuMDA3IDIgMTNWNGMwLTEuMDA3Ljg3NS0xLjc1NSAxLjkwNC0yLjIyM0M0Ljk3OCAxLjI4OSA2LjQyNyAxIDggMXMzLjAyMi4yODkgNC4wOTYuNzc3QzEzLjEyNSAyLjI0NSAxNCAyLjk5MyAxNCA0djQuMjU2YTQuNSA0LjUgMCAwIDAtMS43NTMtLjI0OUMxMi43ODcgNy42NTQgMTMgNy4yODkgMTMgN3ptLTguNjgyLTMuMDFDMy4zNTYgMy4xMjQgMyAzLjYyNSAzIDRjMCAuMzc0LjM1Ni44NzUgMS4zMTggMS4zMTNDNS4yMzQgNS43MjkgNi41MzYgNiA4IDZzMi43NjYtLjI3IDMuNjgyLS42ODdDMTIuNjQ0IDQuODc1IDEzIDQuMzczIDEzIDRjMC0uMzc0LS4zNTYtLjg3NS0xLjMxOC0xLjMxM0MxMC43NjYgMi4yNzEgOS40NjQgMiA4IDJzLTIuNzY2LjI3LTMuNjgyLjY4N1pcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNOSAxM2ExIDEgMCAwIDEgMS0xdi0xYTIgMiAwIDEgMSA0IDB2MWExIDEgMCAwIDEgMSAxdjJhMSAxIDAgMCAxLTEgMWgtNGExIDEgMCAwIDEtMS0xem0zLTNhMSAxIDAgMCAwLTEgMXYxaDJ2LTFhMSAxIDAgMCAwLTEtMVwifSxcImNoaWxkXCI6W119XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gQnNEYXRhYmFzZVNsYXNoIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcImZpbGxcIjpcImN1cnJlbnRDb2xvclwiLFwidmlld0JveFwiOlwiMCAwIDE2IDE2XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTEzLjg3OSAxMC40MTRhMi41MDEgMi41MDEgMCAwIDAtMy40NjUgMy40NjV6bS43MDcuNzA3LTMuNDY1IDMuNDY1YTIuNTAxIDIuNTAxIDAgMCAwIDMuNDY1LTMuNDY1bS00LjU2LTEuMDk2YTMuNSAzLjUgMCAxIDEgNC45NDkgNC45NSAzLjUgMy41IDAgMCAxLTQuOTUtNC45NVpcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTIuMDk2IDYuMjIzQTUgNSAwIDAgMCAxMyA1LjY5OFY3YzAgLjI4OS0uMjEzLjY1NC0uNzUzIDEuMDA3YTQuNSA0LjUgMCAwIDEgMS43NTMuMjVWNGMwLTEuMDA3LS44NzUtMS43NTUtMS45MDQtMi4yMjNDMTEuMDIyIDEuMjg5IDkuNTczIDEgOCAxcy0zLjAyMi4yODktNC4wOTYuNzc3QzIuODc1IDIuMjQ1IDIgMi45OTMgMiA0djljMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzEgNi40MjcgMTYgOCAxNmMuNTM2IDAgMS4wNTgtLjAzNCAxLjU1NS0uMDk3YTQuNSA0LjUgMCAwIDEtLjgxMy0uOTI3UTguMzc4IDE1IDggMTVjLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgMTMuODc1IDMgMTMuMzczIDMgMTN2LTEuMzAyYy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDEyLjcxIDYuNDI3IDEzIDggMTNoLjAyN2E0LjYgNC42IDAgMCAxIDAtMUg4Yy0xLjQ2NCAwLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDEwLjg3NSAzIDEwLjM3MyAzIDEwVjguNjk4Yy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDkuNzEgNi40MjcgMTAgOCAxMHEuMzkzIDAgLjc3NC0uMDI0YTQuNSA0LjUgMCAwIDEgMS4xMDItMS4xMzJDOS4yOTggOC45NDQgOC42NjYgOSA4IDljLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgNy44NzUgMyA3LjM3MyAzIDdWNS42OThjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggNi43MTEgNi40MjcgNyA4IDdzMy4wMjItLjI4OSA0LjA5Ni0uNzc3TTMgNGMwLS4zNzQuMzU2LS44NzUgMS4zMTgtMS4zMTNDNS4yMzQgMi4yNzEgNi41MzYgMiA4IDJzMi43NjYuMjcgMy42ODIuNjg3QzEyLjY0NCAzLjEyNSAxMyAzLjYyNyAxMyA0YzAgLjM3NC0uMzU2Ljg3NS0xLjMxOCAxLjMxM0MxMC43NjYgNS43MjkgOS40NjQgNiA4IDZzLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDQuODc1IDMgNC4zNzMgMyA0XCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlVXAgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwiY3VycmVudENvbG9yXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMTYgMTZcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTIuNSAxNmEzLjUgMy41IDAgMSAwIDAtNyAzLjUgMy41IDAgMCAwIDAgN20uMzU0LTUuODU0IDEuNSAxLjVhLjUuNSAwIDAgMS0uNzA4LjcwOEwxMyAxMS43MDdWMTQuNWEuNS41IDAgMCAxLTEgMHYtMi43OTNsLS42NDYuNjQ3YS41LjUgMCAwIDEtLjcwOC0uNzA4bDEuNS0xLjVhLjUuNSAwIDAgMSAuNzA4IDBcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTIuMDk2IDYuMjIzQTUgNSAwIDAgMCAxMyA1LjY5OFY3YzAgLjI4OS0uMjEzLjY1NC0uNzUzIDEuMDA3YTQuNSA0LjUgMCAwIDEgMS43NTMuMjVWNGMwLTEuMDA3LS44NzUtMS43NTUtMS45MDQtMi4yMjNDMTEuMDIyIDEuMjg5IDkuNTczIDEgOCAxcy0zLjAyMi4yODktNC4wOTYuNzc3QzIuODc1IDIuMjQ1IDIgMi45OTMgMiA0djljMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzEgNi40MjcgMTYgOCAxNmMuNTM2IDAgMS4wNTgtLjAzNCAxLjU1NS0uMDk3YTQuNSA0LjUgMCAwIDEtLjgxMy0uOTI3UTguMzc4IDE1IDggMTVjLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgMTMuODc1IDMgMTMuMzczIDMgMTN2LTEuMzAyYy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDEyLjcxIDYuNDI3IDEzIDggMTNoLjAyN2E0LjYgNC42IDAgMCAxIDAtMUg4Yy0xLjQ2NCAwLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDEwLjg3NSAzIDEwLjM3MyAzIDEwVjguNjk4Yy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDkuNzEgNi40MjcgMTAgOCAxMHEuMzkzIDAgLjc3NC0uMDI0YTQuNSA0LjUgMCAwIDEgMS4xMDItMS4xMzJDOS4yOTggOC45NDQgOC42NjYgOSA4IDljLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgNy44NzUgMyA3LjM3MyAzIDdWNS42OThjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggNi43MTEgNi40MjcgNyA4IDdzMy4wMjItLjI4OSA0LjA5Ni0uNzc3TTMgNGMwLS4zNzQuMzU2LS44NzUgMS4zMTgtMS4zMTNDNS4yMzQgMi4yNzEgNi41MzYgMiA4IDJzMi43NjYuMjcgMy42ODIuNjg3QzEyLjY0NCAzLjEyNSAxMyAzLjYyNyAxMyA0YzAgLjM3NC0uMzU2Ljg3NS0xLjMxOCAxLjMxM0MxMC43NjYgNS43MjkgOS40NjQgNiA4IDZzLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDQuODc1IDMgNC4zNzMgMyA0XCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RhdGFiYXNlWCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJjdXJyZW50Q29sb3JcIixcInZpZXdCb3hcIjpcIjAgMCAxNiAxNlwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0xMi4wOTYgNi4yMjNBNSA1IDAgMCAwIDEzIDUuNjk4VjdjMCAuMjg5LS4yMTMuNjU0LS43NTMgMS4wMDdhNC41IDQuNSAwIDAgMSAxLjc1My4yNVY0YzAtMS4wMDctLjg3NS0xLjc1NS0xLjkwNC0yLjIyM0MxMS4wMjIgMS4yODkgOS41NzMgMSA4IDFzLTMuMDIyLjI4OS00LjA5Ni43NzdDMi44NzUgMi4yNDUgMiAyLjk5MyAyIDR2OWMwIDEuMDA3Ljg3NSAxLjc1NSAxLjkwNCAyLjIyM0M0Ljk3OCAxNS43MSA2LjQyNyAxNiA4IDE2Yy41MzYgMCAxLjA1OC0uMDM0IDEuNTU1LS4wOTdhNC41IDQuNSAwIDAgMS0uODEzLS45MjdROC4zNzggMTUgOCAxNWMtMS40NjQgMC0yLjc2Ni0uMjctMy42ODItLjY4N0MzLjM1NiAxMy44NzUgMyAxMy4zNzMgMyAxM3YtMS4zMDJjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggMTIuNzEgNi40MjcgMTMgOCAxM2guMDI3YTQuNiA0LjYgMCAwIDEgMC0xSDhjLTEuNDY0IDAtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgMTAuODc1IDMgMTAuMzczIDMgMTBWOC42OThjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggOS43MSA2LjQyNyAxMCA4IDEwcS4zOTMgMCAuNzc0LS4wMjRhNC41IDQuNSAwIDAgMSAxLjEwMi0xLjEzMkM5LjI5OCA4Ljk0NCA4LjY2NiA5IDggOWMtMS40NjQgMC0yLjc2Ni0uMjctMy42ODItLjY4N0MzLjM1NiA3Ljg3NSAzIDcuMzczIDMgN1Y1LjY5OGMuMjcxLjIwMi41OC4zNzguOTA0LjUyNUM0Ljk3OCA2LjcxMSA2LjQyNyA3IDggN3MzLjAyMi0uMjg5IDQuMDk2LS43NzdNMyA0YzAtLjM3NC4zNTYtLjg3NSAxLjMxOC0xLjMxM0M1LjIzNCAyLjI3MSA2LjUzNiAyIDggMnMyLjc2Ni4yNyAzLjY4Mi42ODdDMTIuNjQ0IDMuMTI1IDEzIDMuNjI3IDEzIDRjMCAuMzc0LS4zNTYuODc1LTEuMzE4IDEuMzEzQzEwLjc2NiA1LjcyOSA5LjQ2NCA2IDggNnMtMi43NjYtLjI3LTMuNjgyLS42ODdDMy4zNTYgNC44NzUgMyA0LjM3MyAzIDRcIn0sXCJjaGlsZFwiOltdfSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTIuNSAxNmEzLjUgMy41IDAgMSAwIDAtNyAzLjUgMy41IDAgMCAwIDAgN20tLjY0Ni00Ljg1NC42NDYuNjQ3LjY0Ni0uNjQ3YS41LjUgMCAwIDEgLjcwOC43MDhsLS42NDcuNjQ2LjY0Ny42NDZhLjUuNSAwIDAgMS0uNzA4LjcwOGwtLjY0Ni0uNjQ3LS42NDYuNjQ3YS41LjUgMCAwIDEtLjcwOC0uNzA4bC42NDctLjY0Ni0uNjQ3LS42NDZhLjUuNSAwIDAgMSAuNzA4LS43MDhcIn0sXCJjaGlsZFwiOltdfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEJzRGF0YWJhc2UgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwiY3VycmVudENvbG9yXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMTYgMTZcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNNC4zMTggMi42ODdDNS4yMzQgMi4yNzEgNi41MzYgMiA4IDJzMi43NjYuMjcgMy42ODIuNjg3QzEyLjY0NCAzLjEyNSAxMyAzLjYyNyAxMyA0YzAgLjM3NC0uMzU2Ljg3NS0xLjMxOCAxLjMxM0MxMC43NjYgNS43MjkgOS40NjQgNiA4IDZzLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDQuODc1IDMgNC4zNzMgMyA0YzAtLjM3NC4zNTYtLjg3NSAxLjMxOC0xLjMxM00xMyA1LjY5OFY3YzAgLjM3NC0uMzU2Ljg3NS0xLjMxOCAxLjMxM0MxMC43NjYgOC43MjkgOS40NjQgOSA4IDlzLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDcuODc1IDMgNy4zNzMgMyA3VjUuNjk4Yy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDYuNzExIDYuNDI3IDcgOCA3czMuMDIyLS4yODkgNC4wOTYtLjc3N0E1IDUgMCAwIDAgMTMgNS42OThNMTQgNGMwLTEuMDA3LS44NzUtMS43NTUtMS45MDQtMi4yMjNDMTEuMDIyIDEuMjg5IDkuNTczIDEgOCAxcy0zLjAyMi4yODktNC4wOTYuNzc3QzIuODc1IDIuMjQ1IDIgMi45OTMgMiA0djljMCAxLjAwNy44NzUgMS43NTUgMS45MDQgMi4yMjNDNC45NzggMTUuNzEgNi40MjcgMTYgOCAxNnMzLjAyMi0uMjg5IDQuMDk2LS43NzdDMTMuMTI1IDE0Ljc1NSAxNCAxNC4wMDcgMTQgMTN6bS0xIDQuNjk4VjEwYzAgLjM3NC0uMzU2Ljg3NS0xLjMxOCAxLjMxM0MxMC43NjYgMTEuNzI5IDkuNDY0IDEyIDggMTJzLTIuNzY2LS4yNy0zLjY4Mi0uNjg3QzMuMzU2IDEwLjg3NSAzIDEwLjM3MyAzIDEwVjguNjk4Yy4yNzEuMjAyLjU4LjM3OC45MDQuNTI1QzQuOTc4IDkuNzEgNi40MjcgMTAgOCAxMHMzLjAyMi0uMjg5IDQuMDk2LS43NzdBNSA1IDAgMCAwIDEzIDguNjk4bTAgM1YxM2MwIC4zNzQtLjM1Ni44NzUtMS4zMTggMS4zMTNDMTAuNzY2IDE0LjcyOSA5LjQ2NCAxNSA4IDE1cy0yLjc2Ni0uMjctMy42ODItLjY4N0MzLjM1NiAxMy44NzUgMyAxMy4zNzMgMyAxM3YtMS4zMDJjLjI3MS4yMDIuNTguMzc4LjkwNC41MjVDNC45NzggMTIuNzEgNi40MjcgMTMgOCAxM3MzLjAyMi0uMjg5IDQuMDk2LS43NzdjLjMyNC0uMTQ3LjYzMy0uMzIzLjkwNC0uNTI1XCJ9LFwiY2hpbGRcIjpbXX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBCc0RldmljZUhkZEZpbGwgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwiY3VycmVudENvbG9yXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMTYgMTZcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNOC43ODUgOS44OTZBMy4wMDEgMy4wMDEgMCAwIDAgOCA0YTMgMyAwIDAgMC0uODkxIDUuODY1Yy42NjctLjQ0IDEuMzk2LS45MSAxLjk1NS0xLjI2OC4yMjQtLjE0NC40ODMuMTE1LjM0LjM0ek05IDdhMSAxIDAgMSAxLTIgMCAxIDEgMCAwIDEgMiAwXCJ9LFwiY2hpbGRcIjpbXX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTQgMGEyIDIgMCAwIDAtMiAydjEyYTIgMiAwIDAgMCAyIDJoOGEyIDIgMCAwIDAgMi0yVjJhMiAyIDAgMCAwLTItMnptOSAxLjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDAgMSAxIDBtMCAxM2EuNS41IDAgMSAxLTEgMCAuNS41IDAgMCA
+"use client";
+<<<<<<< HEAD
+import React, { useState, useRef } from 'react';
+=======
+import React, { useState, useRef, useEffect } from 'react';
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+import InstagramIcon from '/public/instagram_icon.svg';
+import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
+import LineIcon from '/public/line_icon.svg';
+import ThreadsIcon from '/public/threads_icon.svg';
+import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'react-icons/fa';
+import { MdKeyboardArrowRight } from "react-icons/md";
+import usePostCreation from '@/app/components/logic/writeSeq';
+import AdStepComponent from './AdStepComponent';
+<<<<<<< HEAD
+=======
+import Image from 'next/image';
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+
+const steps = [
+  { icon: <FaCamera />, label: '미디어' },
+  { icon: <FaPen />, label: '내용' },
+  { icon: <FaTags />, label: '태그' },
+  { icon: <FaCheck />, label: '설정 및 실행' },
+];
+
+export default function WritePinStory({ isOpen, closeModal, addPin }) {
+  const {
+    state,
+    setStep,
+    setTitle,
+    setDiscountType,
+    setDiscountValue,
+    setBundleDiscountType,
+    setBundleDiscountValue,
+    setType,
+    setContent,
+    addImage,
+    setShortVideo,
+    clearErrors,
+    setPlatforms,
+    setProfilePublic,
+    setPlatformLink,
+    togglePlatformSelection,
+    setMonetize,
+    setAdOption,
+    setBoost,
+    setStartDate,
+    setEndDate,
+    setStock,
+    setRadius,
+    setLocation,
+    setPayment,
+    setSelectedCategory,
+    setBundleNValue,
+    setBundleType,
+    setPaymentMode
+  } = usePostCreation();
+
+  const [selectedDefaultTags, setSelectedDefaultTags] = useState([]);
+  const [newTags, setNewTags] = useState([]);
+  const [showMonetizeModal, setShowMonetizeModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [industryType, setIndustryType] = useState('');
+  const [showAdMonetizeModal, setshowAdMonetizeModal] = useState(false);
+
+  const fileInputRef = useRef(null);
+
+  const handleTitleChange = (e) => setTitle(e.target.value);
+  const handleTypeChange = (e) => setType(e.target.value);
+  const handleContentChange = (e) => setContent(e.target.value);
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => addImage(file));
+  };
+
+  const handleShortVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size <= 50 * 1024 * 1024) {
+      setShortVideo(file);
+    } else {
+      alert('비디오 파일 크기는 50MB 이하로 업로드 해주세요.');
+    }
+  };
+
+  const handlePost = () => {
+    if (state.type === '광고') {
+      setshowAdMonetizeModal(true); 
+    } else if (state.type !== '광고' && !showMonetizeModal) {
+      setShowMonetizeModal(true);
+    } else {
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, state.type === '광고' ? true : state.monetize);
+      closeModal();
+    }
+  };
+
+  const handleOutsideClick = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      closeModal();
+    }
+  };
+
+  const handlePlatformLinkChange = (e, platform) => {
+    const value = e.target.value;
+    setPlatformLink(platform, value);
+  };
+
+  const handleDefaultTagClick = (tag) => {
+    setSelectedDefaultTags(prev => {
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      } 
+      else if (prev.length < 5) {
+        return [...prev, tag];
+      } 
+      else {
+        return prev;
+      }
+    });
+  };
+  
+
+  const handleNewTagInputKeyDown = (e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      const newTag = e.target.value.trim();
+      if (!newTags.includes(newTag) && !selectedDefaultTags.includes(newTag) && (newTags.length + selectedDefaultTags.length) < 10) {
+        setNewTags(prev => [...prev, newTag]);
+        e.target.value = '';
+      }
+    }
+  };
+
+  const removeNewTag = (tag) => {
+    setNewTags(prev => prev.filter(t => t !== tag));
+  };
+
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        if (state.imageFiles.length < 4) {
+          addImage(file);
+        }
+      } else if (file.type.startsWith('video/')) {
+        if (file.size <= 50 * 1024 * 1024) {
+          setShortVideo(file);
+        } else {
+          alert('비디오 파일 크기는 50MB 이하로 업로드 해주세요.');
+        }
+      }
+    });
+  };
+
+  const handleMonetizeChoice = (choice) => {
+    if (choice) {
+<<<<<<< HEAD
+      setMonetize(true);
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, true);
+      closeModal();
+=======
+      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
+      if (confirmation) {
+        setMonetize(false);
+        const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+        addPin(fileUrls, false);
+        closeModal();
+      }else{
+        setShowConfirmModal(false);
+        setshowAdMonetizeModal(false);
+        setMonetize(false);
+      }
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+    } else {
+      setShowConfirmModal(true);
+      setshowAdMonetizeModal(true);
+    }
+  };
+
+  const handleConfirmChoice = (choice) => {
+    if (choice) {
+<<<<<<< HEAD
+      setMonetize(false);
+      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+      addPin(fileUrls, false);
+      closeModal();
+=======
+      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
+      if (confirmation) {
+        setMonetize(false);
+        const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
+        addPin(fileUrls, false);
+        closeModal();
+      }else{
+        setShowConfirmModal(false);
+        setshowAdMonetizeModal(false);
+        setMonetize(false);
+      }
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+    } else {
+      setShowConfirmModal(false);
+      setShowMonetizeModal(true);
+    }
+  };
+
+  const handleStep = (nextStep) => {
+    setStep(nextStep);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setIndustryType('');
+  };
+
+  const handleAdOptionChange = (event) => {
+    setAdOption(event.target.value);
+  };
+
+  const handlePaymentModeChange = (e) => {
+    setPaymentMode((prevState) => ({
+      ...prevState,
+      paymentMode: e.target.value,
+    }));
+  };
+<<<<<<< HEAD
+  
+
+  const renderStepIndicator = () => (
+    <div className="flex mb-6 justify-start overflow-y-auto">
+=======
+
+  const [wallpaper, setWallpaper] = useState("");
+
+  const wallpaperStyles = {
+    "유통": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+      `,
+      backgroundSize: '20px 20px, 20px 20px, 60px 60px', /* 각 패턴의 크기 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 */
+      backgroundRepeat: 'repeat', /* 배경 반복 설정 */      // backgroundImage: 'url(/box.jpg)',
+      // backgroundSize: 'contain',
+      // backgroundRepeat: 'norepeat',
+    },
+    "이동형 판매": {
+      backgroundColor: '#B22222', /* 기본 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+        radial-gradient(circle, rgba(0, 0, 0, 0.2) 25%, transparent 50%)
+      `,
+      backgroundSize: '40px 40px, 40px 40px, 100px 100px', /* 각 패턴의 크기 설정 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 설정 */
+      backgroundRepeat: 'repeat', /* 패턴 반복 설정 */
+    },
+    "요식업": {
+      backgroundColor: '#8B4513', /* 벽돌 색상 */
+      backgroundImage: `
+        linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%)
+      `,
+      backgroundSize: '13px 13px, 29px 29px, 37px 37px, 53px 53px', /* 각 gradient의 크기 설정 */
+      backgroundPosition: '0 0, 0 0, 0 0, 0 0', /* 각 gradient의 위치 설정 */
+      backgroundRepeat: 'repeat', /* 배경 반복 설정 */
+    },
+    "서비스업": {
+      backgroundColor: '#4CAF50',
+      backgroundImage: 'linear-gradient(135deg, #45a247 25%, transparent 25%), linear-gradient(225deg, #45a247 25%, transparent 25%), linear-gradient(45deg, #45a247 25%, transparent 25%), linear-gradient(315deg, #45a247 25%, #4CAF50 25%)',
+      backgroundPosition: '10px 0, 10px 0, 0 0, 0 0',
+      backgroundSize: '20px 20px',
+      backgroundRepeat: 'repeat'
+    }
+  };
+  
+  useEffect(() => {
+    if (state.type !== '광고') {
+      setWallpaper(null);
+    }else{
+      setWallpaper(state.selectedCategory);
+    }
+  }, [state.type]);
+
+  const renderStepIndicator = () => (
+    <div className="flex mb-6 justify-around items-center overflow-y-auto">
+      <div className='flex flex-rows'>
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+      {steps.map((stepItem, index) => (
+        <div key={index} className={`flex flex-col items-center mx-2 ${index === state.step - 1 ? 'text-purple-500' : 'text-gray-400'}`}>
+          <div className="flex flex-row items-center">
+            <div className={`rounded-full py-2 px-1 ${index === state.step - 1 ? 'purple-100' : 'gray-100'}`}>
+              {stepItem.icon}
+            </div>
+            {index !== steps.length - 1 && (
+              <div className={`rounded-full py-2 px-1 ${index === state.step - 1 ? 'purple-100' : 'gray-100'}`}>
+                {<MdKeyboardArrowRight />}
+              </div>
+            )}
+          </div>
+          <span className="text-xs mt-1">{stepItem.label}</span>
+        </div>
+      ))}
+<<<<<<< HEAD
+=======
+      </div>
+      <span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+    </div>
+  );
+
+  const renderStep = () => {
+    switch (state.step) {
+      case 1:
+        return (
+          <div className="px-4 md:px-6 space-y-4 overflow-x-hidden">
+            <div className="grid grid-cols-2 gap-4 h-60">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 relative overflow-hidden">
+                {state.imageFiles.length > 0 ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img src={URL.createObjectURL(state.imageFiles[0])} alt="Uploaded" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <>
+                    <FaImage className="text-3xl text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-600">사진 촬영</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  onChange={handleImageChange}
+                />
+              </div>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 relative overflow-hidden">
+                {state.shortVideo ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <video src={URL.createObjectURL(state.shortVideo)} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <>
+                    <FaVideo className="text-3xl text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-600">영상 촬영</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="video/*"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  onChange={handleShortVideoChange}
+                />
+              </div>
+            </div>
+            <input
+              type="file"
+              multiple
+              accept="image/*,video/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+            />
+            <div className='py-3'>
+              <button
+                className="w-full py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+                onClick={() => fileInputRef.current.click()}
+              >
+                기존 미디어 추가
+              </button>
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-2">
+            <div className="flex items-center w-full space-x-2">
+              <select
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={state.type}
+                onChange={handleTypeChange}
+              >
+                <option value="광고">광고</option>
+                <option value="여행메모">여행메모</option>
+                <option value="리뷰">리뷰</option>
+              </select>
+              {state.type === '광고' && (
+                <select
+                  className="w-full border rounded-lg p-2"
+                  value={state.selectedCategory}
+<<<<<<< HEAD
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+=======
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value)
+                    setWallpaper(e.target.value)
+                  }}
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+                >
+                  <option value="">선택</option>
+                  <option value="유통">유통</option>
+                  <option value="요식업">요식업</option>
+                  <option value="이동형 판매">이동형 판매</option>
+                  <option value="서비스업">서비스업</option>
+                </select>
+              )}
+            </div>
+            
+<<<<<<< HEAD
+            {state.type === '여행메모' && (
+=======
+            {state.type === '여행메모' && 
+            (
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+              <textarea
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                rows="10"
+                placeholder="여행 기록을 입력하세요..."
+                value={state.content}
+                onChange={handleContentChange}
+              ></textarea>
+            )}
+            {state.type === '리뷰' && (
+              <div className="space-y-4">
+                <textarea
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows="5"
+                  placeholder="리뷰 내용을 입력하세요..."
+                  value={state.content}
+                  onChange={handleContentChange}
+                ></textarea>
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="평점 (1-5)"
+                  value={state.rating}
+                  onChange={(e) => setRating(e.target.value)}
+                />
+              </div>
+            )}
+            { <AdStepComponent
+                state={state}
+                radius={state.radius}
+                setStep={setStep}
+                setContent={setContent}
+                handleCategoryChange={handleCategoryChange}
+                setSelectedCategory={setSelectedCategory}
+                setIndustryType={setIndustryType}
+                setStock={setStock}
+                setDiscountType={setDiscountType}
+                setDiscountValue={setDiscountValue}
+                setBundleType={setBundleType}
+                setBundleDiscountValue={setBundleDiscountValue}
+                setBundleNValue = {setBundleNValue}
+                handleAdOptionChange={handleAdOptionChange}
+                setRadius={setRadius}
+                setBoost={setBoost}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                setLocation={setLocation}
+                setPayment={setPayment}
+                handleDefaultTagClick={handleDefaultTagClick}
+                handleNewTagInputKeyDown={handleNewTagInputKeyDown}
+                removeNewTag={removeNewTag}
+                newTags={newTags}
+                selectedDefaultTags={selectedDefaultTags}
+                handlePlatformLinkChange={handlePlatformLinkChange}
+                handlePaymentModeChange = {handlePaymentModeChange}
+              />
+            }
+          </div>
+        );
+      case 3:
+        return (
+          <AdStepComponent
+            state={state}
+            setStep={setStep}
+            handleCategoryChange={handleCategoryChange}
+            setSelectedCategory={setSelectedCategory}
+            setIndustryType={setIndustryType}
+            setStock={setStock}
+            setDiscountType={setDiscountType}
+            setDiscountValue={setDiscountValue}
+            setBundleType={setBundleType}
+            setBundleNValue = {setBundleNValue}
+            setBundleDiscountValue={setBundleDiscountValue}
+            handleAdOptionChange={handleAdOptionChange}
+            setRadius={setRadius}
+            setBoost={setBoost}
+            setLocation={setLocation}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            setPayment={setPayment}
+            handleDefaultTagClick={handleDefaultTagClick}
+            handleNewTagInputKeyDown={handleNewTagInputKeyDown}
+            removeNewTag={removeNewTag}
+            newTags={newTags}
+            selectedDefaultTags={selectedDefaultTags}
+            handlePlatformLinkChange={handlePlatformLinkChange}
+            handlePaymentModeChange = {handlePaymentModeChange}
+          />
+        );
+      case 4:
+        return (
+          <AdStepComponent
+            state={state}
+            setStep={setStep}
+            handleCategoryChange={handleCategoryChange}
+            setSelectedCategory={setSelectedCategory}
+            setIndustryType={setIndustryType}
+            setStock={setStock}
+            setDiscountType={setDiscountType}
+            setDiscountValue={setDiscountValue}
+            setBundleType={setBundleType}
+            setBundleNValue = {setBundleNValue}
+            setBundleDiscountValue={setBundleDiscountValue}
+            handleAdOptionChange={handleAdOptionChange}
+            setRadius={setRadius}
+            setBoost={setBoost}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            setLocation={setLocation}
+            setPayment={setPayment}
+            handleDefaultTagClick={handleDefaultTagClick}
+            handleNewTagInputKeyDown={handleNewTagInputKeyDown}
+            removeNewTag={removeNewTag}
+            newTags={newTags}
+            selectedDefaultTags={selectedDefaultTags}
+            handlePlatformLinkChange={handlePlatformLinkChange}
+            handlePaymentModeChange = {handlePaymentModeChange}
+          />
+        //   <div className="space-y-4">
+        //   <div className="space-y-2">
+        //     <label className="block mb-2 text-sm text-gray-600">태그 (최대 10개)</label>
+        //     <div className="flex flex-wrap">
+        //       {defaultTags.map(tag => (
+        //         <button
+        //           key={tag}
+        //           className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+        //           onClick={() => handleDefaultTagClick(tag)}
+        //         >
+        //           {tag}
+        //         </button>
+        //       ))}
+        //     </div>
+        //     <div className="flex flex-wrap ">
+        //       {newTags.map(tag => (
+        //         <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
+        //           <span>{tag}</span>
+        //           <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">&times;</button>
+        //         </div>
+        //       ))}
+        //     </div>
+        //     <input
+        //       type="text"
+        //       className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+        //       placeholder="새 태그를 입력하고 Enter 키를 누르세요"
+        //       onKeyDown={handleNewTagInputKeyDown}
+        //     />
+        //   </div>
+        // </div>
+        );
+      // case 5:
+      //   return (
+      //     <AdStepComponent
+      //       state={state}
+      //       setStep={setStep}
+      //       handleCategoryChange={handleCategoryChange}
+      //       setSelectedCategory={setSelectedCategory}
+      //       setIndustryType={setIndustryType}
+      //       setStock={setStock}
+      //       setDiscountType={setDiscountType}
+      //       setDiscountValue={setDiscountValue}
+      //       setBundleType={setBundleType}
+      //       setBundleNValue = {setBundleNValue}
+      //       setBundleDiscountValue={setBundleDiscountValue}
+      //       handleAdOptionChange={handleAdOptionChange}
+      //       setRadius={setRadius}
+      //       setBoost={setBoost}
+      //       setLocation={setLocation}
+      //       setPayment={setPayment}
+      //       handleDefaultTagClick={handleDefaultTagClick}
+      //       handleNewTagInputKeyDown={handleNewTagInputKeyDown}
+      //       removeNewTag={removeNewTag}
+      //       newTags={newTags}
+      //       selectedDefaultTags={selectedDefaultTags}
+      //       handlePlatformLinkChange={handlePlatformLinkChange}
+      //       handlePaymentModeChange = {handlePaymentModeChange}
+      //     />
+      //   );
+      default:
+        return null;
+    }
+  };
+
+  // const handleNextStep = () => {
+  //   if (state.step === 3 && state.type === '광고') {
+  //     const confirmation = window.confirm('광고를 실행하시겠습니까?');
+  //     if (confirmation) {
+  //       setStep(4);
+  //     }
+  //   } else {
+  //     setStep(state.step < 5 ? state.step + 1 : 1);
+  //   }
+  // };
+  
+
+  const renderStepButtons = () => {
+    return (
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={() => setStep(Math.max(1, state.step - 1))}
+          className={`px-4 py-2 text-gray-600 rounded ${state.step === 1 ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
+          disabled={state.step === 1}
+        >
+          이전
+        </button>
+        <button
+          onClick={() => {
+            // if (state.step === 3 && state.type === '광고') {
+            //   handleNextStep();
+            // }
+             {
+              state.step < 4 ? setStep(state.step + 1) : handlePost();
+            }
+          }}
+          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors duration-300"
+        >
+          {state.step < 4 ? '다음' : '완료'}
+        </button>
+      </div>
+    );
+  };
+
+  const renderMonetizeModal = () => {
+    if (!showMonetizeModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold w-[300px] h-[50px] mb-4">지도핀 공개로 수익화를 하겠습니까?</h2>
+          <div className="flex justify-end space-x-4">
+            <button onClick={() => handleMonetizeChoice(true)} className="px-4 py-2 bg-green-500 text-white rounded">Yes</button>
+            <button onClick={() => handleMonetizeChoice(false)} className="px-4 py-2 bg-red-500 text-white rounded">No</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderConfirmModal = () => {
+    if (!showConfirmModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold w-[300px] h-[50px] mb-4">수익화를 포기하겠습니까?</h2>
+          <div className="flex justify-end space-x-4">
+            <button onClick={() => handleConfirmChoice(true)} className="px-4 py-2 bg-green-500 text-white rounded">Yes</button>
+            <button onClick={() => handleConfirmChoice(false)} className="px-4 py-2 bg-red-500 text-white rounded">No</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAdMonetizeModal = () => {
+    if (!showAdMonetizeModal) return null;
+  
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
+<<<<<<< HEAD
+          <h2 className="text-xl font-bold mb-4">광고를 실행하겠습니까?</h2>
+=======
+          <h2 className="text-xl font-bold mb-4">자신의 기존 광고 채널을 등록하세요</h2>
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+          <div className="flex flex-col space-y-2">
+              <label className="block text-sm text-gray-600">기존 판매 채널 링크</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+<<<<<<< HEAD
+                placeholder="ex.YouTube URL"
+=======
+                placeholder="Channel URL-1"
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+                value={state.platformLinks['youtube'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
+              />
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+<<<<<<< HEAD
+                placeholder="ex.Instagram URL"
+=======
+                placeholder="Channel URL-2"
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+                value={state.platformLinks['instagram'] || ''}
+                onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
+              />
+              <p className="p-2 text-sm text-gray-500">최대 2개 작성</p>
+          </div>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => handleMonetizeChoice(true)}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
+            >
+              예
+            </button>
+            <button
+              onClick={() => handleMonetizeChoice(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-300"
+            >
+              아니오
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
+      <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
+<<<<<<< HEAD
+        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-4 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' }}>
+          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+            <h3 className="text-xl font-semibold text-purple-500">새 핀스토리 작성</h3>
+            <button onClick={closeModal} className="text-gray-500 hover:text-gray-800">
+              &times;
+            </button>
+        </div>
+        <div className='mt-4 flex-1 overflow-auto'>
+          {renderStepIndicator()}
+          {renderStep()}
+        </div>
+        <div className="mt-4">
+          {renderStepButtons()}
+        </div>
+      </div>
+      {renderAdMonetizeModal()}
+=======
+        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
+        
+        <div
+            className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+            style={{
+              height: `87vh`, // padding을 제외한 높이
+              backgroundColor: '#f0f0f0', // 배경색
+            }}
+          >
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+              <div className="text-xl font-semibold text-purple-500">새 핀스토리 작성</div>
+              <button onClick={closeModal} className="text-gray-500 hover:text-gray-800">
+                &times;
+              </button>
+            </div>
+          <div className='mt-4 flex-1 overflow-auto'>
+            {renderStepIndicator()}
+            {renderStep()}
+          </div>
+          <div className="mt-4"> 
+            {renderStepButtons()}
+          </div>
+          </div>
+        </div>
+        {renderAdMonetizeModal()}
+>>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
+      {renderMonetizeModal()}
+      {renderConfirmModal()}
+    </div>
+  );
+}
