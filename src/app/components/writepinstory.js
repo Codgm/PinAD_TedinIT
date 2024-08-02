@@ -1,9 +1,5 @@
 "use client";
-<<<<<<< HEAD
-import React, { useState, useRef } from 'react';
-=======
 import React, { useState, useRef, useEffect } from 'react';
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
 import InstagramIcon from '/public/instagram_icon.svg';
 import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
 import LineIcon from '/public/line_icon.svg';
@@ -12,10 +8,7 @@ import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'rea
 import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
-<<<<<<< HEAD
-=======
 import Image from 'next/image';
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -154,12 +147,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleMonetizeChoice = (choice) => {
     if (choice) {
-<<<<<<< HEAD
-      setMonetize(true);
-      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-      addPin(fileUrls, true);
-      closeModal();
-=======
       const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
       if (confirmation) {
         setMonetize(false);
@@ -171,7 +158,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         setshowAdMonetizeModal(false);
         setMonetize(false);
       }
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
     } else {
       setShowConfirmModal(true);
       setshowAdMonetizeModal(true);
@@ -180,12 +166,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleConfirmChoice = (choice) => {
     if (choice) {
-<<<<<<< HEAD
-      setMonetize(false);
-      const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-      addPin(fileUrls, false);
-      closeModal();
-=======
       const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
       if (confirmation) {
         setMonetize(false);
@@ -197,7 +177,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         setshowAdMonetizeModal(false);
         setMonetize(false);
       }
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
     } else {
       setShowConfirmModal(false);
       setShowMonetizeModal(true);
@@ -223,12 +202,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       paymentMode: e.target.value,
     }));
   };
-<<<<<<< HEAD
-  
-
-  const renderStepIndicator = () => (
-    <div className="flex mb-6 justify-start overflow-y-auto">
-=======
 
   const [wallpaper, setWallpaper] = useState("");
 
@@ -288,7 +261,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const renderStepIndicator = () => (
     <div className="flex mb-6 justify-around items-center overflow-y-auto">
       <div className='flex flex-rows'>
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
       {steps.map((stepItem, index) => (
         <div key={index} className={`flex flex-col items-center mx-2 ${index === state.step - 1 ? 'text-purple-500' : 'text-gray-400'}`}>
           <div className="flex flex-row items-center">
@@ -304,11 +276,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           <span className="text-xs mt-1">{stepItem.label}</span>
         </div>
       ))}
-<<<<<<< HEAD
-=======
       </div>
       <span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
     </div>
   );
 
@@ -391,14 +360,10 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 <select
                   className="w-full border rounded-lg p-2"
                   value={state.selectedCategory}
-<<<<<<< HEAD
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-=======
                   onChange={(e) => {
                     setSelectedCategory(e.target.value)
                     setWallpaper(e.target.value)
                   }}
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
                 >
                   <option value="">선택</option>
                   <option value="유통">유통</option>
@@ -409,12 +374,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               )}
             </div>
             
-<<<<<<< HEAD
-            {state.type === '여행메모' && (
-=======
             {state.type === '여행메모' && 
             (
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
               <textarea
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 rows="10"
@@ -675,32 +636,20 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
-<<<<<<< HEAD
-          <h2 className="text-xl font-bold mb-4">광고를 실행하겠습니까?</h2>
-=======
           <h2 className="text-xl font-bold mb-4">자신의 기존 광고 채널을 등록하세요</h2>
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
           <div className="flex flex-col space-y-2">
               <label className="block text-sm text-gray-600">기존 판매 채널 링크</label>
               <input
                 type="text"
                 className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-<<<<<<< HEAD
-                placeholder="ex.YouTube URL"
-=======
                 placeholder="Channel URL-1"
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
                 value={state.platformLinks['youtube'] || ''}
                 onChange={(e) => handlePlatformLinkChange(e, 'youtube')}
               />
               <input
                 type="text"
                 className="w-full border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-<<<<<<< HEAD
-                placeholder="ex.Instagram URL"
-=======
                 placeholder="Channel URL-2"
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
                 value={state.platformLinks['instagram'] || ''}
                 onChange={(e) => handlePlatformLinkChange(e, 'instagram')}
               />
@@ -731,24 +680,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
       <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
-<<<<<<< HEAD
-        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-4 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' }}>
-          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-purple-500">새 핀스토리 작성</h3>
-            <button onClick={closeModal} className="text-gray-500 hover:text-gray-800">
-              &times;
-            </button>
-        </div>
-        <div className='mt-4 flex-1 overflow-auto'>
-          {renderStepIndicator()}
-          {renderStep()}
-        </div>
-        <div className="mt-4">
-          {renderStepButtons()}
-        </div>
-      </div>
-      {renderAdMonetizeModal()}
-=======
         <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
         
         <div
@@ -774,7 +705,6 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
           </div>
         </div>
         {renderAdMonetizeModal()}
->>>>>>> 03c176d8e95994ea3fce1253c17a494d347b5d35
       {renderMonetizeModal()}
       {renderConfirmModal()}
     </div>
