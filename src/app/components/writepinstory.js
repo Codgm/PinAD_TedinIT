@@ -375,14 +375,14 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             <div className="flex items-center w-full space-x-2">
               <div className={Styles.buttonContainer}>
                 <button
-                  className={`${Styles.toggleButton} ${state.type === '광고' ? 'active' : ''}`}
+                  className={`${Styles.toggleButton1} ${state.active ? 'active' : ''}`}
                   onClick={() => { setType('광고');}}
                   onChange={handleTypeChange}
                 >
                   광고
                 </button>
                 <button
-                  className={`${Styles.toggleButton} ${state.type === '핀스토리' ? 'active' : ''}`}
+                  className={`${Styles.toggleButton2} ${state.active ? 'active' : ''}`}
                   onClick={() => { setType('핀스토리'); }}
                   onChange={handleTypeChange}
                 >
@@ -428,11 +428,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             )}
           </div>
             {
-              state.selectedCategory === '행사알림'&&(
+              state.selectedCategory === '행사알림'&& state.type === '광고' &&(
                 <EventNotification/>
               )
             }
-            {state.selectedCategory === '여행기록' && 
+            {state.selectedCategory === '여행기록' && state.type === '핀스토리' &&
             (
               <textarea
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -442,7 +442,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 onChange={handleContentChange}
               ></textarea>
             )}
-            {state.selectedCategory === '리뷰' && (
+            {state.selectedCategory === '리뷰' && state.type === '핀스토리' && (
               <div className="space-y-4">
                 <textarea
                   className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
