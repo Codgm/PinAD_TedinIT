@@ -176,7 +176,7 @@ const AdStepComponent = ({
               )}
             </div>
           )}
-          {state.selectedCategory === '요식업' && (
+          {state.selectedCategory === 'F&B' && (
             <div className="space-y-2">
               <div className="flex items-center w-full space-x-2">
                 <input
