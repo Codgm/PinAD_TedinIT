@@ -277,7 +277,9 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         </div>
       ))}
       </div>
-      <span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
+      {
+        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
+      }    
     </div>
   );
 
@@ -353,8 +355,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 onChange={handleTypeChange}
               >
                 <option value="광고">광고</option>
-                <option value="여행메모">여행메모</option>
-                <option value="리뷰">리뷰</option>
+                <option value="핀스토리">핀스토리</option>
               </select>
               {state.type === '광고' && (
                 <select
@@ -372,9 +373,25 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                   <option value="서비스업">서비스업</option>
                 </select>
               )}
+              {state.type === '핀스토리' && (
+                <select
+                  className="w-full border rounded-lg p-2"
+                  value={state.selectedCategory}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value)
+                    setWallpaper(e.target.value)
+                  }}
+                >
+                  <option value="">선택</option>
+                  <option value="리뷰">리뷰</option>
+                  <option value="명소추천">명소추천</option>
+                  <option value="약속 장소">약속장소</option>
+                  <option value="여행기록">여행기록</option>
+                </select>
+              )}
             </div>
             
-            {state.type === '여행메모' && 
+            {state.selectedCategory === '여행기록' && 
             (
               <textarea
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -384,7 +401,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 onChange={handleContentChange}
               ></textarea>
             )}
-            {state.type === '리뷰' && (
+            {state.selectedCategory === '리뷰' && (
               <div className="space-y-4">
                 <textarea
                   className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
