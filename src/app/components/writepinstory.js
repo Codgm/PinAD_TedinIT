@@ -1,14 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import InstagramIcon from '/public/instagram_icon.svg';
-import KakaoTalkIcon from '/public/kakaotalk_icon.svg';
-import LineIcon from '/public/line_icon.svg';
-import ThreadsIcon from '/public/threads_icon.svg';
 import { FaCamera, FaPen, FaTags, FaShare, FaCheck, FaImage, FaVideo } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
-import Image from 'next/image';
+import Styles from '@/app/styles/writepinstory.module.css';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -56,8 +52,27 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [industryType, setIndustryType] = useState('');
   const [showAdMonetizeModal, setshowAdMonetizeModal] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const fileInputRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (dropdownRef.current) {
+      const options = dropdownRef.current.querySelectorAll('option');
+      // 스크롤 애니메이션 적용
+      dropdownRef.current.classList.add('spinner');
+
+      // 애니메이션이 끝나면 class 제거
+      const animationDuration = 1000; // 애니메이션 시간 (1초)
+      const timer = setTimeout(() => {
+        dropdownRef.current.classList.remove('spinner');
+      }, animationDuration);
+
+      // 컴포넌트 언마운트 시 타이머 정리
+      return () => clearTimeout(timer);
+    }
+  }, [state.selectedCategory]);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleTypeChange = (e) => setType(e.target.value);
@@ -349,47 +364,60 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         return (
           <div className="space-y-2">
             <div className="flex items-center w-full space-x-2">
-              <select
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                value={state.type}
-                onChange={handleTypeChange}
-              >
-                <option value="광고">광고</option>
-                <option value="핀스토리">핀스토리</option>
-              </select>
-              {state.type === '광고' && (
-                <select
-                  className="w-full border rounded-lg p-2"
-                  value={state.selectedCategory}
-                  onChange={(e) => {
-                    setSelectedCategory(e.target.value)
-                    setWallpaper(e.target.value)
-                  }}
+              <div className={Styles.buttonContainer}>
+                <button
+                  className={`${Styles.toggleButton} ${state.type === '광고' ? 'active' : ''}`}
+                  onClick={() => { setType('광고');}}
+                  onChange={handleTypeChange}
                 >
-                  <option value="">선택</option>
-                  <option value="유통">유통</option>
-                  <option value="요식업">요식업</option>
-                  <option value="이동형 판매">이동형 판매</option>
-                  <option value="서비스업">서비스업</option>
-                </select>
-              )}
-              {state.type === '핀스토리' && (
-                <select
-                  className="w-full border rounded-lg p-2"
-                  value={state.selectedCategory}
-                  onChange={(e) => {
-                    setSelectedCategory(e.target.value)
-                    setWallpaper(e.target.value)
-                  }}
+                  광고
+                </button>
+                <button
+                  className={`${Styles.toggleButton} ${state.type === '핀스토리' ? 'active' : ''}`}
+                  onClick={() => { setType('핀스토리'); }}
+                  onChange={handleTypeChange}
                 >
-                  <option value="">선택</option>
-                  <option value="리뷰">리뷰</option>
-                  <option value="명소추천">명소추천</option>
-                  <option value="약속 장소">약속장소</option>
-                  <option value="여행기록">여행기록</option>
-                </select>
-              )}
+                  핀스토리
+                </button>
+              </div>
             </div>
+            <div className={Styles.dropdownMenu}>
+            {state.type === '광고' && (
+              <select
+                className={Styles.dropdownOptions}
+                value={state.selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setWallpaper(e.target.value);
+                }}
+                ref={dropdownRef}
+              >
+                <option value="">선택</option>
+                <option value="유통">유통</option>
+                <option value="F&B">F&B</option>
+                <option value="행사알림">행사알림</option>
+                <option value="부동산">부동산</option>
+                <option value="구인">구인</option>
+              </select>
+            )}
+            {state.type === '핀스토리' && (
+              <select
+                className={Styles.dropdownOptions}
+                value={state.selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setWallpaper(e.target.value);
+                }}
+                ref={dropdownRef}
+              >
+                <option value="">선택</option>
+                <option value="리뷰">리뷰</option>
+                <option value="명소추천">명소추천</option>
+                <option value="약속 장소">약속장소</option>
+                <option value="여행기록">여행기록</option>
+              </select>
+            )}
+          </div>
             
             {state.selectedCategory === '여행기록' && 
             (
