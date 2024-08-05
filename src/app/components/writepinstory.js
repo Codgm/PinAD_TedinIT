@@ -9,6 +9,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
 import Image from 'next/image';
+import EventNotification from './eventnotifcomponent';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -218,6 +219,18 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       // backgroundSize: 'contain',
       // backgroundRepeat: 'norepeat',
     },
+    "행사알림": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+      `,
+      backgroundSize: '20px 20px, 20px 20px, 60px 60px', /* 각 패턴의 크기 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 */
+      backgroundRepeat: 'repeat', /* 배경 반복 설정 */      // backgroundImage: 'url(/box.jpg)',
+      // backgroundSize: 'contain',
+      // backgroundRepeat: 'norepeat',
+    },
     "이동형 판매": {
       backgroundColor: '#B22222', /* 기본 붉은색 배경 */
       backgroundImage: `
@@ -251,11 +264,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   };
   
   useEffect(() => {
-    if (state.type !== '광고') {
-      setWallpaper(null);
-    }else{
-      setWallpaper(state.selectedCategory);
-    }
+    setWallpaper("");
   }, [state.type]);
 
   const renderStepIndicator = () => (
@@ -369,6 +378,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                   <option value="">선택</option>
                   <option value="유통">유통</option>
                   <option value="요식업">요식업</option>
+                  <option value="행사알림">행사알림</option>
                   <option value="이동형 판매">이동형 판매</option>
                   <option value="서비스업">서비스업</option>
                 </select>
@@ -390,7 +400,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 </select>
               )}
             </div>
-            
+            {
+              state.selectedCategory === '행사알림' && (
+              <EventNotification/>
+              )
+            }
             {state.selectedCategory === '여행기록' && 
             (
               <textarea
@@ -512,81 +526,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             handlePlatformLinkChange={handlePlatformLinkChange}
             handlePaymentModeChange = {handlePaymentModeChange}
           />
-        //   <div className="space-y-4">
-        //   <div className="space-y-2">
-        //     <label className="block mb-2 text-sm text-gray-600">태그 (최대 10개)</label>
-        //     <div className="flex flex-wrap">
-        //       {defaultTags.map(tag => (
-        //         <button
-        //           key={tag}
-        //           className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-        //           onClick={() => handleDefaultTagClick(tag)}
-        //         >
-        //           {tag}
-        //         </button>
-        //       ))}
-        //     </div>
-        //     <div className="flex flex-wrap ">
-        //       {newTags.map(tag => (
-        //         <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
-        //           <span>{tag}</span>
-        //           <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">&times;</button>
-        //         </div>
-        //       ))}
-        //     </div>
-        //     <input
-        //       type="text"
-        //       className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
-        //       placeholder="새 태그를 입력하고 Enter 키를 누르세요"
-        //       onKeyDown={handleNewTagInputKeyDown}
-        //     />
-        //   </div>
-        // </div>
         );
-      // case 5:
-      //   return (
-      //     <AdStepComponent
-      //       state={state}
-      //       setStep={setStep}
-      //       handleCategoryChange={handleCategoryChange}
-      //       setSelectedCategory={setSelectedCategory}
-      //       setIndustryType={setIndustryType}
-      //       setStock={setStock}
-      //       setDiscountType={setDiscountType}
-      //       setDiscountValue={setDiscountValue}
-      //       setBundleType={setBundleType}
-      //       setBundleNValue = {setBundleNValue}
-      //       setBundleDiscountValue={setBundleDiscountValue}
-      //       handleAdOptionChange={handleAdOptionChange}
-      //       setRadius={setRadius}
-      //       setBoost={setBoost}
-      //       setLocation={setLocation}
-      //       setPayment={setPayment}
-      //       handleDefaultTagClick={handleDefaultTagClick}
-      //       handleNewTagInputKeyDown={handleNewTagInputKeyDown}
-      //       removeNewTag={removeNewTag}
-      //       newTags={newTags}
-      //       selectedDefaultTags={selectedDefaultTags}
-      //       handlePlatformLinkChange={handlePlatformLinkChange}
-      //       handlePaymentModeChange = {handlePaymentModeChange}
-      //     />
-      //   );
       default:
         return null;
     }
   };
-
-  // const handleNextStep = () => {
-  //   if (state.step === 3 && state.type === '광고') {
-  //     const confirmation = window.confirm('광고를 실행하시겠습니까?');
-  //     if (confirmation) {
-  //       setStep(4);
-  //     }
-  //   } else {
-  //     setStep(state.step < 5 ? state.step + 1 : 1);
-  //   }
-  // };
-  
 
   const renderStepButtons = () => {
     return (
