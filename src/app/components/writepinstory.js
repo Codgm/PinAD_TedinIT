@@ -5,6 +5,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
 import Styles from '@/app/styles/writepinstory.module.css';
+import EventNotification from './eventnotifcomponent';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -245,7 +246,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       // backgroundSize: 'contain',
       // backgroundRepeat: 'norepeat',
     },
-    "이동형 판매": {
+    "부동산": {
       backgroundColor: '#B22222', /* 기본 붉은색 배경 */
       backgroundImage: `
         linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
@@ -256,7 +257,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 설정 */
       backgroundRepeat: 'repeat', /* 패턴 반복 설정 */
     },
-    "요식업": {
+    "F&B": {
       backgroundColor: '#8B4513', /* 벽돌 색상 */
       backgroundImage: `
         linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
@@ -268,7 +269,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       backgroundPosition: '0 0, 0 0, 0 0, 0 0', /* 각 gradient의 위치 설정 */
       backgroundRepeat: 'repeat', /* 배경 반복 설정 */
     },
-    "서비스업": {
+    "구인": {
       backgroundColor: '#4CAF50',
       backgroundImage: 'linear-gradient(135deg, #45a247 25%, transparent 25%), linear-gradient(225deg, #45a247 25%, transparent 25%), linear-gradient(45deg, #45a247 25%, transparent 25%), linear-gradient(315deg, #45a247 25%, #4CAF50 25%)',
       backgroundPosition: '10px 0, 10px 0, 0 0, 0 0',
@@ -426,7 +427,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               </select>
             )}
           </div>
-            
+            {
+              state.selectedCategory === '행사알림'&&(
+                <EventNotification/>
+              )
+            }
             {state.selectedCategory === '여행기록' && 
             (
               <textarea
