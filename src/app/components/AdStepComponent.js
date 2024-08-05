@@ -114,7 +114,7 @@ const AdStepComponent = ({
       return (
         state.type === '광고' && (
           <div className="space-y-2">
-          {state.selectedCategory === '유통' && (
+          {state.selectedCategory === '유통' && state.type === '광고' &&(
             <div className="space-y-2">
               <div  className="flex items-center w-full space-x-2">
                 <input
@@ -176,7 +176,7 @@ const AdStepComponent = ({
               )}
             </div>
           )}
-          {state.selectedCategory === 'F&B' && (
+          {state.selectedCategory === 'F&B' && state.type === '광고' &&(
             <div className="space-y-2">
               <div className="flex items-center w-full space-x-2">
                 <input
