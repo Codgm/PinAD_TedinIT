@@ -6,6 +6,8 @@ import usePostCreation from '@/app/components/logic/writeSeq';
 import AdStepComponent from './AdStepComponent';
 import Styles from '@/app/styles/writepinstory.module.css';
 import EventNotification from './eventnotifcomponent';
+import Review from './reviewcomponent';
+import Attraction from './attractioncomponent';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -443,24 +445,10 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
               ></textarea>
             )}
             {state.selectedCategory === '리뷰' && state.type === '핀스토리' && (
-              <div className="space-y-4">
-                <textarea
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  rows="5"
-                  placeholder="리뷰 내용을 입력하세요..."
-                  value={state.content}
-                  onChange={handleContentChange}
-                ></textarea>
-                <input
-                  type="number"
-                  min="1"
-                  max="5"
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="평점 (1-5)"
-                  value={state.rating}
-                  onChange={(e) => setRating(e.target.value)}
-                />
-              </div>
+              <Review/>
+            )}
+            {state.selectedCategory === '명소추천' && state.type === '핀스토리' && (
+              <Attraction/>
             )}
             { <AdStepComponent
                 state={state}
