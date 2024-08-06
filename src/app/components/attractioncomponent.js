@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Styles from '@/app/Styles/AttractionComponent.module.css';
+import Styles from '@/app/styles/AttractionComponent.module.css';
 
 const Attraction = () => {
     const [attractionData, setAttractionData] = useState({
@@ -61,15 +61,9 @@ const Attraction = () => {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('제출된 명소 정보:', attractionData);
-        // 여기에 데이터 처리 로직 추가 (예: API로 전송)
-    };
-
     return (
         <div className={Styles.container}>
-            <form onSubmit={handleSubmit} className={Styles.form}>
+            <form className={Styles.form}>
                 <div className='flex items-center w-full space-x-2'>
                     <div className={Styles.formGroup}>
                         <label htmlFor="name">명소 이름</label>

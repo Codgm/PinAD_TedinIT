@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import Styles from '@/app/Styles/ReviewComponent.module.css'; 
+import Styles from '@/app/styles/ReviewComponent.module.css'; 
 
 const Review = () => {
     const [reviewData, setReviewData] = useState({
