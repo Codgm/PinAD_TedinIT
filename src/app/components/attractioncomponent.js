@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Styles from '@/app/Styles/AttractionComponent.module.css';
 
-const AttractionTemplate = () => {
+const Attraction = () => {
     const [attractionData, setAttractionData] = useState({
         name: '',
         intro: '',
@@ -260,4 +260,4 @@ const AttractionTemplate = () => {
     );
 };
 
-export default AttractionTemplate;
+export default Attraction;
