@@ -8,6 +8,8 @@ import Styles from '@/app/styles/writepinstory.module.css';
 import EventNotification from './eventnotifcomponent';
 import Review from './reviewcomponent';
 import Attraction from './attractioncomponent';
+import TravelmemoComponent from './travelmemoComponent';
+import AppointmentForm from './AppointmentComponent';
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -424,7 +426,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 <option value="">선택</option>
                 <option value="리뷰">리뷰</option>
                 <option value="명소추천">명소추천</option>
-                <option value="약속 장소">약속장소</option>
+                <option value="약속장소">약속장소</option>
                 <option value="여행기록">여행기록</option>
               </select>
             )}
@@ -436,13 +438,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             }
             {state.selectedCategory === '여행기록' && state.type === '핀스토리' &&
             (
-              <textarea
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                rows="10"
-                placeholder="여행 기록을 입력하세요..."
-                value={state.content}
-                onChange={handleContentChange}
-              ></textarea>
+              <TravelmemoComponent/>
+            )}
+            {state.selectedCategory === '약속장소' && state.type === '핀스토리' &&
+            (
+              <AppointmentForm/>
             )}
             {state.selectedCategory === '리뷰' && state.type === '핀스토리' && (
               <Review/>
