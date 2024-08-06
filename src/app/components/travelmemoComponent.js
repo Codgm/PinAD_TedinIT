@@ -37,7 +37,7 @@ const TravelmemoComponent = () => {
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
       <div className={styles.formGroup}>
-        <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소</label>
+        {/* <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소</label> */}
         <input
           type="text"
           id="location"
@@ -51,20 +51,20 @@ const TravelmemoComponent = () => {
     </div>
 
     <div className={styles.formGroup}>
-    <label htmlFor="date" className="block text-sm font-medium text-gray-700">날짜</label>
+    {/* <label htmlFor="date" className="block text-sm font-medium text-gray-700">날짜</label> */}
     <input
         type="datetime-local"
         id="date"
         name="date"
+        placeholder='날짜'
         value={travelData.date}
         onChange={handleChange}
-        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         required
       />
     </div>
 
     <div className={styles.formGroup}>
-      <label htmlFor="event" className="block text-sm font-medium text-gray-700">순간의 감정</label>
+      {/* <label htmlFor="event" className="block text-sm font-medium text-gray-700">순간의 감정</label> */}
       <input
         id="event"
         name="event"
@@ -142,7 +142,7 @@ const TravelmemoComponent = () => {
     </div>
 
     <div className={styles.formGroup}>
-    <label htmlFor="memorableMoment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label>
+    {/* <label htmlFor="memorableMoment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label> */}
           <input
             id="memorableMoment"
             name="memorableMoment"
@@ -154,7 +154,7 @@ const TravelmemoComponent = () => {
           />
     </div>
     <div className={styles.formGroup}>
-    <label htmlFor="peopleMet" className="block text-sm font-medium text-gray-700">만난 사람들</label>
+    {/* <label htmlFor="peopleMet" className="block text-sm font-medium text-gray-700">만난 사람들</label> */}
           <input
             id="peopleMet"
             name="peopleMet"
@@ -166,7 +166,7 @@ const TravelmemoComponent = () => {
           />
     </div>
     <div className={styles.formGroup}>
-    <label htmlFor="unexpectedDiscovery" className="block text-sm font-medium text-gray-700">예상 밖의 발견</label>
+    {/* <label htmlFor="unexpectedDiscovery" className="block text-sm font-medium text-gray-700">예상 밖의 발견</label> */}
           <input
             id="unexpectedDiscovery"
             name="unexpectedDiscovery"
@@ -179,7 +179,7 @@ const TravelmemoComponent = () => {
         </div>
 
         <div className={styles.formGroup}>
-        <label htmlFor="selfAtThisPlace" className="block text-sm font-medium text-gray-700">이곳에서의 나</label>
+        {/* <label htmlFor="selfAtThisPlace" className="block text-sm font-medium text-gray-700">이곳에서의 나</label> */}
           <textarea
             id="selfAtThisPlace"
             name="selfAtThisPlace"
