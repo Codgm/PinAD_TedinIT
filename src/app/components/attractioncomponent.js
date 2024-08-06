@@ -66,11 +66,11 @@ const Attraction = () => {
             <form className={Styles.form}>
                 <div className='flex items-center w-full space-x-2'>
                     <div className={Styles.formGroup}>
-                        <label htmlFor="name">명소 이름</label>
                         <input
                             type="text"
                             id="name"
                             name="name"
+                            placeholder='명소 이름'
                             value={attractionData.name}
                             onChange={handleChange}
                             required
@@ -78,11 +78,11 @@ const Attraction = () => {
                     </div>
 
                     <div className={Styles.formGroup}>
-                        <label htmlFor="intro">한 줄 소개</label>
                         <input
                             type="text"
                             id="intro"
                             name="intro"
+                            placeholder='한 줄 소개'
                             value={attractionData.intro}
                             onChange={handleChange}
                             required
@@ -231,6 +231,7 @@ const Attraction = () => {
                         type="text"
                         id="photoSpot"
                         name="photoSpot"
+                        placeholder='간단한 위치 설명'
                         value={attractionData.photoSpot}
                         onChange={handleChange}
                         required
