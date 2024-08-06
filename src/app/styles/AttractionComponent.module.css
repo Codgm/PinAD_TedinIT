@@ -1,0 +1,119 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formGroup {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
+  .formGroup input,
+  .formGroup textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .formGroup textarea {
+    height: 100px;
+    resize: vertical;
+  }
+
+  .fieldContainer {
+    margin-bottom: 0.5rem;
+  }
+
+  .addButton,
+  .removeButton {
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+  }
+
+  .addButton {
+    background-color: #af89f6;
+    color: #000000;
+  }
+
+  .removeButton {
+    background-color: #9ed0f4;
+    color: #000000;
+  }
+
+
+
+  .select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+
+
+  .input:focus,
+  .textarea:focus,
+  .select:focus {
+    border-color: #000000;
+    outline: none;
+  }
+
+  .checkboxList {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .checkboxList label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: normal;
+  }
+
+  .photoSpot {
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+
+  .tips {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .tips ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+
+  .recommendations {
+    margin-top: 1rem;
+  }
+
+  .recommendations ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+
+  .summary {
+    margin-top: 1rem;
+    font-style: italic;
+  }
