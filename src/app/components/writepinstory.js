@@ -14,7 +14,7 @@ import AppointmentForm from './AppointmentComponent';
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
   { icon: <FaPen />, label: '내용' },
-  { icon: <FaTags />, label: '태그' },
+  { icon: <FaTags />, label: '관심사' },
   { icon: <FaCheck />, label: '설정 및 실행' },
 ];
 
