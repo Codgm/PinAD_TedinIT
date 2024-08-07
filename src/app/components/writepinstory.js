@@ -10,6 +10,7 @@ import Review from './reviewcomponent';
 import Attraction from './attractioncomponent';
 import TravelmemoComponent from './travelmemoComponent';
 import AppointmentForm from './AppointmentComponent';
+import Tagslistup from './tagslistup';
 
 const defaultTags = {
   '리뷰': [
@@ -59,6 +60,7 @@ const defaultTags = {
     '#여행의모듯것', 
     '#여행후기'
   ],
+  
 };
 
 
@@ -535,66 +537,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         );
       case 3:
         return (
-          <div>
-          { state.type==='광고' ? <AdStepComponent
-            state={state}
-            setStep={setStep}
-            handleCategoryChange={handleCategoryChange}
-            setSelectedCategory={setSelectedCategory}
-            setIndustryType={setIndustryType}
-            setStock={setStock}
-            setDiscountType={setDiscountType}
-            setDiscountValue={setDiscountValue}
-            setBundleType={setBundleType}
-            setBundleNValue = {setBundleNValue}
-            setBundleDiscountValue={setBundleDiscountValue}
-            handleAdOptionChange={handleAdOptionChange}
-            setRadius={setRadius}
-            setBoost={setBoost}
-            setLocation={setLocation}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setPayment={setPayment}
-            handleDefaultTagClick={handleDefaultTagClick}
-            handleNewTagInputKeyDown={handleNewTagInputKeyDown}
-            removeNewTag={removeNewTag}
-            newTags={newTags}
-            selectedDefaultTags={selectedDefaultTags}
-            handlePlatformLinkChange={handlePlatformLinkChange}
-            handlePaymentModeChange = {handlePaymentModeChange}
-          /> : 
-          (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="block mb-2 text-sm text-gray-600">기본 태그 (최대 5개), 입력 태그(최대 10개)</label>
-                <div className="flex flex-wrap">
-                {defaultTags[state.selectedCategory].map(tag => (
-                  <button
-                  key={tag}
-                  className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-                  // onClick={() => handleDefaultTagClick(tag)}
-                  >
-                  {tag}
-                  </button>
-                ))}
-                </div>
-                <div className="flex flex-wrap ">
-                {newTags.map(tag => (
-                  <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
-                    <span>{tag}</span>
-                    {/* <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">×</button> */}
-                  </div>
-                ))}
-                </div>
-                <input
-                type="text"
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
-                placeholder="새 태그를 입력하고 Enter 키를 누르세요"
-                // onKeyDown={handleNewTagInputKeyDown}
-                />
-              </div>
-            </div>)}
-        </div>
+          <Tagslistup selectedCategory={state.selectedCategory}/>
         );
       case 4:
         return (
