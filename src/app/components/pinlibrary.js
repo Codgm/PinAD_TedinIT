@@ -1,12 +1,31 @@
-
-import React, { useState } from 'react';
+"use client"
+import React, { useState, useEffect } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
 import PinstoryModal from './pinstorymodal';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
+import AdTemplate from './PinStoryTemplate/AdTemplate';
+import EventNotificationTemplate from './PinStoryTemplate/EventNotificationTemplate';
+import TravelRecord from './PinStoryTemplate/TravelRecordTemplate';
+import Review from './PinStoryTemplate/ReviewTemplate';
+import AttractionRecommendation from './PinStoryTemplate/AttractionRecommendationTemplate';
+import AppointmentPlace from './PinStoryTemplate/AppointmentPlaceTemplate';
 
 
+
+const templates = {
+  '광고': {
+    '유통': AdTemplate,
+    'F&B': AdTemplate,
+    '행사알림': EventNotificationTemplate,
+  },
+  '핀스토리': {
+    '리뷰': Review,
+    '명소추천': AttractionRecommendation,
+    '약속장소': AppointmentPlace,
+    '여행기록': TravelRecord,
+  },
+};
 
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
 
@@ -17,6 +36,20 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   const [newComment, setNewComment] = useState('');
   const [selectedPin, setSelectedPin] = useState(null);
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+  useEffect(() => {
+    const type = pin.type?.[0]; // 배열의 첫 번째 요소
+    const selectedCategory = pin.selectedCategory?.[0]; // 배열의 첫 번째 요소
+
+    console.log('Type:', type); // 디버깅을 위한 로그
+    console.log('Selected Category:', selectedCategory);
+
+    if (type && selectedCategory) {
+      const TemplateComponent = templates[type]?.[selectedCategory];
+      setSelectedTemplate(() => TemplateComponent);
+    }
+  }, [pin]);
 
   const closePinModal = () => setSelectedPin(null);
   const [comment, setComment] = useState('');
@@ -68,11 +101,11 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
     <div
     className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     onClick={handleOutsideClick}
-  >
+    >
     {selectedPin && (
         <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
     )}
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md fixed max-h-[60vh] flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">{t('userPinStory')}</h2>
         <button
@@ -80,9 +113,42 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           onClick={onClose}
         >×</button>
       </div>
+      <div className="flex-1 overflow-hidden flex flex-col">
+        {/* Image grid section */}
+        <div className="flex items-center">
+          <div className="flex items-right mb-4">
+            <div className="h-20 w-20 grid grid-cols-2 gap-1">
+              {(pin.images || []).map((image, index) => (
+                <div key={index} className="h-10 w-10 relative">
+                  <Image
+                    src={image}
+                    alt={`Image ${index}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-sm cursor-pointer"
+                    onClick={() => handleImageClick(image)}
+                  />
+                </div>
+              ))}
+              {pin.images?.length < 4 && 
+                <div className="h-10 w-10 bg-gray-200 flex items-center justify-center text-gray-600 rounded-sm">
+                  +
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+            {selectedTemplate ? (
+              React.createElement(selectedTemplate, { data: pin.data })
+            ) : (
+              <p>{t('noTemplateFound')}</p>
+            )}
+        </div>
+      </div>
       <div>
           <div className="flex justify-between items-start">
-            <div>
+            {/* <div>
               <button className="mb-4 bg-blue-400 text-sm px-3 py-1 rounded-full">{t('cafeReview')}</button>
               <h3 className="mb-2 text-xl font-semibold">{t('cafeMoonlight')}</h3>
               <div className="flex items-center mb-4">
@@ -95,30 +161,9 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
                 )}
                 <span className="ml-2 text-gray-600">{rating.toFixed(1)}</span>
               </div>
-            </div>
-            <div className="flex items-center">
-              <div className="h-20 w-20 grid grid-cols-2 gap-1">
-                {pin.images.map((image, index) => (
-                  <div key={index} className="h-10 w-10 relative">
-                    <Image
-                      src={image}
-                      alt={`Image ${index}`}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-sm"
-                      onClick={() => handleImageClick(image)}
-                    />
-                  </div>
-                ))}          
-                {pin.images.length<4 && 
-                  <div className="h-10 w-10 bg-gray-200 flex items-center justify-center text-gray-600 rounded-sm">
-                    +
-                  </div>
-                }
-              </div> 
-            </div>
-          </div> 
-        <div className='mb-4'>
+            </div> */}
+          </div>
+        {/* <div className='mb-4'>
           {t('cafeDescription')}
         </div>
         <div className="flex gap-4 mb-4">
@@ -140,7 +185,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           <div className='mr-2'>56</div>
           <div className="fas fa-share ml-auto"></div>
         </div>
-      </div>
+      </div> */}
       {showCommentInput && (
         <form onSubmit={handleCommentSubmit} className="flex space-x-2 mb-4 mt-2">
           <input
@@ -162,6 +207,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           ))
       }
     </div>
+  </div>
   </div>
   );
 };
