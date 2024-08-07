@@ -19,7 +19,6 @@ const initialState = {
   subscriptionDetails: {
   interval: '',
   amount: ''
-
   },
   payment: '',
   discountType: '',

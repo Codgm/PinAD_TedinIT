@@ -47,11 +47,12 @@ const EventNotification = () => {
         <div className={styles.container}>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.formGroup}>
-              <label htmlFor="title">행사 제목</label>
+              <label htmlFor="title">행사 일정</label>
               <input
                 type="text"
                 id="title"
                 name="title"
+                placeholder='행사 제목'
                 value={eventData.title}
                 onChange={handleChange}
                 required
@@ -60,7 +61,6 @@ const EventNotification = () => {
     
             <div className="flex items-center w-full space-x-2">
                 <div className={styles.formGroup}>
-                <label htmlFor="date">행사 날짜</label>
                 <input
                     type="date"
                     id="date"
@@ -72,7 +72,6 @@ const EventNotification = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                <label htmlFor="time">행사 시간</label>
                 <input
                     type="time"
                     id="time"
@@ -85,8 +84,8 @@ const EventNotification = () => {
             </div>
     
             <div className={styles.formGroup}>
-              <label htmlFor="location">행사 장소</label>
               <input
+                placeholder='행사 장소'
                 type="text"
                 id="location"
                 name="location"
@@ -117,27 +116,32 @@ const EventNotification = () => {
                 required
               />
             </div>
+            <label 
+                  htmlFor="paymentType"
+                  className="block text-ml font-bold text-black-600"  
+                >참가 비용</label>
+
             <div className="flex items-center w-full space-x-2">
                 <div className={styles.formGroup}>
-                <label htmlFor="paymentType">참가 비용</label>
-                <select
+                  <select
                     id="fee"
                     name="fee"
                     className="w-full border rounded-lg p-2"
-                    value={eventData.fee}
+                    value={eventData.details.fee}
                     onChange={handleChange}
                     >
                         <option value="free">무료</option>
                         <option value="paid">유료</option>
-                    </select>
+                  </select>
                 </div>
-                {eventData.fee!='free' && (
+                {eventData.details.fee !='free' && (
                     <div className={styles.formGroup}>
-                        <label htmlFor="fee">가격</label>
                         <input
+                            placeholder='참가비'
                             type="text"
                             id="fee"
                             name="fee"
+                            className="w-full border rounded-lg p-2"
                             onChange={handleChange}
                         />  
                     </div>
@@ -153,11 +157,15 @@ const EventNotification = () => {
                 onChange={handleChange}
               />
             </div>
-    
+
+            <label 
+              htmlFor="organizer"
+              className="block text-ml font-bold text-black-600"
+            >주최 정보</label>
             <div className="flex items-center w-full space-x-2">
                 <div className={styles.formGroup}>
-                <label htmlFor="organizer">주최자</label>
                 <input
+                    placeholder='주최자'
                     type="text"
                     id="organizer"
                     name="organizer"
@@ -166,10 +174,9 @@ const EventNotification = () => {
                     required
                 />
                 </div>
-        
                 <div className={styles.formGroup}>
-                <label htmlFor="organizerContact">주최자 연락처</label>
                 <input
+                    placeholder='주최 연락처'
                     type="text"
                     id="organizerContact"
                     name="organizerContact"
@@ -180,8 +187,8 @@ const EventNotification = () => {
                 </div>
             </div>
             <div className={styles.formGroup}>
-              <label htmlFor="inquiryContact">문의처</label>
               <input
+                placeholder='문의 연락처'
                 type="text"
                 id="inquiryContact"
                 name="inquiryContact"
@@ -192,8 +199,8 @@ const EventNotification = () => {
             </div>
     
             <div className={styles.formGroup}>
-              <label htmlFor="additionalInfo">기타 정보</label>
               <textarea
+                placeholder='추가 정보'
                 id="additionalInfo"
                 name="additionalInfo"
                 value={eventData.additionalInfo}
@@ -202,8 +209,8 @@ const EventNotification = () => {
             </div>
     
             <div className={styles.formGroup}>
-              <label htmlFor="registrationLink">등록 링크</label>
               <input
+                placeholder='등록 링크'
                 type="url"
                 id="registrationLink"
                 name="registrationLink"
