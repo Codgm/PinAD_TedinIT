@@ -23,10 +23,18 @@ export default function Home2() {
   ]);
 
   const [pins, setPins] = useState([
-    { id: 1, x: 5, y: 5, time: '2024-07-24 09:30:00',images : ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
-    { id: 2, x: 2, y: 3, time: '2024-07-24 10:00:00',images :  ["/노래방.jpg","/디저트.jpg"], isUser: false, profile: { avatar: '/profileimg2.jpg', name: '김오빈' } },
-    { id: 3, x: 8, y: 7, time: '2024-07-25 09:00:00',images :  ["/노래방.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
+    { id: 1, x: 5, y: 5, time: '2024-07-24 09:30:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
+    { id: 2, x: 2, y: 3, time: '2024-07-24 10:00:00', images: ["/노래방.jpg","/디저트.jpg"], isUser: false, profile: { avatar: '/profileimg2.jpg', name: '김오빈' } },
+    { id: 3, x: 8, y: 7, time: '2024-07-25 09:00:00', images: ["/노래방.jpg"], isUser: true, profile: { avatar: '/profileimg3.jpg', name: '김우빈' } },
+    { id: 4, x: 7, y: 6, time: '2024-07-25 09:00:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, type: ['광고'], selectedCategory: ['유통'] },
+    { id: 5, x: 3, y: 4, time: '2024-07-25 12:15:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: false, type: ['핀스토리'], selectedCategory: ['여행기록'] },
+    { id: 6, x: 6, y: 2, time: '2024-07-26 08:45:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, type: ['핀스토리'], selectedCategory: ['리뷰'] },
+    { id: 7, x: 1, y: 9, time: '2024-07-26 14:30:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: false, type: ['핀스토리'], selectedCategory: ['명소추천'] },
+    { id: 8, x: 4, y: 5, time: '2024-07-27 10:00:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, type: ['핀스토리'], selectedCategory: ['약속장소'] },
+    { id: 9, x: 9, y: 3, time: '2024-07-27 16:00:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: false, type: ['광고'], selectedCategory: ['행사알림'] },
+    { id: 10, x: 5, y: 8, time: '2024-07-28 11:00:00', images: ["/노래방.jpg","/디저트.jpg","/삼겹살.jpg"], isUser: true, type: ['광고'], selectedCategory: ['F&B'] },
   ]);
+  
 
   const handleChange = () => { 
     setIsChecked(!isChecked);
