@@ -10,6 +10,59 @@ import Review from './reviewcomponent';
 import Attraction from './attractioncomponent';
 import TravelmemoComponent from './travelmemoComponent';
 import AppointmentForm from './AppointmentComponent';
+import Tagslistup from './tagslistup';
+
+const defaultTags = {
+  '리뷰': [
+    '#솔직리뷰', 
+    '#사용자후기', 
+    '#제품리뷰', 
+    '#서비스평가',  
+    '#고객리뷰', 
+    '#제품평가',  
+    '#리뷰꿀팁',
+    '#장단점',
+    '#구매팁',
+    '#사용법'
+  ],
+  '명소추천': [
+    '#명소추천', 
+    '#여행명소', 
+    '#핫플레이스', 
+    '#숨겨진명소', 
+    '#여행필수장소', 
+    '#도시여행', 
+    '#추천장소', 
+    '#해변여행', 
+    '#인생샷', 
+    '#인스타명소'
+  ],
+  '약속장소': [
+    '#미팅장소', 
+    '#데이트장소', 
+    '#모임장소', 
+    '#카페추천', 
+    '#식사장소', 
+    '#회의장소', 
+    '#편안한장소', 
+    '#프라이빗룸', 
+    '#좋은환경'
+  ],
+  '여행기록': [
+    '#여행기록', 
+    '#트래블로그', 
+    '#여행메모', 
+    '#여행스케치', 
+    '#여행추억', 
+    '#여행경험', 
+    '#여행일정',
+    '#여행하고싶다',
+    '#여행의모듯것', 
+    '#여행후기'
+  ],
+  
+};
+
 
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
@@ -484,33 +537,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         );
       case 3:
         return (
-          <AdStepComponent
-            state={state}
-            setStep={setStep}
-            handleCategoryChange={handleCategoryChange}
-            setSelectedCategory={setSelectedCategory}
-            setIndustryType={setIndustryType}
-            setStock={setStock}
-            setDiscountType={setDiscountType}
-            setDiscountValue={setDiscountValue}
-            setBundleType={setBundleType}
-            setBundleNValue = {setBundleNValue}
-            setBundleDiscountValue={setBundleDiscountValue}
-            handleAdOptionChange={handleAdOptionChange}
-            setRadius={setRadius}
-            setBoost={setBoost}
-            setLocation={setLocation}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setPayment={setPayment}
-            handleDefaultTagClick={handleDefaultTagClick}
-            handleNewTagInputKeyDown={handleNewTagInputKeyDown}
-            removeNewTag={removeNewTag}
-            newTags={newTags}
-            selectedDefaultTags={selectedDefaultTags}
-            handlePlatformLinkChange={handlePlatformLinkChange}
-            handlePaymentModeChange = {handlePaymentModeChange}
-          />
+          <Tagslistup selectedCategory={state.selectedCategory}/>
         );
       case 4:
         return (
