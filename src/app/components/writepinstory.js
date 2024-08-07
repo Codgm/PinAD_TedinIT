@@ -11,6 +11,57 @@ import Attraction from './attractioncomponent';
 import TravelmemoComponent from './travelmemoComponent';
 import AppointmentForm from './AppointmentComponent';
 
+const defaultTags = {
+  '리뷰': [
+    '#솔직리뷰', 
+    '#사용자후기', 
+    '#제품리뷰', 
+    '#서비스평가',  
+    '#고객리뷰', 
+    '#제품평가',  
+    '#리뷰꿀팁',
+    '#장단점',
+    '#구매팁',
+    '#사용법'
+  ],
+  '명소추천': [
+    '#명소추천', 
+    '#여행명소', 
+    '#핫플레이스', 
+    '#숨겨진명소', 
+    '#여행필수장소', 
+    '#도시여행', 
+    '#추천장소', 
+    '#해변여행', 
+    '#인생샷', 
+    '#인스타명소'
+  ],
+  '약속장소': [
+    '#미팅장소', 
+    '#데이트장소', 
+    '#모임장소', 
+    '#카페추천', 
+    '#식사장소', 
+    '#회의장소', 
+    '#편안한장소', 
+    '#프라이빗룸', 
+    '#좋은환경'
+  ],
+  '여행기록': [
+    '#여행기록', 
+    '#트래블로그', 
+    '#여행메모', 
+    '#여행스케치', 
+    '#여행추억', 
+    '#여행경험', 
+    '#여행일정',
+    '#여행하고싶다',
+    '#여행의모듯것', 
+    '#여행후기'
+  ],
+};
+
+
 const steps = [
   { icon: <FaCamera />, label: '미디어' },
   { icon: <FaPen />, label: '내용' },
@@ -484,7 +535,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
         );
       case 3:
         return (
-          <AdStepComponent
+          <div>
+          { state.type==='광고' ? <AdStepComponent
             state={state}
             setStep={setStep}
             handleCategoryChange={handleCategoryChange}
@@ -510,7 +562,39 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
             selectedDefaultTags={selectedDefaultTags}
             handlePlatformLinkChange={handlePlatformLinkChange}
             handlePaymentModeChange = {handlePaymentModeChange}
-          />
+          /> : 
+          (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="block mb-2 text-sm text-gray-600">기본 태그 (최대 5개), 입력 태그(최대 10개)</label>
+                <div className="flex flex-wrap">
+                {defaultTags[state.selectedCategory].map(tag => (
+                  <button
+                  key={tag}
+                  className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
+                  // onClick={() => handleDefaultTagClick(tag)}
+                  >
+                  {tag}
+                  </button>
+                ))}
+                </div>
+                <div className="flex flex-wrap ">
+                {newTags.map(tag => (
+                  <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
+                    <span>{tag}</span>
+                    {/* <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">×</button> */}
+                  </div>
+                ))}
+                </div>
+                <input
+                type="text"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                placeholder="새 태그를 입력하고 Enter 키를 누르세요"
+                // onKeyDown={handleNewTagInputKeyDown}
+                />
+              </div>
+            </div>)}
+        </div>
         );
       case 4:
         return (
