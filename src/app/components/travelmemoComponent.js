@@ -37,7 +37,7 @@ const TravelmemoComponent = () => {
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
       <div className={styles.formGroup}>
-        {/* <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소</label> */}
+        <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소</label>
         <input
           type="text"
           id="location"
@@ -64,7 +64,7 @@ const TravelmemoComponent = () => {
     </div>
 
     <div className={styles.formGroup}>
-      {/* <label htmlFor="event" className="block text-sm font-medium text-gray-700">순간의 감정</label> */}
+      <label htmlFor="event" className="block text-sm font-medium text-gray-700">순간의 감정</label>
       <input
         id="event"
         name="event"
@@ -142,7 +142,7 @@ const TravelmemoComponent = () => {
     </div>
 
     <div className={styles.formGroup}>
-    {/* <label htmlFor="memorableMoment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label> */}
+    <label htmlFor="memorableMoment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label>
           <input
             id="memorableMoment"
             name="memorableMoment"
