@@ -3,6 +3,8 @@ import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const AdTemplate = ({ data }) => {
   const ad = data || {
+    title: "디지털 전자상가",
+    storeLocation: "서울특별시 강남구 테헤란로 123",
     header: "스마트폰 대세 할인!",
     priceInfo: "최저가 ₩450,000부터 시작",
     discount: "30% OFF 모든 스마트폰",
@@ -47,6 +49,12 @@ const AdTemplate = ({ data }) => {
 
   return (
     <div className={Styles.AdContainer}>
+      {/* 업소 이름 및 위치 */}
+      <div className={Styles.AdStoreInfo}>
+        <h1 className={Styles.AdStoreName}>{ad.title}</h1>
+        <p className={Styles.AdStoreLocation}>{ad.storeLocation}</p>
+      </div>
+
       <div className={Styles.Header}>
         <h2 className={Styles.HeaderTitle}>{ad.header}</h2>
       </div>

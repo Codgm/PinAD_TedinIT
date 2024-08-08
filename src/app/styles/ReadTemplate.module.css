@@ -234,6 +234,18 @@
     font-weight: bold; /* 굵은 글씨 */
     color: #2d6a4f; /* 자연 녹색 */
   }
+
+  /* 장소 이미지 컨테이너 스타일 */
+  .AttractionImageContainer {
+    margin-bottom: 24px;
+  }
+
+  .AttractionImage {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+  }
   
   /* 섹션 제목 스타일 */
   .SectionTitle {
@@ -302,8 +314,28 @@
     max-width: 900px;
     margin: auto;
   }
+
+  /* 업소 정보 섹션 스타일 */
+.AdStoreInfo {
+  margin-bottom: 24px;
+}
+
+.AdStoreName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #8a70fe;
+  text-align: center;
+}
+
+.AdStoreLocation {
+  font-size: 1rem;
+  color: #000000; 
+  text-align: center;
+  margin-top: 4px;
+}
   
   /* 헤더 스타일 */
+  
   .Header {
     margin-bottom: 24px;
   }

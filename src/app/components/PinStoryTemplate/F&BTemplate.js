@@ -3,40 +3,40 @@ import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const FBTemplate = ({ data }) => {
   const fb = data || {
-    title: "디지털 전자상가",
-    storeLocation: "서울특별시 강남구 테헤란로 123",
-    header: "스마트폰 대세 할인!",
-    discount: "30% OFF 모든 스마트폰",
+    title: "해피 식당",
+    storeLocation: "서울특별시 강남구 역삼로 456",
+    header: "여름 한정 시원한 냉면 할인!",
+    discount: "20% OFF 냉면 전체 메뉴",
     schedule: {
       start: "2024-08-01",
       end: "2024-08-31"
     },
     products: [
       {
-        name: "스마트폰 A",
-        price: "₩500,000",
-        image: "https://example.com/productA.jpg"
+        name: "매운 냉면",
+        price: "₩8,000",
+        image: "https://example.com/spicy-noodle.jpg"
       },
       {
-        name: "스마트폰 B",
-        price: "₩600,000",
-        image: "https://example.com/productB.jpg"
+        name: "오리지널 냉면",
+        price: "₩7,500",
+        image: "https://example.com/original-noodle.jpg"
       }
     ],
     reviews: [
       {
-        reviewer: "홍길동",
-        rating: 4.5,
-        comment: "할인된 가격에 매우 만족합니다. 제품 상태도 좋고 서비스가 훌륭했습니다."
+        reviewer: "이수진",
+        rating: 4.8,
+        comment: "냉면이 정말 맛있고, 서비스도 훌륭했습니다. 꼭 다시 방문할게요!"
       },
       {
-        reviewer: "김철수",
-        rating: 4.0,
-        comment: "제품 품질이 좋습니다. 다만, 배송이 조금 늦었습니다."
+        reviewer: "박민수",
+        rating: 4.2,
+        comment: "가격 대비 훌륭한 맛입니다. 단, 대기 시간이 조금 길었어요."
       }
     ],
-    ownerDescription: "디지털 전자상가는 최신 전자 제품을 경쟁력 있는 가격에 제공합니다. 고객님께 최고의 쇼핑 경험을 제공하기 위해 노력하고 있습니다.",
-    details: "이번 여름 한정으로 스마트폰 대세 할인! 다양한 스마트폰 모델을 최대 30%까지 할인된 가격에 제공합니다."
+    ownerDescription: "해피 식당은 신선한 재료로 만든 냉면을 전문으로 합니다. 고객님들께 최고의 맛과 서비스를 제공하기 위해 최선을 다하고 있습니다.",
+    details: "여름 한정으로 냉면 전체 메뉴를 20% 할인된 가격에 제공합니다. 시원하고 맛있는 냉면으로 더위를 식히세요!"
   };
 
   return (
@@ -67,7 +67,7 @@ const FBTemplate = ({ data }) => {
 
       {/* 관련 상품 목록 */}
       <div className={Styles.FBProducts}>
-        <h3 className={Styles.FBSubTitle}>관련 상품 목록</h3>
+        <h3 className={Styles.FBSubTitle}>관련 메뉴 목록</h3>
         <div className={Styles.FBProductList}>
           {fb.products.map((product, index) => (
             <div key={index} className={Styles.FBProductCard}>
