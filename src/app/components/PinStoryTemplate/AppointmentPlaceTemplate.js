@@ -1,4 +1,5 @@
 import React from 'react';
+import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const AppointmentPlace = () => {
   const appointment = {
@@ -10,20 +11,24 @@ const AppointmentPlace = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">약속 장소</h2>
-        <h3 className="text-lg font-semibold">장소 및 시간</h3>
-        <p>장소: {appointment.place}</p>
-        <p>시간: {appointment.time}</p>
+    <div className={Styles.AppointmentContainer}>
+      {/* 장소 이름 및 시간 섹션 */}
+      <div className={Styles.AppointmentSection}>
+        <h2 className={Styles.SectionTitle}>장소 및 시간</h2>
+        <p><strong>장소:</strong> {appointment.place}</p>
+        <p><strong>시간:</strong> {appointment.time}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">목적 및 장소 세부 사항</h3>
-        <p>목적: {appointment.purpose}</p>
-        <p>세부 사항: {appointment.details}</p>
+
+      {/* 목적 및 장소 세부 사항 섹션 */}
+      <div className={Styles.AppointmentSection}>
+        <h2 className={Styles.SectionTitle}>목적 및 장소 세부 사항</h2>
+        <p><strong>목적:</strong> {appointment.purpose}</p>
+        <p><strong>세부 사항:</strong> {appointment.details}</p>
       </div>
-      <div>
-        <h3 className="text-lg font-semibold">준비물</h3>
+
+      {/* 준비물 섹션 */}
+      <div className={Styles.AppointmentSection}>
+        <h2 className={Styles.SectionTitle}>준비물</h2>
         <p>{appointment.items}</p>
       </div>
     </div>

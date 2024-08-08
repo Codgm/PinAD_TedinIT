@@ -1,8 +1,10 @@
 import React from 'react';
+import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const AdTemplate = ({ data }) => {
   const ad = data || {
     header: "스마트폰 대세 할인!",
+    priceInfo: "최저가 ₩450,000부터 시작",
     discount: "30% OFF 모든 스마트폰",
     schedule: {
       start: "2024-08-01",
@@ -20,37 +22,105 @@ const AdTemplate = ({ data }) => {
         image: "https://example.com/productB.jpg"
       }
     ],
+    media: [
+      "https://example.com/video1.mp4",
+      "https://example.com/photo1.jpg"
+    ],
+    storeInfo: {
+      location: "서울특별시 강남구 테헤란로 123",
+      contact: "전화: 02-1234-5678"
+    },
+    reviews: [
+      {
+        reviewer: "홍길동",
+        rating: 4.5,
+        comment: "할인된 가격에 매우 만족합니다. 제품 상태도 좋고 서비스가 훌륭했습니다."
+      },
+      {
+        reviewer: "김철수",
+        rating: 4.0,
+        comment: "제품 품질이 좋습니다. 다만, 배송이 조금 늦었습니다."
+      }
+    ],
     details: "이번 여름 한정으로 스마트폰 대세 할인! 다양한 스마트폰 모델을 최대 30%까지 할인된 가격에 제공합니다."
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">{ad.header}</h2>
+    <div className={Styles.AdContainer}>
+      <div className={Styles.Header}>
+        <h2 className={Styles.HeaderTitle}>{ad.header}</h2>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">할인 혜택</h3>
+
+      {/* 가격 정보 추가 */}
+      <div className={Styles.PriceInfo}>
+        <h3 className={Styles.SubTitle}>가격 정보</h3>
+        <p>{ad.priceInfo}</p>
+      </div>
+
+      {/* 할인 혜택 */}
+      <div className={Styles.Discount}>
+        <h3 className={Styles.SubTitle}>할인 혜택</h3>
         <p>{ad.discount}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">할인 일정</h3>
+
+      {/* 할인 일정 */}
+      <div className={Styles.Schedule}>
+        <h3 className={Styles.SubTitle}>할인 일정</h3>
         <p>시작일: {ad.schedule.start}</p>
         <p>종료일: {ad.schedule.end}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">관련 상품 목록</h3>
-        <div className="flex flex-wrap">
+
+      {/* 실사 영상 추가 */}
+      <div className={Styles.Media}>
+        <h3 className={Styles.SubTitle}>실사 영상</h3>
+        <div className={Styles.MediaList}>
+          {ad.media.map((item, index) => (
+            item.endsWith('.mp4') && (
+              <video key={index} controls className={Styles.MediaItem}>
+                <source src={item} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )
+          ))}
+        </div>
+      </div>
+
+      {/* 관련 상품 목록 */}
+      <div className={Styles.Products}>
+        <h3 className={Styles.SubTitle}>관련 상품 목록</h3>
+        <div className={Styles.ProductList}>
           {ad.products.map((product, index) => (
-            <div key={index} className="w-1/2 p-2">
-              <img src={product.image} alt={product.name} className="w-full h-20 object-cover rounded-sm" />
-              <p className="text-sm mt-1">{product.name}</p>
-              <p className="text-sm">{product.price}</p>
+            <div key={index} className={Styles.ProductCard}>
+              <img src={product.image} alt={product.name} className={Styles.ProductImage} />
+              <p className={Styles.ProductName}>{product.name}</p>
+              <p className={Styles.ProductPrice}>{product.price}</p>
             </div>
           ))}
         </div>
       </div>
-      <div>
-        <h3 className="text-lg font-semibold">세부 정보</h3>
+
+      {/* 매장 정보 변경 */}
+      <div className={Styles.StoreInfo}>
+        <h3 className={Styles.SubTitle}>매장 정보</h3>
+        <p>위치: {ad.storeInfo.location}</p>
+        <p>연락처: {ad.storeInfo.contact}</p>
+      </div>
+
+      {/* 리뷰 및 평점 추가 */}
+      <div className={Styles.Reviews}>
+        <h3 className={Styles.SubTitle}>리뷰 및 평점</h3>
+        {ad.reviews.map((review, index) => (
+          <div key={index} className={Styles.ReviewCard}>
+            <p className={Styles.ReviewerName}>{review.reviewer}</p>
+            <p className={Styles.ReviewerRating}>평점: {review.rating} / 5</p>
+            <p className={Styles.ReviewerComment}>코멘트: {review.comment}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* 세부 정보 변경 */}
+      <div className={Styles.Details}>
+        <h3 className={Styles.SubTitle}>세부 정보</h3>
         <p>{ad.details}</p>
       </div>
     </div>

@@ -4,17 +4,19 @@ import styles from '@/app/styles/EventTemplete.module.css';
 const TravelmemoComponent = () => {
     
   const [travelData, setTravelData] = useState({
+    title: '',
     location: '',
     date: '',
-    event: '',
-    emotion: '',
-    memorableMoment: '',
-    peopleMet: '',
-    unexpectedDiscovery: '',
-    selfAtThisPlace: '',
-    thoughts: ['', '', ''],
-    finalMessage: ''
-
+    details: {
+      event: '',
+      emotion: '',
+      memorable_moment: '',
+      peopleMet: '',
+      unexpected_discovery: '',
+      self_at_place: '',
+      thoughts: ['', '', ''],
+      final_message: ''
+    }
   });
   const handleThoughtChange = (index, value) => {
     const updatedThoughts = [...reflectionData.thoughts];
@@ -36,19 +38,32 @@ const TravelmemoComponent = () => {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
-      <div className={styles.formGroup}>
-        <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소</label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          placeholder="장소"
-          value={travelData.location}
-          onChange={handleChange}
-          className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
-          required
-        />
-    </div>
+      <div className='flex items-center w-full space-x-2'>
+        <div className={styles.formGroup}>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="장소 이름"
+            value={travelData.title}
+            onChange={handleChange}
+            className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
+            required
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="장소 위치"
+            value={travelData.location}
+            onChange={handleChange}
+            className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
+            required
+          />
+        </div>
+      </div>
 
     <div className={styles.formGroup}>
     {/* <label htmlFor="date" className="block text-sm font-medium text-gray-700">날짜</label> */}
@@ -142,12 +157,12 @@ const TravelmemoComponent = () => {
     </div>
 
     <div className={styles.formGroup}>
-    <label htmlFor="memorableMoment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label>
+    <label htmlFor="memorable_moment" className="block text-sm font-medium text-gray-700">마음에 세겨진 한컷</label>
           <input
-            id="memorableMoment"
-            name="memorableMoment"
+            id="memorable_moment"
+            name="memorable_moment"
             placeholder='가장 인상 깊은 장면,순간'
-            value={travelData.memorableMoment}
+            value={travelData.memorable_moment}
             onChange={handleChange}
             rows="1"
             className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
@@ -166,12 +181,12 @@ const TravelmemoComponent = () => {
           />
     </div>
     <div className={styles.formGroup}>
-    {/* <label htmlFor="unexpectedDiscovery" className="block text-sm font-medium text-gray-700">예상 밖의 발견</label> */}
+    {/* <label htmlFor="unexpected_discovery" className="block text-sm font-medium text-gray-700">예상 밖의 발견</label> */}
           <input
-            id="unexpectedDiscovery"
-            name="unexpectedDiscovery"
+            id="unexpected_discovery"
+            name="unexpected_discovery"
             placeholder='예상치 못한 발견,경험'
-            value={travelData.unexpectedDiscovery}
+            value={travelData.unexpected_discovery}
             onChange={handleChange}
             rows="3"
             className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
@@ -179,12 +194,12 @@ const TravelmemoComponent = () => {
         </div>
 
         <div className={styles.formGroup}>
-        {/* <label htmlFor="selfAtThisPlace" className="block text-sm font-medium text-gray-700">이곳에서의 나</label> */}
+        {/* <label htmlFor="self_at_place" className="block text-sm font-medium text-gray-700">이곳에서의 나</label> */}
           <textarea
-            id="selfAtThisPlace"
-            name="selfAtThisPlace"
+            id="self_at_place"
+            name="self_at_place"
             placeholder='이곳에서의 나의 감정,생각,변화'
-            value={travelData.selfAtThisPlace}
+            value={travelData.self_at_place}
             onChange={handleChange}
             rows="3"
             className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
@@ -193,7 +208,7 @@ const TravelmemoComponent = () => {
 
         <div className={styles.formGroup}>
         <label className="block text-sm font-medium text-gray-700">떠오르는 생각들</label>
-          {travelData.thoughts.map((thought, index) => (
+          {travelData.details.thoughts.map((thought, index) => (
             <input
               key={index}
               value={thought}
@@ -206,11 +221,11 @@ const TravelmemoComponent = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="finalMessage" className="block text-sm font-medium text-gray-700">남기고 싶은 한마디</label>
+          <label htmlFor="final_message" className="block text-sm font-medium text-gray-700">남기고 싶은 한마디</label>
           <input
-            id="finalMessage"
-            name="finalMessage"
-            value={travelData.finalMessage}
+            id="final_message"
+            name="final_message"
+            value={travelData.final_message}
             onChange={handleChange}
             rows="3"
             className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"

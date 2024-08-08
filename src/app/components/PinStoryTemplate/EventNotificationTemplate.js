@@ -1,4 +1,5 @@
 import React from 'react';
+import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const EventNotificationTemplate = () => {
   const event = {
@@ -14,25 +15,34 @@ const EventNotificationTemplate = () => {
   };
 
   return (
-    <div className="p-6 ">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">{event.title}</h2>
+    <div className={Styles.EventNotificationContainer}>
+      {/* 제목 섹션 */}
+      <div className={Styles.EventTitleSection}>
+        <h1 className={Styles.EventTitle}>{event.title}</h1>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">행사 종류</h3>
-        <p>{event.type}</p>
+
+      {/* 행사 종류 섹션 */}
+      <div className={Styles.EventDetailsSection}>
+        <h2 className={Styles.EventSubtitle}>행사 종류</h2>
+        <p className={Styles.EventType}>{event.type}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">행사 일정</h3>
+
+      {/* 행사 일정 섹션 */}
+      <div className={Styles.EventDetailsSection}>
+        <h2 className={Styles.EventSubtitle}>행사 일정</h2>
         <p>시작일: {event.schedule.start}</p>
         <p>종료일: {event.schedule.end}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">행사 내용</h3>
+
+      {/* 행사 내용 섹션 */}
+      <div className={Styles.EventDetailsSection}>
+        <h2 className={Styles.EventSubtitle}>행사 내용</h2>
         <p>{event.details}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">행사 비용 및 문의처</h3>
+
+      {/* 행사 비용 및 문의처 섹션 */}
+      <div className={Styles.EventCostContactSection}>
+        <h2 className={Styles.EventSubtitle}>행사 비용 및 문의처</h2>
         <p>비용: {event.cost}</p>
         <p>문의처: {event.contact}</p>
       </div>
