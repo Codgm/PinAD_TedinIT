@@ -41,12 +41,45 @@ const AdStepComponent = ({
   setSubscriptionDetails,
   setReservationMethod,
 }) => {
+  //retail data
+  const [eventData, setEventData] = useState({
+    title: '',
+    location: '',
+    details: {
+        goods: '',
+        sales_quantity: '',
+        content: '',
+        sales_type: '',
+        sales_detail: '',
+    }
+})
+
+// fnb data
+const [eventData2, setEvent2Data] = useState({
+  title: '',
+  location: '',
+  details: {
+      fnb_name: '',
+      operating_hours: '',
+      content: '',
+      // menu : "name" , price : "price" , description : "description"
+      menu_name: [],
+      reservation_type: '',
+      other_benefits: '',
+      sales_option: '',
+      normal_events : '',
+      special_evnets : '',
+    }
+})
+
   const { point, setPoint } = useMyContext();
   const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
   const [maplocation, setmapLocation] = useState('');
   const [timemoney, setTimemoney] = useState(0);
   const [isPaymentRequired, setIsPaymentRequired] = useState(false);
 
+
+  
   const convertLocationToPosition = (location) => {
   // 위치에 따라 좌표 변환 로직을 추가합니다. 여기에 임시 로직을 추가했습니다.
     if (location === '서울') return { top: 100, left: 150 };
