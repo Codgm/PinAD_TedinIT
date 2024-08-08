@@ -11,7 +11,11 @@ const EventNotificationTemplate = () => {
     },
     details: "여름 축제 2024는 다양한 문화 행사와 음악 공연, 음식 부스가 마련된 대규모 축제입니다. 가족과 친구들과 함께 즐거운 시간을 보내세요!",
     cost: "입장 무료, 일부 액티비티 및 음식은 유료",
-    contact: "문의처: 02-1234-5678, 이메일: info@summerfestival.com"
+    contact: "문의처: 02-1234-5678, 이메일: info@summerfestival.com",
+    images: [
+      "https://example.com/festival1.jpg",
+      "https://example.com/festival2.jpg"
+    ]
   };
 
   return (
@@ -32,6 +36,16 @@ const EventNotificationTemplate = () => {
         <h2 className={Styles.EventSubtitle}>행사 일정</h2>
         <p>시작일: {event.schedule.start}</p>
         <p>종료일: {event.schedule.end}</p>
+      </div>
+
+      {/* 이미지 섹션 */}
+      <div className={Styles.EventImagesSection}>
+        <h2 className={Styles.EventSubtitle}>행사 사진</h2>
+        <div className={Styles.ImageGallery}>
+          {event.images.map((image, index) => (
+            <img key={index} src={image} alt={`Event image ${index + 1}`} className={Styles.EventImage} />
+          ))}
+        </div>
       </div>
 
       {/* 행사 내용 섹션 */}

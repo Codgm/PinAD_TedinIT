@@ -10,13 +10,14 @@ import TravelRecord from './PinStoryTemplate/TravelRecordTemplate';
 import Review from './PinStoryTemplate/ReviewTemplate';
 import AttractionRecommendation from './PinStoryTemplate/AttractionRecommendationTemplate';
 import AppointmentPlace from './PinStoryTemplate/AppointmentPlaceTemplate';
+import FBTemplate from './PinStoryTemplate/F&BTemplate';
 
 
 
 const templates = {
   '광고': {
     '유통': AdTemplate,
-    'F&B': AdTemplate,
+    'F&B': FBTemplate,
     '행사알림': EventNotificationTemplate,
   },
   '핀스토리': {
@@ -115,7 +116,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
       </div>
       <div className="flex-1 overflow-hidden flex flex-col">
         {/* Image grid section */}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <div className="flex items-right mb-4">
             <div className="h-20 w-20 grid grid-cols-2 gap-1">
               {(pin.images || []).map((image, index) => (
@@ -137,7 +138,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
               }
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex-1 overflow-y-auto">
             {selectedTemplate ? (
               React.createElement(selectedTemplate, { data: pin.data })

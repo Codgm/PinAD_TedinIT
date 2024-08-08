@@ -174,6 +174,26 @@
   .EventCostContactSection {
     margin-bottom: 24px; /* 섹션 간의 간격 */
   }
+
+  /* 이미지 섹션 스타일 */
+  .EventImagesSection {
+    margin-bottom: 24px;
+  }
+  
+  .ImageGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .EventImage {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
   
   .EventDetailsSection p,
   .EventCostContactSection p {
