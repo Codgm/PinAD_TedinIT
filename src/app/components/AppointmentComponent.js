@@ -3,11 +3,14 @@ import styles from '@/app/styles/EventTemplete.module.css';
 
 const AppointmentForm = () => {
   const [appointmentData, setAppointmentData] = useState({
+    title: '',
     location: '',
-    withWhom: '',
     date: '',
-    purpose: '',
-    items: '',
+    details: {
+      withWhom: '',
+      purpose: '',
+      items: '',
+    }
   });
 
   const handleChange = (e) => {
@@ -24,18 +27,32 @@ const AppointmentForm = () => {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
-      <div className={styles.formGroup}>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700">장소 이름</label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            placeholder="장소"
-            value={appointmentData.location}
-            onChange={handleChange}
-            className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
-            required
-          />
+        <div className='flex items-center w-full space-x-2'>
+          <div className={styles.formGroup}>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="장소 이름"
+              value={appointmentData.title}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              placeholder="장소 위치"
+              value={appointmentData.location}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-white border-b border-gray-300 focus:border-indigo-500 focus:ring-0 sm:text-sm"
+              required
+            />
+          </div>
         </div>
 
         <div className={styles.formGroup}>

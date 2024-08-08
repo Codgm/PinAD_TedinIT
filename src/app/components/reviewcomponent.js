@@ -4,22 +4,19 @@ import Styles from '@/app/styles/ReviewComponent.module.css';
 
 const Review = () => {
     const [reviewData, setReviewData] = useState({
-        placeName: '',
-        visitDate: '',
-        type: '',
-        rating: '',
-        strengths: '',
-        weaknesses: '',
-        memorablePoints: '',
-        recommendations: '',
-        revisit: '',
-        additionalComments: '',
-        industryType: '',
-        stock: '',
-        content: '',
-        discountType: '',
-        bundleType: '',
-        bundleNValue: ''
+        title: '',
+        location: '',
+        details: {
+            date: '',
+            review_type: '',
+            rating: '',
+            strengths: '',
+            weaknesses: '',
+            memorable_points: '',
+            recomment_actions: '',
+            revisit: '',
+            additional_comments: '',
+        }
     });
 
     const handleChange = (e) => {
@@ -37,11 +34,11 @@ const Review = () => {
                     <div className={Styles.formGroup}>
                         <input
                             type="text"
-                            id="placeName"
-                            name="placeName"
-                            placeholder='장소 이름'
+                            id="title"
+                            name="title"
+                            placeholder='업소 이름'
                             className={Styles.input}
-                            value={reviewData.placeName}
+                            value={reviewData.title}
                             onChange={handleChange}
                             required
                         />
@@ -49,12 +46,12 @@ const Review = () => {
 
                     <div className={Styles.formGroup}>
                         <input
-                            type="date"
-                            id="visitDate"
-                            name="visitDate"
-                            placeholder='방문 날짜'
+                            type="text"
+                            id="location"
+                            name="location"
+                            placeholder='업소 위치'
+                            value={reviewData.location}
                             className={Styles.input}
-                            value={reviewData.visitDate}
                             onChange={handleChange}
                             required
                         />
@@ -66,7 +63,7 @@ const Review = () => {
                             id="type"
                             name="type"
                             className={Styles.select}
-                            value={reviewData.type}
+                            value={reviewData.review_type}
                             onChange={handleChange}
                             required
                         >
@@ -77,7 +74,20 @@ const Review = () => {
                             <option value="숙소">숙소</option>
                         </select>
                     </div>
-
+                    <div className={Styles.formGroup}>
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            placeholder='방문 날짜'
+                            className={Styles.input}
+                            value={reviewData.date}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                </div>
+                <div className={Styles.formGroup}>
                     <div className={Styles.formGroup}>
                         <input
                             type="number"
@@ -120,7 +130,7 @@ const Review = () => {
                         id="memorablePoints"
                         name="memorablePoints"
                         placeholder='가장 기억에 남는 특징이나 경험'
-                        value={reviewData.memorablePoints}
+                        value={reviewData.memorable_points}
                         onChange={handleChange}
                         required
                     />
@@ -131,7 +141,7 @@ const Review = () => {
                         id="recommendations"
                         name="recommendations"
                         placeholder='추천 대상'
-                        value={reviewData.recommendations}
+                        value={reviewData.recomment_actions}
                         onChange={handleChange}
                         required
                     />
@@ -158,7 +168,7 @@ const Review = () => {
                     <textarea
                         id="additionalComments"
                         name="additionalComments"
-                        value={reviewData.additionalComments}
+                        value={reviewData.additional_comments}
                         onChange={handleChange}
                     />
                 </div>

@@ -1,0 +1,520 @@
+/* Travel Record */
+.TravelRecordContainer {
+    padding: 24px; /* p-6 */
+    background-color: #f5f3f8; /* 부드러운 보라색 배경 */
+    border-radius: 12px; /* 부드러운 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    max-width: 800px; /* 카드의 최대 너비 */
+    margin: auto; /* 중앙 정렬 */
+  }
+  
+  .TravelRecordHeader {
+    margin-bottom: 24px; /* mb-6 */
+  }
+  
+  .TravelRecordTitle {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: #6b21a8; /* 깊은 보라색 */
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 8px; /* 제목과 서브 제목 간격 */
+  }
+  
+  .TravelRecordSubtitle {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: #6b21a8; /* 깊은 보라색 */
+    text-align: center; /* 중앙 정렬 */
+  }
+  
+  .TravelRecordLocation {
+    font-size: 1rem; /* text-base */
+    color: #6d28d9; /* 연한 보라색 */
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 24px; /* 위치와 사진 갤러리 간격 */
+  }
+  
+  .PhotoGallery {
+    display: flex;
+    gap: 16px; /* space-x-4 */
+    margin-bottom: 24px; /* mb-6 */
+    justify-content: center; /* 중앙 정렬 */
+  }
+  
+  .PhotoGallery img {
+    width: 33%; /* w-1/3 */
+    height: auto;
+    object-fit: cover; /* object-cover */
+    border-radius: 12px; /* 부드러운 모서리 */
+    border: 4px solid #d8b4fe; /* 연보라색 테두리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 더 강한 그림자 */
+  }
+  
+  .MemorableMoments {
+    list-style-type: disc; /* list-disc */
+    padding-left: 20px; /* ml-5 */
+    margin-bottom: 24px; /* mb-6 */
+    color: #1f2937; /* 어두운 회색 */
+    line-height: 1.6; /* 줄 간격 */
+  }
+  
+  .MemorableMoments li {
+    margin-bottom: 12px; /* mb-3 */
+  }
+  
+  .Experiences {
+    margin-top: 24px; /* mt-6 */
+    font-size: 1.125rem; /* text-lg */
+    color: #1f2937; /* 어두운 회색 */
+    line-height: 1.6; /* 줄 간격 */
+    text-align: justify; /* 양쪽 정렬 */
+  }
+
+/* Review Template */
+.ReviewContainer {
+    padding: 24px; /* p-6 */
+    background-color: #f2f7f9; /* 부드러운 파랑색 배경 */
+    border-radius: 12px; /* 부드러운 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    max-width: 800px; /* 카드의 최대 너비 */
+    margin: auto; /* 중앙 정렬 */
+}
+
+.ReviewSection {
+    margin-bottom: 24px; /* mb-6 */
+}
+
+.PlaceNameSection {
+    margin-bottom: 24px; /* 업소 이름과 평점 간의 간격 */
+}
+
+.PlaceName {
+    font-size: 1.75rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+    color: #2c3e50; /* 어두운 파란 회색 (세련된 색상) */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.ReviewLocation {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #5e95ba;
+}
+
+.ReviewTitle {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: #2980b9; /* 중간 파란색 (전문적이고 신뢰감 있는 색상) */
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 8px; /* 제목과 서브 제목 간격 */
+}
+
+.ReviewRating {
+    font-size: 2rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+    color: #f39c12; /* 따뜻한 금색 (눈에 잘 띄는 색상) */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.ReviewSubtitle {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: #2980b9; /* 중간 파란색 */
+    margin-bottom: 8px; /* 제목과 내용 간격 */
+}
+
+.ProsConsSection p,
+.FeaturesRecommendationSection p,
+.AdditionalCommentsSection p {
+    font-size: 1rem; /* text-base */
+    color: #34495e; /* 중간 파란 회색 (읽기 쉬운 색상) */
+    line-height: 1.6; /* 줄 간격 */
+}
+
+.ProsConsSection p strong,
+.FeaturesRecommendationSection p strong,
+.AdditionalCommentsSection p strong {
+    font-weight: 600; /* font-semibold */
+    color: #2980b9; /* 중간 파란색 */
+}
+
+/* Event Template */
+.EventNotificationContainer {
+    padding: 24px; /* p-6 */
+    background-color: #fef9f6; /* 밝은 베이지색 배경 */
+    border-radius: 8px; /* 모서리 둥글기 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    max-width: 800px; /* 최대 너비 */
+    margin: auto; /* 중앙 정렬 */
+  }
+  
+  /* 제목 섹션 스타일 */
+  .EventTitleSection {
+    margin-bottom: 24px; /* 제목과 다른 섹션 간의 간격 */
+    text-align: center; /* 중앙 정렬 */
+  }
+  
+  .EventTitle {
+    font-size: 2rem; /* 큰 제목 */
+    font-weight: bold; /* 굵은 글씨 */
+    color: #ff6f61; /* 생동감 있는 오렌지색 */
+  }
+  
+  /* 서브 제목 섹션 스타일 */
+  .EventSubtitle {
+    font-size: 1.25rem; /* 서브 제목 크기 */
+    font-weight: 600; /* 약간 굵은 글씨 */
+    color: #ff6f61; /* 동일한 색상 유지 */
+    margin-bottom: 8px; /* 제목과 내용 간의 간격 */
+  }
+  
+  /* 세부 내용 스타일 */
+  .EventDetailsSection,
+  .EventCostContactSection {
+    margin-bottom: 24px; /* 섹션 간의 간격 */
+  }
+  
+  .EventDetailsSection p,
+  .EventCostContactSection p {
+    font-size: 1rem; /* 기본 텍스트 크기 */
+    color: #333; /* 어두운 회색 텍스트 */
+    line-height: 1.6; /* 줄 간격 */
+  }
+  
+  /* 스타일 예시 */
+  .EventType {
+    font-size: 1rem; /* 행사 종류 */
+    color: #555; /* 중간 회색 */
+  }
+  
+  .EventSchedule p {
+    font-size: 1rem; /* 일정 텍스트 크기 */
+    color: #555; /* 중간 회색 */
+  }
+  
+/* AttractionRecommendation Template */
+.AttractionContainer {
+    padding: 24px; /* p-6 */
+    background-color: #f4f7f6; /* 부드러운 자연 색상 배경 */
+    border-radius: 8px; /* 모서리 둥글기 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    max-width: 800px; /* 최대 너비 */
+    margin: auto; /* 중앙 정렬 */
+  }
+  
+  /* 명소 이름 섹션 스타일 */
+  .AttractionHeader {
+    margin-bottom: 24px; /* 명소 이름과 다른 섹션 간의 간격 */
+    text-align: center; /* 중앙 정렬 */
+  }
+  
+  .AttractionName {
+    font-size: 2rem; /* 큰 제목 */
+    font-weight: bold; /* 굵은 글씨 */
+    color: #2d6a4f; /* 자연 녹색 */
+  }
+  
+  /* 섹션 제목 스타일 */
+  .SectionTitle {
+    font-size: 1.25rem; /* 서브 제목 크기 */
+    font-weight: 600; /* 약간 굵은 글씨 */
+    color: #3b6a40; /* 어두운 자연 녹색 */
+    margin-bottom: 8px; /* 제목과 내용 간의 간격 */
+  }
+  
+  /* 섹션 내용 스타일 */
+  .AttractionSection {
+    margin-bottom: 24px; /* 섹션 간의 간격 */
+  }
+  
+  .AttractionSection p {
+    font-size: 1rem; /* 기본 텍스트 크기 */
+    color: #333; /* 어두운 회색 텍스트 */
+    line-height: 1.6; /* 줄 간격 */
+  }
+  
+  .AttractionSection p strong {
+    font-weight: 600; /* 굵은 글씨 */
+    color: #3b6a40; /* 자연 녹색 */
+  }
+  
+/* AppointmentPlace Template */
+.AppointmentContainer {
+    padding: 24px; /* p-6 */
+    background-color: #f4f4f4; /* 밝은 회색 배경으로 신뢰감 있는 느낌 */
+    border-radius: 8px; /* 모서리 둥글기 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    max-width: 800px; /* 최대 너비 */
+    margin: auto; /* 중앙 정렬 */
+  }
+  
+  /* 섹션 스타일 */
+  .AppointmentSection {
+    margin-bottom: 24px; /* 섹션 간의 간격 */
+  }
+  
+  .SectionTitle {
+    font-size: 1.25rem; /* 서브 제목 크기 */
+    font-weight: 600; /* 굵은 글씨 */
+    color: #003366; /* 신뢰감을 주는 다크 블루 */
+    margin-bottom: 8px; /* 제목과 내용 간의 간격 */
+  }
+  
+  /* 텍스트 스타일 */
+  .AppointmentSection p {
+    font-size: 1rem; /* 기본 텍스트 크기 */
+    color: #333; /* 어두운 회색 텍스트 */
+    line-height: 1.6; /* 줄 간격 */
+  }
+  
+  .AppointmentSection p strong {
+    font-weight: 600; /* 굵은 글씨 */
+    color: #005b96; /* 강조 색상, 신뢰감을 주는 다크 블루 */
+  }
+  
+/* Ad Template */
+.AdContainer {
+    padding: 24px;
+    background-color: #f4f7f6; /* 부드러운 연한 회색-파랑 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  /* 헤더 스타일 */
+  .Header {
+    margin-bottom: 24px;
+  }
+  
+  .HeaderTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff6f61; /* 부드러운 산호색 */
+    text-align: center;
+  }
+  
+  /* 가격 정보 */
+  .PriceInfo {
+    margin-bottom: 24px;
+  }
+  
+  .PriceInfo .SubTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6d28d9; /* 고급스러운 퍼플 */
+  }
+  
+  .PriceInfo p {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* 할인 혜택, 일정, 매장 정보, 리뷰 및 평점 스타일 */
+  .Discount, .Schedule, .StoreInfo, .Reviews {
+    margin-bottom: 24px;
+  }
+  
+  .SubTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6d28d9; /* 고급스러운 퍼플 */
+    margin-bottom: 8px;
+  }
+  
+  .p {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* 실사 영상 및 사진 스타일 */
+  .Media {
+    margin-bottom: 24px;
+  }
+  
+  .MediaList {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .MediaItem {
+    width: 100%;
+    height: auto;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }
+  
+  .video {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  /* 관련 상품 목록 스타일 */
+  .Products {
+    margin-bottom: 24px;
+  }
+  
+  .ProductList {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .ProductCard {
+    width: 50%;
+    padding: 8px;
+  }
+  
+  .ProductImage {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .ProductName {
+    font-size: 0.875rem;
+    color: #ff6f61; /* 부드러운 산호색 */
+    margin-top: 8px;
+  }
+  
+  .ProductPrice {
+    font-size: 0.875rem;
+    color: #6d28d9; /* 고급스러운 퍼플 */
+  }
+  
+  /* 리뷰 카드 스타일 */
+  .ReviewCard {
+    border-top: 1px solid #ddd;
+    padding: 12px 0;
+  }
+  
+  .ReviewerName {
+    font-weight: 600;
+    color: #ff6f61; /* 부드러운 산호색 */
+  }
+  
+  .ReviewerRating {
+    font-size: 0.875rem;
+    color: #333;
+  }
+  
+  .ReviewerComment {
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+/* F&B Template */
+.FBContainer {
+    padding: 24px;
+    background-color: #FFF5E1; /* 크림색 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  /* 업소 정보 스타일 */
+  .FBStoreInfo {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .FBStoreName {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FF8C00; /* 오렌지 */
+  }
+  
+  .FBStoreLocation {
+    font-size: 1rem;
+    color: #6D4C41; /* 브라운 */
+  }
+  
+  /* 헤더 스타일 */
+  .FBHeader {
+    margin-bottom: 24px;
+  }
+  
+  .FBHeaderTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #D32F2F; /* 딥 레드 */
+    text-align: center;
+  }
+  
+  /* 할인 혜택, 일정, 매장 정보, 리뷰 및 평점 스타일 */
+  .FBDiscount, .FBSchedule, .FBOwnerDescription, .FBReviews {
+    margin-bottom: 24px;
+  }
+  
+  .FBSubTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #D32F2F; /* 딥 레드 */
+    margin-bottom: 8px;
+  }
+  
+  .p {
+    font-size: 1rem;
+    color: #6D4C41; /* 브라운 */
+    line-height: 1.6;
+  }
+  
+  /* 리뷰 카드 스타일 */
+  .FBReviewCard {
+    border-top: 1px solid #ddd;
+    padding: 12px 0;
+  }
+  
+  .FBReviewerName {
+    font-weight: 600;
+    color: #FF8C00; /* 오렌지 */
+  }
+  
+  .FBReviewerRating {
+    font-size: 0.875rem;
+    color: #6D4C41; /* 브라운 */
+  }
+  
+  .FBReviewerComment {
+    font-size: 0.875rem;
+    color: #333;
+  }
+  
+  /* 관련 상품 목록 스타일 */
+  .FBProducts {
+    margin-bottom: 24px;
+  }
+  
+  .FBProductList {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .FBProductCard {
+    width: 50%;
+    padding: 8px;
+  }
+  
+  .FBProductImage {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .FBProductName {
+    font-size: 0.875rem;
+    color: #D32F2F; /* 딥 레드 */
+    margin-top: 8px;
+  }
+  
+  .FBProductPrice {
+    font-size: 0.875rem;
+    color: #FF8C00; /* 오렌지 */
+  }
+  

@@ -5,15 +5,18 @@ import Styles from '@/app/styles/AttractionComponent.module.css';
 
 const Attraction = () => {
     const [attractionData, setAttractionData] = useState({
-        name: '',
-        intro: '',
-        bestTime: '',
-        specialReasons: [''],  
-        mustDo: [''],          
-        photoSpot: '',
-        tips: [''],            
-        recommendations: [''],
-        summary: ''
+        title: '',
+        location: '',
+        details: {
+            intro: '',
+            best_time: '',
+            special_reasons: [''],  
+            must_do: [''],          
+            photo_spot: '',
+            tips: [''],            
+            recomment_actions: [''],
+            summary: ''
+        }
     });
 
     const handleChange = (e) => {
@@ -36,9 +39,9 @@ const Attraction = () => {
     const addField = (field) => {
         setAttractionData(prevState => {
             const updatedArray = [...prevState[field]];
-            if (field === 'specialReasons' && updatedArray.length < 3) {
+            if (field === 'special_reasons' && updatedArray.length < 3) {
                 updatedArray.push('');
-            } else if (field !== 'specialReasons' && updatedArray.length < 3) {
+            } else if (field !== 'special_reasons' && updatedArray.length < 3) {
                 updatedArray.push('');
             }
             return {
@@ -68,8 +71,8 @@ const Attraction = () => {
                     <div className={Styles.formGroup}>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
+                            id="title"
+                            name="title"
                             placeholder='명소 이름'
                             value={attractionData.name}
                             onChange={handleChange}
@@ -80,53 +83,62 @@ const Attraction = () => {
                     <div className={Styles.formGroup}>
                         <input
                             type="text"
-                            id="intro"
-                            name="intro"
-                            placeholder='한 줄 소개'
-                            value={attractionData.intro}
+                            id="location"
+                            name="location"
+                            placeholder='명소 위치'
+                            value={attractionData.location}
                             onChange={handleChange}
                             required
                         />
                     </div>
                 </div>
-
                 <div className={Styles.formGroup}>
-                    <label htmlFor="bestTime">최적의 방문 시기</label>
                     <input
                         type="text"
-                        id="bestTime"
-                        name="bestTime"
-                        placeholder='계절, 월, 또는 시간대'
-                        value={attractionData.bestTime}
+                        id="intro"
+                        name="intro"
+                        placeholder='한 줄 소개'
+                        value={attractionData.intro}
                         onChange={handleChange}
                         required
                     />
                 </div>
-
+                <div className={Styles.formGroup}>
+                <label htmlFor="best_time">최적의 방문 시기</label>
+                    <input
+                        type="text"
+                        id="best_time"
+                        name="best_time"
+                        placeholder='계절, 월, 또는 시간대'
+                        value={attractionData.best_time}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
                 <div className={Styles.formGroup}>
                     <label>이곳이 특별한 이유</label>
-                    {attractionData.specialReasons.map((item, index) => (
+                    {attractionData.details.special_reasons.map((item, index) => (
                         <div key={index} className={Styles.fieldContainer}>
                             <input
                                 type="text"
                                 placeholder={`주요 특징 ${index + 1}`}
                                 value={item}
-                                onChange={(e) => handleListChange(e, index, 'specialReasons')}
+                                onChange={(e) => handleListChange(e, index, 'special_reasons')}
                                 required
                             />
                         </div>
                     ))}
                     <button
                         type="button"
-                        onClick={() => addField('specialReasons')}
+                        onClick={() => addField('special_reasons')}
                         className={Styles.addButton}
                     >
                         추가
                     </button>
-                    {attractionData.specialReasons.length > 1 && (
+                    {attractionData.details.special_reasons.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('specialReasons', attractionData.specialReasons.length - 1)}
+                            onClick={() => removeField('special_reasons', attractionData.special_reasons.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -136,28 +148,28 @@ const Attraction = () => {
 
                 <div className={Styles.formGroup}>
                     <label>꼭 해봐야 할 것들</label>
-                    {attractionData.mustDo.map((item, index) => (
+                    {attractionData.details.must_do.map((item, index) => (
                         <div key={index} className={Styles.fieldContainer}>
                             <input
                                 type="text"
                                 placeholder={`활동 또는 경험 ${index + 1}`}
                                 value={item}
-                                onChange={(e) => handleListChange(e, index, 'mustDo')}
+                                onChange={(e) => handleListChange(e, index, 'must_do')}
                                 required
                             />
                         </div>
                     ))}
                     <button
                         type="button"
-                        onClick={() => addField('mustDo')}
+                        onClick={() => addField('must_do')}
                         className={Styles.addButton}
                     >
                         추가
                     </button>
-                    {attractionData.mustDo.length > 1 && (
+                    {attractionData.details.must_do.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('mustDo', attractionData.mustDo.length - 1)}
+                            onClick={() => removeField('must_do', attractionData.must_do.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -167,7 +179,7 @@ const Attraction = () => {
 
                 <div className={Styles.formGroup}>
                     <label>알아두면 좋은 팁</label>
-                    {attractionData.tips.map((item, index) => (
+                    {attractionData.details.tips.map((item, index) => (
                         <div key={index} className={Styles.fieldContainer}>
                             <input
                                 type="text"
@@ -184,7 +196,7 @@ const Attraction = () => {
                     >
                         추가
                     </button>
-                    {attractionData.tips.length > 1 && (
+                    {attractionData.details.tips.length > 1 && (
                         <button
                             type="button"
                             onClick={() => removeField('tips', attractionData.tips.length - 1)}
@@ -197,27 +209,27 @@ const Attraction = () => {
 
                 <div className={Styles.formGroup}>
                     <label>이런 분들에게 추천해요</label>
-                    {attractionData.recommendations.map((item, index) => (
+                    {attractionData.details.recomment_actions.map((item, index) => (
                         <div key={index} className={Styles.fieldContainer}>
                             <input
                                 type="text"
                                 placeholder={`추천 대상 ${index + 1}`}
                                 value={item}
-                                onChange={(e) => handleListChange(e, index, 'recommendations')}
+                                onChange={(e) => handleListChange(e, index, 'recomment_actions')}
                             />
                         </div>
                     ))}
                     <button
                         type="button"
-                        onClick={() => addField('recommendations')}
+                        onClick={() => addField('recomment_actions')}
                         className={Styles.addButton}
                     >
                         추가
                     </button>
-                    {attractionData.recommendations.length > 1 && (
+                    {attractionData.details.recomment_actions.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('recommendations', attractionData.recommendations.length - 1)}
+                            onClick={() => removeField('recomment_actions', attractionData.recomment_actions.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -226,13 +238,13 @@ const Attraction = () => {
                 </div>
 
                 <div className={Styles.formGroup}>
-                    <label htmlFor="photoSpot">인생샷 스팟</label>
+                    <label htmlFor="photo_spot">인생샷 스팟</label>
                     <input
                         type="text"
-                        id="photoSpot"
-                        name="photoSpot"
+                        id="photo_spot"
+                        name="photo_spot"
                         placeholder='간단한 위치 설명'
-                        value={attractionData.photoSpot}
+                        value={attractionData.photo_spot}
                         onChange={handleChange}
                         required
                     />
