@@ -220,11 +220,13 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleMonetizeChoice = (choice) => {
     if (choice) {
-      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
+      console.log(state.selectedCategory);
+      console.log(state.type);
+      const confirmation = window.confirm(`${state.selectedCategory} 광고를 실행하고 핀을 꽂을까요?`);
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-        addPin(fileUrls, false);
+        addPin({images :fileUrls,isUser: false,type:state.type,category:state.selectedCategory});
         closeModal();
       }else{
         setShowConfirmModal(false);
@@ -239,11 +241,11 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const handleConfirmChoice = (choice) => {
     if (choice) {
-      const confirmation = window.confirm('광고를 실행하고 핀을 꽂을까요?');
+      const confirmation = window.confirm(`${state.selectedCategory} 광고를 실행하고 핀을 꽂을까요?`);
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-        addPin(fileUrls, false);
+        addPin(fileUrls,false,state.selectedCategory);
         closeModal();
       }else{
         setShowConfirmModal(false);
