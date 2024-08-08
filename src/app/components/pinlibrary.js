@@ -41,7 +41,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
 
   useEffect(() => {
     const type = pin.type?.[0]; // 배열의 첫 번째 요소
-    const selectedCategory = pin.selectedCategory; // 배열의 첫 번째 요소
+    const selectedCategory = pin.selectedCategory?.[0]; // 배열의 첫 번째 요소
 
     console.log('Type:', type); // 디버깅을 위한 로그
     console.log('Selected Category:', selectedCategory);

@@ -116,7 +116,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    console.log(state.details)
+    console.log(state.details);
     if (dropdownRef.current) {
       const options = dropdownRef.current.querySelectorAll('option');
       // 스크롤 애니메이션 적용
