@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useMyContext } from '@/app/context/myContext';
 import Styles from '@/app/styles/PointDisplay.module.css';
 import MapExample from '@/app/components/mapExample';

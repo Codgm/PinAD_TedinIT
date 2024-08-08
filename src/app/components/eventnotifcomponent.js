@@ -1,7 +1,13 @@
 import styles from '@/app/styles/EventTemplete.module.css';
 import { useState } from 'react';
+import usePostCreation from './logic/writeSeq';
 
 const EventNotification = () => {
+
+    const {
+      state,
+      updateDetailsField} =usePostCreation()
+
     const [eventData, setEventData] = useState({
         title: '',
         location: '',
@@ -35,10 +41,13 @@ const EventNotification = () => {
                     [name]: value
                 }
             }))
+            updateDetailsField(name, value)
         }
+        console.log(state.details)
     }
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log(state.details)
         console.log('제출된 행사 정보:', eventData)
         // 여기에 데이터 처리 로직 추가 (예: API로 전송)
     }
@@ -218,6 +227,9 @@ const EventNotification = () => {
                 onChange={handleChange}
               />
             </div>    
+            <button type="submit" className={styles.submitButton} onClick={()=>handleSubmit()}>
+              행사 등록
+            </button>
           </form>
     </div>
 )}

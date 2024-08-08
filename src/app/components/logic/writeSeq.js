@@ -12,7 +12,11 @@ const initialState = {
   step: 1,
   title: '',
   type: '광고',
+  selectedCategory: '',
   content: '',
+  details: {
+
+  },
   location: '',
   radius: 0,
   paymentMode: 'one-time',
@@ -27,7 +31,6 @@ const initialState = {
   bundleDiscountValue: '',
   bundleNValue: '',
   bundleType: '',
-  selectedCategory: '',
   imageFiles: [],
   shortVideo: null,
   platforms: [],
@@ -51,14 +54,17 @@ function postReducer(state, action) {
     case 'SET_TITLE':
       return {
       ...state,
-      title: action.payload.slice(0, MAX_TITLE_LENGTH),
+      title: action.payload,
         errors: {
         ...state.errors,
         title: action.payload.length > MAX_TITLE_LENGTH ? '제목은 최대 100자까지 입력 가능합니다.' : ''
         }
       };
   case 'SET_TYPE':
-    return { ...state, type: action.payload };
+    return { 
+      ...state, 
+      type: action.payload,
+    };
   case 'SET_CONTENT':
     return {
     ...state,
@@ -155,7 +161,10 @@ function postReducer(state, action) {
   case 'SET_PAYMENT':
     return { ...state, payment: action.payload };
   case 'SET_SELECTED_CATEGORY':
-    return { ...state, selectedCategory: action.payload };
+    return { 
+      ...state, 
+      selectedCategory: action.payload,
+    };
   case 'SET_BUNDLE_N_VALUE':
     return { ...state, bundleNValue: action.payload };
   case 'SET_BUNDLE_TYPE':
@@ -195,6 +204,28 @@ function postReducer(state, action) {
     return {
       ...state,
       menuItems: state.menuItems.filter(item => item.id !== action.payload)
+    };
+  case 'SET_DETAILS':
+    return {
+      ...state,
+      details: action.payload
+    };
+    case 'UPDATE_DETAILS_FIELD':
+      return {
+        ...state,
+        details: {
+          ...state.details,
+          [action.payload.field]: action.payload.value
+        }
+      };
+    console.log('Field to Update:', action.payload.field);
+    console.log('New Value:', action.payload.value);
+    console.log('New Details:', newDetails);
+  case 'REMOVE_DETAIL_FIELD':
+    const { [action.payload]: _, ...remainingDetails } = state.details;
+    return {
+      ...state,
+      details: remainingDetails
     };
   default:
     return state;
@@ -237,6 +268,16 @@ function usePostCreation() {
   const addMenuItem = (item) => dispatch({ type: 'ADD_MENU_ITEM', payload: item });
   const updateMenuItem = (id, updates) => dispatch({ type: 'UPDATE_MENU_ITEM', payload: { id, updates } });
   const removeMenuItem = (id) => dispatch({ type: 'REMOVE_MENU_ITEM', payload: id });
+  const updateDetailsField = (field, value) => dispatch({ type: 'UPDATE_DETAILS_FIELD', payload: { field, value } });
+  const removeDetailField = (fieldName) => dispatch({ type: 'REMOVE_DETAIL_FIELD', payload: fieldName });
+  /*
+  사용 예시 
+  updateDetailsField('fnb_name', 'New Restaurant Name');
+  updateDetailsField('operating_hours', '9 AM - 9 PM');
+
+  details 객체에서 특정 필드를 제거  
+  removeDetailField('other_benefits');
+  */
 
   return {
     state,
@@ -273,6 +314,8 @@ function usePostCreation() {
     addMenuItem,
     updateMenuItem,
     removeMenuItem,
+    updateDetailsField, 
+    removeDetailField 
   };
 }
 
