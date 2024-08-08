@@ -66,13 +66,17 @@ export default function Home2() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
-  const addPin = (images,isUser) => {
+  const addPin = ({images,isUser,type,category}) => {
     const now = new Date();
     const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
     const koreaTimeDiff = 9 * 60 * 60 * 1000;
     const korNow = new Date(utc+koreaTimeDiff)
     const formattedDate = formatDateToString(korNow);
+    if(images.length === 0) images=[`/노래방.jpg`]
     console.log(images)
+    console.log(isUser)
+    console.log(type)
+    console.log(category)
     const newPin = {
       id: pins.length + 1,
       x: Math.floor(Math.random() * 10),
@@ -80,7 +84,9 @@ export default function Home2() {
       time: formattedDate,
       images: images,
       isUser: isUser,
-      profile: { avatar: '/path/to/avatar.jpg', name: 'User Name' },
+      type :  [type],
+      selectedCategory : [category],
+      profile: { avatar: '/profileimg3.jpg', name: '김우빈' }
     };
     setPins([...pins, newPin]);
   };
