@@ -76,7 +76,7 @@ const MapList = ({ pins, showAllPins }) => {
               top: `${pin.y * 10}%`,
               transform: 'translate(-50%, -50%)',
               cursor: 'pointer',
-              position: 'relative',
+              position: 'absolute',
               width: '2rem',
             }}
             onClick={() => openPinModal(pin)}
@@ -84,14 +84,14 @@ const MapList = ({ pins, showAllPins }) => {
             onMouseLeave={handleMouseLeave}
           >
             <div 
-              className={`relative flex items-center justify-center w-14 h-14
+              className={`relative flex items-center justify-center w-16 h-16 transition-transform duration-300
               ${hoveredPinId === pin.id ? 'scale-150' : 'scale-100'}`}
             >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 48 48"
-                className="absolute w-14 h-14"
-                style={{ fill: pin.type?.[0] === '광고' ? 'red' : 'blue' }} // 핀 배경색
+                className="w-16 h-16"
+                style={{ fill: pin.type?.[0] === '광고' ? 'red' : 'blue' }}
               >
                 <path 
                   d="M24.43,40.153c0.186,0.276,0.497,0.441,0.829,0.441h0c0.333,0,0.644-0.166,0.829-0.441l9.436-14.018c1.128-1.799,1.725-3.865,1.725-5.976c0-6.376-5.383-11.564-12-11.564s-12,5.188-12,11.564c0,2.114,0.599,4.184,1.749,6.012L24.43,40.153z M25.25,10.594c5.514,0,10,4.291,10,9.564c0,1.734-0.491,3.433-1.402,4.886l-8.59,12.76l-8.584-12.726c-0.932-1.482-1.424-3.183-1.424-4.92C15.25,14.885,19.736,10.594,25.25,10.594z"
