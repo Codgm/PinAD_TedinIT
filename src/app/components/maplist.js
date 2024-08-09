@@ -76,7 +76,8 @@ const MapList = ({ pins, showAllPins }) => {
               top: `${pin.y * 10}%`,
               transform: 'translate(-50%, -50%)',
               cursor: 'pointer',
-              position: 'relative'
+              position: 'relative',
+              width: '2rem',
             }}
             onClick={() => openPinModal(pin)}
             onMouseEnter={() => handleMouseEnter(pin.id)}
@@ -101,7 +102,7 @@ const MapList = ({ pins, showAllPins }) => {
               </div>
             )}
             {hoveredPinId === pin.id && ( // 시간 표시 조건부 렌더링
-              <div className={`absolute top-full left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded-full shadow-md whitespace-nowrap transition-opacity duration-200 ${hoveredPinId === pin.id ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+              <div className={`absolute top-full left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-white px-2 py-1 rounded-full shadow-md whitespace-nowrap transition-opacity duration-  ${hoveredPinId === pin.id ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                 {pin.id === pins[pins.length - 1].id 
                   ? getTimeDifference(pin.time)
                   : pin.time.split(' ')[1]}
