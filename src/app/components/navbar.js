@@ -37,15 +37,15 @@ const NavBar = ({writeModal, popularstory}) => {
     return (
         <div className='bg-white max-h-[4.4rem] rounded-t-xl z-30 justify-between'>
             <ul className='flex w-auto justify-center relative'>
-                <span className={`bg-purple-500 duration-500 ${Menus[active].dis} border-2 border-gray-900 h-16 w-16 absolute 
-                -top-5 rounded-full transition-transform items-center`}>
+                <span className={`bg-purple-600 duration-500 ${Menus[active].dis} border-2 border-purple-700 h-16 w-16 absolute
+                -top-5 rounded-full transition-transform items-center shadow-lg`}>
                 </span>
                 {Menus.map((menu, i) => (
                     <li key={i} className='w-16'>
                         <div className=' items-center flex flex-col text-center pt-6' 
                         onClick={() => {setActive(i); menu.action && menu.action(); }}
                         >
-                            <span className={`text-xl cursor-pointer duration-500 z-30 ${i === active && "-mt-6 text-white"}`}>
+                            <span className={`text-xl cursor-pointer duration-500 z-30   ${i === active ? "-mt-6 text-white" : "text-gray-600"}`}>
                                 {menu.icon}
                             </span>
                             <span className={`${active === i ? 'translate-y-4 duration-700 opacity-100' 
