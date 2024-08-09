@@ -84,13 +84,13 @@ const MapList = ({ pins, showAllPins }) => {
             onMouseLeave={handleMouseLeave}
           >
             <div 
-              className={`relative flex items-center justify-center w-16 h-16
-              ${hoveredPinId === pin.id ? 'scale-125' : 'scale-100'}`}
+              className={`relative flex items-center justify-center w-14 h-14
+              ${hoveredPinId === pin.id ? 'scale-150' : 'scale-100'}`}
             >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 48 48"
-                className="absolute w-16 h-16"
+                className="absolute w-14 h-14"
                 style={{ fill: pin.type?.[0] === '광고' ? 'red' : 'blue' }} // 핀 배경색
               >
                 <path 
