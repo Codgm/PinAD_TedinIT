@@ -66,7 +66,7 @@ export default function Home2() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
-  const addPin = ({images,isUser,type,category}) => {
+  const addPin = ({images,isUser,type,category,title,location,details}) => {
     const now = new Date();
     const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
     const koreaTimeDiff = 9 * 60 * 60 * 1000;
@@ -77,6 +77,13 @@ export default function Home2() {
     console.log(isUser)
     console.log(type)
     console.log(category)
+    console.log(title)
+    console.log(location)
+    console.log(details)
+    if(title === null) title = '제목 없음';
+    if(location === null) location = '위치 정보 없음';
+    if(details === null) details = '상세 정보 없음';
+
     const newPin = {
       id: pins.length + 1,
       x: Math.floor(Math.random() * 10),
@@ -86,7 +93,10 @@ export default function Home2() {
       isUser: isUser,
       type :  [type],
       selectedCategory : [category],
-      profile: { avatar: '/profileimg3.jpg', name: '김우빈' }
+      profile: { avatar: '/profileimg3.jpg', name: '김우빈' },
+      title: title,
+      location : location,
+      details : details,
     };
     setPins([...pins, newPin]);
   };

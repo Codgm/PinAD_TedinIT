@@ -6,6 +6,8 @@ const EventNotification = () => {
 
     const {
       state,
+      setTitle,
+      setLocation,
       updateDetailsField} =usePostCreation()
 
     const [eventData, setEventData] = useState({
@@ -33,6 +35,7 @@ const EventNotification = () => {
                 ...prevState,
                 [name]: value
             }))
+            name === 'title' ? setTitle(value) : setLocation(value)
         } else {
             setEventData(prevState => ({
                 ...prevState,
@@ -43,6 +46,8 @@ const EventNotification = () => {
             }))
             updateDetailsField(name, value)
         }
+        console.log(state.title)
+        console.log(state.location)
         console.log(state.details)
     }
     const handleSubmit = (e) => {
