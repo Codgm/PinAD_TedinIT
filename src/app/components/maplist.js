@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import PinLibraryModal from './pinlibrary'; // 모달 컴포넌트 경로 조정 필요
+import PinLibraryModal from './pinlibrary';
 
 function formatDateToString(date) {
   const year = date.getFullYear();
@@ -84,17 +84,45 @@ const MapList = ({ pins, showAllPins }) => {
             onMouseLeave={handleMouseLeave}
           >
             <div 
-              className={`w-6 h-6 rounded-full transition-transform duration-300 
-                          ${pin.type?.[0] === '광고' ? 'bg-red-500' : 'bg-blue-500'} 
-                          shadow-lg ${hoveredPinId === pin.id ? 'scale-110 shadow-2xl' : 'scale-100 shadow-lg'}`}
+              className={`relative flex items-center justify-center w-16 h-16
+              ${hoveredPinId === pin.id ? 'scale-125' : 'scale-100'}`}
             >
-              {pin.profile && pin.profile.avatar && (
-                <img
-                  src={pin.profile.avatar}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover"
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 48 48"
+                className="absolute w-16 h-16"
+                style={{ fill: pin.type?.[0] === '광고' ? 'red' : 'blue' }} // 핀 배경색
+              >
+                <path 
+                  d="M24.43,40.153c0.186,0.276,0.497,0.441,0.829,0.441h0c0.333,0,0.644-0.166,0.829-0.441l9.436-14.018c1.128-1.799,1.725-3.865,1.725-5.976c0-6.376-5.383-11.564-12-11.564s-12,5.188-12,11.564c0,2.114,0.599,4.184,1.749,6.012L24.43,40.153z M25.25,10.594c5.514,0,10,4.291,10,9.564c0,1.734-0.491,3.433-1.402,4.886l-8.59,12.76l-8.584-12.726c-0.932-1.482-1.424-3.183-1.424-4.92C15.25,14.885,19.736,10.594,25.25,10.594z"
                 />
-              )}
+                <path 
+                  d="M25.25,25.616c3.135,0,5.686-2.467,5.686-5.5s-2.55-5.5-5.686-5.5s-5.686,2.467-5.686,5.5S22.115,25.616,25.25,25.616z M25.25,16.616c2.032,0,3.686,1.57,3.686,3.5s-1.653,3.5-3.686,3.5s-3.686-1.57-3.686-3.5S23.218,16.616,25.25,16.616z"
+                />
+                {pin.profile && pin.profile.avatar && (
+                  <foreignObject
+                    x="0" 
+                    y="0" 
+                    width="100%" 
+                    height="100%"
+                  >
+                    <img
+                      src={pin.profile.avatar}
+                      alt="Profile"
+                      style={{
+                        position: 'absolute',
+                        width: '1.25rem',
+                        height: '1.25rem',
+                        borderRadius: '50%',
+                        top: '42%',
+                        left: '52.275%',
+                        transform: 'translate(-50%, -50%)',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  </foreignObject>
+                )}
+              </svg>
             </div>
             {hoveredPinId === pin.id && ( // 큰 사각형 렌더링
               <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 bg-gray-500 opacity-50 w-24 h-24 rounded-lg z-10 transition-opacity duration-500">
