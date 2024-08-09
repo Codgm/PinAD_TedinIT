@@ -42,12 +42,17 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
   useEffect(() => {
     const type = pin.type?.[0]; // 배열의 첫 번째 요소
     const selectedCategory = pin.selectedCategory?.[0]; // 배열의 첫 번째 요소
-
+    const title = pin.title;
+    const location = pin.location;
+    const details = pin.details;
     console.log('Type:', type); // 디버깅을 위한 로그
     console.log('Selected Category:', selectedCategory);
-
+    console.log('Title:', title);
+    console.log('Location:', location);
+    console.log('Details:', details);
     if (type && selectedCategory) {
       const TemplateComponent = templates[type]?.[selectedCategory];
+
       setSelectedTemplate(() => TemplateComponent);
     }
   }, [pin]);

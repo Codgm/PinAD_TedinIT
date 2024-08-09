@@ -18,6 +18,24 @@ const EventNotificationTemplate = () => {
     ]
   };
 
+  const newEvent = {
+    title: "가을 축제 2024",
+    location: "서울시 종로구",
+    details: {
+      date: '2024/08/15',
+      time: '13:00~21:00',
+      organizer: '가을 축제 조직위원회',
+      organizerContact: '02-1234-5678',
+      registrationMethod: '주최자에게 사전 고지를 통해 참여가 가능합니다.',
+      registrationDeadline: '2024/08/10',
+      eventDescription: '가을 축제 2024는 다양한 문화 행사와 음악 공연, 음식 부스가 마련된 대규모 축제입니다. 가족과 친구들과 함께 즐거운 시간을 보내세요!',
+      fee: 'free',
+      inquiryContact: '문의처: 02-1234-5678, 이메일: hong@gmail.com 홈페이지:ieum.com',
+      additionalInfo: '축제에 대한 자세한 정보는 홈페이지를 참고해주세요.',
+      registrationLink: 'ieum.com/registration/autumnfestival2024'
+    }
+  }
+
   return (
     <div className={Styles.EventNotificationContainer}>
       {/* 제목 섹션 */}

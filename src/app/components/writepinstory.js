@@ -157,7 +157,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       setShowMonetizeModal(true);
     } else {
       const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-      addPin(fileUrls, state.type === '광고' ? true : state.monetize);
+      addPin({images :fileUrls,isUser: false,type:state.type,category:state.selectedCategory,title:state.title,location:state.location,details:state.details});
       closeModal();
     }
   };
@@ -223,11 +223,15 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
     if (choice) {
       console.log(state.selectedCategory);
       console.log(state.type);
+      console.log(state.title);
+      console.log(state.location);
+      console.log(state.details);
       const confirmation = window.confirm(`${state.selectedCategory} 광고를 실행하고 핀을 꽂을까요?`);
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-        addPin({images :fileUrls,isUser: false,type:state.type,category:state.selectedCategory});
+        addPin({images :fileUrls,isUser: false,type:state.type,category:state.selectedCategory,title:state.title,location:state.location,details:state.details});
+
         closeModal();
       }else{
         setShowConfirmModal(false);
@@ -246,7 +250,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       if (confirmation) {
         setMonetize(false);
         const fileUrls = state.imageFiles.map(file => URL.createObjectURL(file));
-        addPin(fileUrls,false,state.selectedCategory);
+        addPin({images :fileUrls,isUser: false,type:state.type,category:state.selectedCategory,title:state.title,location:state.location,details:state.details});
         closeModal();
       }else{
         setShowConfirmModal(false);
