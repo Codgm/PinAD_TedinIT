@@ -11,7 +11,7 @@ const MAX_SHORT_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 const initialState = {
   step: 1,
   title: '',
-  type: '광고',
+  type: '',
   selectedCategory: '',
   content: '',
   details: {
