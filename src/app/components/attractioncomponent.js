@@ -56,8 +56,10 @@ const Attraction = () => {
     const addField = (field) => {
         setAttractionData(prevState => {
             const updatedDetails = { ...prevState.details };
-            if (Array.isArray(updatedDetails[field]) && updatedDetails[field].length < 3) {
-                updatedDetails[field].push('');
+            if (Array.isArray(updatedDetails[field])) {
+                if (updatedDetails[field].length < 3) {
+                    updatedDetails[field] = [...updatedDetails[field], ''];
+                }
             }
             return {
                 ...prevState,
