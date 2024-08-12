@@ -111,27 +111,26 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const [industryType, setIndustryType] = useState('');
   const [showAdMonetizeModal, setshowAdMonetizeModal] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [category, setCategory] = useState(true);
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
-
+  
   useEffect(() => {
-    console.log(state.details);
-    if (dropdownRef.current) {
-      const options = dropdownRef.current.querySelectorAll('option');
-      // 스크롤 애니메이션 적용
-      dropdownRef.current.classList.add('spinner');
-
-      // 애니메이션이 끝나면 class 제거
-      const animationDuration = 1000; // 애니메이션 시간 (1초)
+    console.log('Selected Category:', state.selectedCategory);
+    console.log('Type:', state.type);
+    if (state.selectedCategory !== '' && state.type !== '') {
+      // 2초 후에 showDropdown을 false로 설정
       const timer = setTimeout(() => {
-        dropdownRef.current.classList.remove('spinner');
-      }, animationDuration);
+        setCategory(false);
+      }, 10);
 
-      // 컴포넌트 언마운트 시 타이머 정리
+      // 컴포넌트 언마운트 시 타이머 클리어
       return () => clearTimeout(timer);
+    } else {
+      setCategory(true); // 선택된 카테고리나 타입이 null일 때는 dropdown을 표시
     }
-  }, [state.selectedCategory]);
+  }, [state.selectedCategory, state.type]);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleTypeChange = (e) => setType(e.target.value);
@@ -339,7 +338,37 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       backgroundPosition: '10px 0, 10px 0, 0 0, 0 0',
       backgroundSize: '20px 20px',
       backgroundRepeat: 'repeat'
-    }
+    },
+    "리뷰": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+    `,},
+    "명소추천": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+    `,},
+    "약속장소": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+    `,},
+    "여행기록": {
+      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundImage: `
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+    `,},
+  };
+
+  const handleWallpaperClick = () => {
+    setType(''); // 타입을 빈 문자열로 설정
+    setSelectedCategory('')
+    setStep(2);
   };
   
   useEffect(() => {
@@ -366,12 +395,13 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       ))}
       </div>
       {
-        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-full text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}}>{wallpaper}</span>
+        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-md text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}} onClick={handleWallpaperClick}><span>{state.type}/</span><span>{wallpaper}</span></span>
       }    
     </div>
   );
 
   const renderStep = () => {
+    
     switch (state.step) {
       case 1:
         return (
@@ -436,7 +466,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       case 2:
         return (
           <div className="space-y-2">
-            <div className="flex items-center w-full space-x-2">
+            {category && <div className="flex items-center w-full space-x-2">
               <div className={Styles.buttonContainer}>
                 <button
                   className={`${Styles.toggleButton1} ${state.active ? 'active' : ''}`}
@@ -453,7 +483,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                   핀스토리
                 </button>
               </div>
-            </div>
+            </div>}
             <div className={Styles.dropdownMenu}>
             {state.type === '광고' && (
               <select
@@ -489,8 +519,8 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
                 <option value="약속장소">약속장소</option>
                 <option value="여행기록">여행기록</option>
               </select>
-            )}
-          </div>
+              )}
+            </div>
             {
               state.selectedCategory === '행사알림'&& state.type === '광고' &&(
                 <EventNotification/>
@@ -690,13 +720,14 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
       <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
-        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
+        <div className="relative bg-slate-50	 rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+        style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
         
         <div
             className="relative bg-white rounded-lg shadow-lg max-w-lg p-2 md:mx-2  md:max-w-xl z-10 flex flex-col"
             style={{
               height: `87vh`, // padding을 제외한 높이
-              backgroundColor: '#f0f0f0', // 배경색
+              backgroundColor: 'white', // 배경색
             }}
           >
             <div className="flex justify-between items-center pb-3 border-b border-gray-200">
