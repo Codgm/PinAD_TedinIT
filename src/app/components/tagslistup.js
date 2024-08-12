@@ -95,7 +95,7 @@ export default function Tagslistup({selectedCategory}){
         <button
         key={tag}
         className={`p-2 m-1 rounded-md ${selectedDefaultTags.includes(tag) ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-        // onClick={() => handleDefaultTagClick(tag)}
+        onClick={() => handleDefaultTagClick(tag)}
         >
         {tag}
         </button>
@@ -105,7 +105,7 @@ export default function Tagslistup({selectedCategory}){
       {newTags.map(tag => (
         <div key={tag} className="flex items-center bg-purple-500 text-white p-2 m-1 rounded-md">
           <span>{tag}</span>
-          {/* <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">×</button> */}
+          <button onClick={() => removeNewTag(tag)} className="ml-2 text-xs">×</button>
         </div>
       ))}
       </div>
@@ -113,7 +113,7 @@ export default function Tagslistup({selectedCategory}){
       type="text"
       className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
       placeholder="새 태그를 입력하고 Enter 키를 누르세요"
-      // onKeyDown={handleNewTagInputKeyDown}
+      onKeyDown={handleNewTagInputKeyDown}
       />
     </div>
   </div> 

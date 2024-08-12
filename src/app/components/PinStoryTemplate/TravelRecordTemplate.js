@@ -4,7 +4,6 @@ import Styles from '@/app/styles/ReadTemplate.module.css';
 const TravelRecord = () => {
   const travel = {
     name: '감귤밭',
-    place: "제주도",
     location: "제주도, 대한민국",
     memorableMoments: [
       "한라산 정상에서 바라본 일출은 말로 표현할 수 없는 장관이었습니다.",
@@ -23,7 +22,7 @@ const TravelRecord = () => {
       {/* 사진 및 영상 섹션 */}
       <div className={Styles.TravelRecordHeader}>
         <h2 className={Styles.TravelRecordTitle}>{travel.name}</h2>
-        <h3 className={Styles.TravelRecordSubtitle}>{travel.place}</h3>
+        <p className={Styles.TravelRecordLocation}>{travel.location}</p>
         <div className={Styles.PhotoGallery}>
           {travel.images.map((image, index) => (
             <img
@@ -33,12 +32,6 @@ const TravelRecord = () => {
             />
           ))}
         </div>
-      </div>
-
-      {/* 위치 섹션 */}
-      <div className={Styles.TravelRecordHeader}>
-        <h3 className={Styles.TravelRecordSubtitle}>위치</h3>
-        <p className={Styles.TravelRecordLocation}>{travel.location}</p>
       </div>
 
       {/* 오감 및 마음에 새겨진 한컷들 섹션 */}

@@ -28,6 +28,7 @@ const templates = {
   },
 };
 
+
 const PinLibraryModal = ({ pin, onClose, updatePin }) => {
 
   const { t } = useTranslation();
@@ -111,15 +112,24 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
     {selectedPin && (
         <PinstoryModal pin={selectedPin} onClose={closePinModal} updatePin={null} />
     )}
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md fixed max-h-[60vh] flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">{t('userPinStory')}</h2>
+      <div className="rounded-xl bg-white flex flex-col max-h-[60vh] overflow-y-auto scrollbar-hidden">
         <button
-          className="text-xl font-bold text-gray-700 hover:text-gray-900"
+          className="flex justify-end text-xl font-bold text-gray-700 hover:text-gray-900 p-3"
           onClick={onClose}
         >×</button>
+        {selectedTemplate ? (
+          React.createElement(selectedTemplate, { data: pin.data })
+        ) : (
+          <p>{t('noTemplateFound')}</p>
+        )}
       </div>
-      <div className="flex-1 overflow-hidden flex flex-col">
+      <style jsx global>{`
+        .scrollbar-hidden::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    {/* <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md fixed max-h-[60vh] flex flex-col">
+      {/* <div className="flex-1 overflow-hidden flex flex-col"> */}
         {/* Image grid section */}
         {/* <div className="flex items-center">
           <div className="flex items-right mb-4">
@@ -144,14 +154,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
             </div>
           </div>
         </div> */}
-        <div className="flex-1 overflow-y-auto">
-            {selectedTemplate ? (
-              React.createElement(selectedTemplate, { data: pin.data })
-            ) : (
-              <p>{t('noTemplateFound')}</p>
-            )}
-        </div>
-      </div>
+      {/* </div> */}
       <div>
           <div className="flex justify-between items-start">
             {/* <div>
@@ -192,7 +195,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
           <div className="fas fa-share ml-auto"></div>
         </div>
       </div> */}
-      {showCommentInput && (
+      {/* {showCommentInput && (
         <form onSubmit={handleCommentSubmit} className="flex space-x-2 mb-4 mt-2">
           <input
             type="text"
@@ -212,7 +215,7 @@ const PinLibraryModal = ({ pin, onClose, updatePin }) => {
             </div>
           ))
       }
-    </div>
+    </div> */}
   </div>
   </div>
   );

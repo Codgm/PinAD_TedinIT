@@ -298,16 +298,19 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       // backgroundRepeat: 'norepeat',
     },
     "행사알림": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f6fefd', /* 기본 배경 색상 */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+        linear-gradient(
+          180deg, /* 상단에서 하단으로 그라데이션 */
+          rgba(255, 255, 255, 0.9) 0%, /* 상단 부분을 아주 밝게 */
+          #f6fefd 40%, /* 중간 부분은 기본 색상 */
+          #e0e5e9 70%, /* 하단 부분은 조금 더 짙게 */
+          #113598 100% /* 가장 하단은 짙은 파란색 */
+        )
       `,
-      backgroundSize: '20px 20px, 20px 20px, 60px 60px', /* 각 패턴의 크기 */
-      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 */
-      backgroundRepeat: 'repeat', /* 배경 반복 설정 */      // backgroundImage: 'url(/box.jpg)',
-      // backgroundSize: 'contain',
-      // backgroundRepeat: 'norepeat',
+      backgroundSize: '100% 100%', /* 전체 배경에 맞춤 */
+      backgroundPosition: '0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat', /* 배경 반복 비활성화 */
     },
     "부동산": {
       backgroundColor: '#B22222', /* 기본 붉은색 배경 */
@@ -321,16 +324,31 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       backgroundRepeat: 'repeat', /* 패턴 반복 설정 */
     },
     "F&B": {
-      backgroundColor: '#8B4513', /* 벽돌 색상 */
+      backgroundColor: '#fefaf2', /* 기본 배경 색상 (연한 크림색) */
       backgroundImage: `
-        linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
-        linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
-        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
-        linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%)
+        linear-gradient(
+          180deg, /* 상단에서 하단으로 그라데이션 */
+          rgba(255, 245, 225, 0.8) 0%, /* 상단 부분을 밝고 부드럽게 */
+          rgba(255, 245, 225, 0.5) 50%, /* 중간 부분은 기본 색상으로 */
+          rgba(255, 245, 225, 0.3) 100% /* 하단 부분은 좀 더 투명하게 */
+        ),
+        radial-gradient(
+          circle at top left, /* 원형 그라데이션 추가 */
+          rgba(255, 245, 225, 0.3) 0%, 
+          rgba(255, 245, 225, 0.2) 50%, 
+          rgba(255, 245, 225, 0.1) 100%
+        ),
+        repeating-linear-gradient(
+          45deg,
+          rgba(0, 0, 0, 0.05) 0px, 
+          rgba(0, 0, 0, 0.05) 10px, 
+          rgba(0, 0, 0, 0.02) 10px, 
+          rgba(0, 0, 0, 0.02) 20px
+        )
       `,
-      backgroundSize: '13px 13px, 29px 29px, 37px 37px, 53px 53px', /* 각 gradient의 크기 설정 */
-      backgroundPosition: '0 0, 0 0, 0 0, 0 0', /* 각 gradient의 위치 설정 */
-      backgroundRepeat: 'repeat', /* 배경 반복 설정 */
+      backgroundSize: '100% 100%, 200px 200px, 30px 30px', /* 각 배경의 크기 설정 */
+      backgroundPosition: '0 0, 0 0, 0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat, no-repeat, repeat', /* 반복 설정 */
     },
     "구인": {
       backgroundColor: '#4CAF50',
@@ -395,7 +413,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       ))}
       </div>
       {
-        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-md text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}} onClick={handleWallpaperClick}><span>{state.type}/</span><span>{wallpaper}</span></span>
+        wallpaper =="" ? <span className="text-l  p-2 text-black font-bold"/> :<span className="text-l  p-2 rounded-md text-black font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}} onClick={handleWallpaperClick}><span>{state.type}/</span><span>{wallpaper}</span></span>
       }    
     </div>
   );
