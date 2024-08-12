@@ -4,17 +4,24 @@ const { useMyContext } = require("../context/myContext");
 
 const PointDisplay = ({loc,time}) => {
     const { point } = useMyContext();
-        const [usePoint, setUsePoint] = useState(10);
+    const [usePoint, setUsePoint] = useState(10);
     const [residue, setResidue] = useState(point - usePoint);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         // Calculate the residue when point or usePoint changes
         setUsePoint(loc+time);
         setResidue(point - loc-time);
+            // Trigger animation
+    setIsAnimating(true);
+    const timer = setTimeout(() => {
+        setIsAnimating(false);
+    }, 2000); // 2 seconds
+    return () => clearTimeout(timer); // Cleanup timer on unmount
     }, [loc, time]); // Dependencies: update when point or usePoint changes
 
     return (
-        <div className={Styles.pointContainer}>
+        <div className={`${Styles.pointContainer} ${isAnimating ? Styles.animate : ''}`}>
             <div className={Styles.pointText}>
                 <h2 className="text-lg font-bold">포인트 사용 내역</h2>
                 <div className="flex justify-between items-center border-t-2 border-white pt-1">

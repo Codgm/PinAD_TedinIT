@@ -11,10 +11,13 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 강도를 줄임 */
     overflow: hidden;
     position: sticky; /* Sticky positioning */
-    top: 0; /* 화면 상단에서 0px 위치에 고정 */
+    top: -170px; /* 화면 상단에서 0px 위치에 고정 */
     z-index: 10; /* 필요에 따라 z-index를 조정하여 다른 요소 위에 표시되도록 함 */
+    transition: top 1s ease; /* 2초 동안 top 속성 애니메이션 */
   }
-  
+  .pointContainer.animate {
+    top: 0; /* 애니메이션 중 변경할 위치 */
+  }
   .pointContainer::before {
     content: '';
     position: absolute;
