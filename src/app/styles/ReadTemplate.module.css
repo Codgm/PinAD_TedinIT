@@ -23,8 +23,8 @@
   .TravelRecordSubtitle {
     font-size: 1.25rem; /* text-xl */
     font-weight: 600; /* font-semibold */
-    color: #6b21a8; /* 깊은 보라색 */
-    text-align: center; /* 중앙 정렬 */
+    color: #531b81; /* 깊은 보라색 */
+    text-align: left; /* 중앙 정렬 */
   }
   
   .TravelRecordLocation {
@@ -60,6 +60,7 @@
   
   .MemorableMoments li {
     margin-bottom: 12px; /* mb-3 */
+    margin-left: 5px;
   }
   
   .Experiences {
@@ -68,6 +69,7 @@
     color: #1f2937; /* 어두운 회색 */
     line-height: 1.6; /* 줄 간격 */
     text-align: justify; /* 양쪽 정렬 */
+    margin-left: 5px;
   }
 
 /* Review Template */
@@ -142,7 +144,7 @@
 /* Event Template */
 .EventNotificationContainer {
     padding: 24px; /* p-6 */
-    background-color: #fef9f6; /* 밝은 베이지색 배경 */
+    background-color: #f6fefd;
     border-radius: 8px; /* 모서리 둥글기 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
     max-width: 800px; /* 최대 너비 */
@@ -157,15 +159,15 @@
   
   .EventTitle {
     font-size: 2rem; /* 큰 제목 */
-    font-weight: bold; /* 굵은 글씨 */
-    color: #ff6f61; /* 생동감 있는 오렌지색 */
+    font-weight: 600; /* 굵은 글씨 */
+    color: #000000; /* 생동감 있는 초록색 */
   }
   
   /* 서브 제목 섹션 스타일 */
   .EventSubtitle {
     font-size: 1.25rem; /* 서브 제목 크기 */
     font-weight: 600; /* 약간 굵은 글씨 */
-    color: #ff6f61; /* 동일한 색상 유지 */
+    color: #113598; /* 동일한 색상 유지 */
     margin-bottom: 8px; /* 제목과 내용 간의 간격 */
   }
   
@@ -458,11 +460,99 @@
     font-size: 0.875rem;
     color: #666;
   }
+
+  /* 별점 관련 스타일 */
+  .StarRating {
+    display: flex; /* 별점을 가로로 배치 */
+    align-items: center; /* 수직 중앙 정렬 */
+  }
+
+  .FilledStar, .HalfStar, .EmptyStar {
+    font-size: 1.25rem; /* 별 아이콘 크기 조정 */
+    margin-right: 2px; /* 별 사이의 간격 */
+    position: relative; /* 반별 아이콘을 정확히 위치시키기 위해 */
+  }
+
+  .FilledStar {
+    color: #f5c518; /* 노란색 */
+  }
+
+  .EmptyStar {
+    color: #e4e5e9; /* 회색 */
+  }
+
+  .HalfStar {
+    position: relative;
+    display: inline-block;
+    font-size: 1.25rem; /* 아이콘 크기 */
+    color: transparent; /* 기본 색상: 투명 */
+  }
+
+  .HalfStar::before {
+    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 50%; /* 왼쪽 반만 색칠되게 */
+    color: #f5c518; /* 왼쪽 반 색상: 노란색 */
+    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
+  }
+
+  .HalfStar::after {
+    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
+    font-family: 'Font Awesome 5 Free'; /* Font Awesome 사용 시 지정 */
+    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%; /* 전체 너비 */
+    color: #e4e5e9; /* 오른쪽 반 색상: 회색 */
+    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
+    z-index: -1; /* 왼쪽 반쪽의 색상 위에 배치 */
+  }
+
+  /* 리뷰 및 평점 관련 스타일 */
+  .ReviewCard {
+    border-top: 1px solid #ddd;
+    padding: 12px 0;
+    margin-bottom: 12px;
+  }
+
+  .ReviewerName {
+    font-weight: 600;
+    color: #ff6f61; /* 부드러운 산호색 */
+  }
+
+  .ReviewerRating {
+    font-size: 0.875rem;
+    color: #333;
+    margin-bottom: 4px;
+  }
+
+  .ReviewerComment {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  /* 평균 평점 스타일 */
+  .AverageRating {
+    margin-bottom: 20px;
+  }
+
+  .AverageRating h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6d28d9; /* 고급스러운 퍼플 */
+    margin-bottom: 8px;
+  }
+
   
 /* F&B Template */
 .FBContainer {
     padding: 24px;
-    background-color: #FFF5E1; /* 크림색 */
+    background-color: rgba(255, 245, 225, 0.5); /* 크림색 */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 900px;
@@ -478,7 +568,7 @@
   .FBStoreName {
     font-size: 2rem;
     font-weight: 700;
-    color: #FF8C00; /* 오렌지 */
+    color: #987f00; /* 오렌지 */
   }
   
   .FBStoreLocation {
@@ -494,25 +584,27 @@
   .FBHeaderTitle {
     font-size: 2rem;
     font-weight: 700;
-    color: #D32F2F; /* 딥 레드 */
+    color: #49382d; /* 딥 레드 */
     text-align: center;
   }
   
   /* 할인 혜택, 일정, 매장 정보, 리뷰 및 평점 스타일 */
   .FBDiscount, .FBSchedule, .FBOwnerDescription, .FBReviews {
     margin-bottom: 24px;
+    font-weight: 600;
   }
   
   .FBSubTitle {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #D32F2F; /* 딥 레드 */
+    color: #714529; /* 딥 레드 */
     margin-bottom: 8px;
   }
   
   .p {
     font-size: 1rem;
-    color: #6D4C41; /* 브라운 */
+    font-weight: 800;
+    color: #000000; /* 브라운 */
     line-height: 1.6;
   }
   
@@ -524,12 +616,12 @@
   
   .FBReviewerName {
     font-weight: 600;
-    color: #FF8C00; /* 오렌지 */
+    color: #714529; /* 오렌지 */
   }
   
   .FBReviewerRating {
     font-size: 0.875rem;
-    color: #6D4C41; /* 브라운 */
+    color: #000000; /* 브라운 */
   }
   
   .FBReviewerComment {
@@ -540,6 +632,7 @@
   /* 관련 상품 목록 스타일 */
   .FBProducts {
     margin-bottom: 24px;
+    font-weight: 600;
   }
   
   .FBProductList {
@@ -561,12 +654,12 @@
   
   .FBProductName {
     font-size: 0.875rem;
-    color: #D32F2F; /* 딥 레드 */
+    color: #6c1b1b; /* 딥 레드 */
     margin-top: 8px;
   }
   
   .FBProductPrice {
     font-size: 0.875rem;
-    color: #FF8C00; /* 오렌지 */
+    color: #6e3e03; /* 오렌지 */
   }
   

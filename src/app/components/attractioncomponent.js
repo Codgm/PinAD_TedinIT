@@ -10,56 +10,72 @@ const Attraction = () => {
         details: {
             intro: '',
             best_time: '',
-            special_reasons: [''],  
-            must_do: [''],          
+            special_reasons: [''],
+            must_do: [''],
             photo_spot: '',
-            tips: [''],            
+            tips: [''],
             recomment_actions: [''],
             summary: ''
         }
     });
 
+    // 텍스트 필드의 값을 업데이트하는 함수
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setAttractionData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        if (name in attractionData) {
+            setAttractionData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        } else {
+            setAttractionData(prevState => ({
+                ...prevState,
+                details: {
+                    ...prevState.details,
+                    [name]: value
+                }
+            }));
+        }
     };
 
+    // 리스트 항목의 값을 업데이트하는 함수
     const handleListChange = (e, index, field) => {
-        const newArray = [...attractionData[field]];
-        newArray[index] = e.target.value;
-        setAttractionData(prevState => ({
-            ...prevState,
-            [field]: newArray
-        }));
-    };
-
-    const addField = (field) => {
         setAttractionData(prevState => {
-            const updatedArray = [...prevState[field]];
-            if (field === 'special_reasons' && updatedArray.length < 3) {
-                updatedArray.push('');
-            } else if (field !== 'special_reasons' && updatedArray.length < 3) {
-                updatedArray.push('');
+            const updatedDetails = { ...prevState.details };
+            if (Array.isArray(updatedDetails[field])) {
+                updatedDetails[field][index] = e.target.value;
             }
             return {
                 ...prevState,
-                [field]: updatedArray
+                details: updatedDetails
             };
         });
     };
 
-    const removeField = (field, index) => {
+    // 리스트 항목을 추가하는 함수
+    const addField = (field) => {
         setAttractionData(prevState => {
-            const updatedArray = [...prevState[field]];
-            if (updatedArray.length > 1) {
-                updatedArray.splice(index, 1);
+            const updatedDetails = { ...prevState.details };
+            if (Array.isArray(updatedDetails[field]) && updatedDetails[field].length < 3) {
+                updatedDetails[field].push('');
             }
             return {
                 ...prevState,
-                [field]: updatedArray
+                details: updatedDetails
+            };
+        });
+    };
+
+    // 리스트 항목을 삭제하는 함수
+    const removeField = (field, index) => {
+        setAttractionData(prevState => {
+            const updatedDetails = { ...prevState.details };
+            if (Array.isArray(updatedDetails[field]) && updatedDetails[field].length > 1) {
+                updatedDetails[field].splice(index, 1);
+            }
+            return {
+                ...prevState,
+                details: updatedDetails
             };
         });
     };
@@ -74,7 +90,7 @@ const Attraction = () => {
                             id="title"
                             name="title"
                             placeholder='명소 이름'
-                            value={attractionData.name}
+                            value={attractionData.title}
                             onChange={handleChange}
                             required
                         />
@@ -98,19 +114,19 @@ const Attraction = () => {
                         id="intro"
                         name="intro"
                         placeholder='한 줄 소개'
-                        value={attractionData.intro}
+                        value={attractionData.details.intro}
                         onChange={handleChange}
                         required
                     />
                 </div>
                 <div className={Styles.formGroup}>
-                <label htmlFor="best_time">최적의 방문 시기</label>
+                    <label htmlFor="best_time">최적의 방문 시기</label>
                     <input
                         type="text"
                         id="best_time"
                         name="best_time"
                         placeholder='계절, 월, 또는 시간대'
-                        value={attractionData.best_time}
+                        value={attractionData.details.best_time}
                         onChange={handleChange}
                         required
                     />
@@ -138,7 +154,7 @@ const Attraction = () => {
                     {attractionData.details.special_reasons.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('special_reasons', attractionData.special_reasons.length - 1)}
+                            onClick={() => removeField('special_reasons', attractionData.details.special_reasons.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -169,7 +185,7 @@ const Attraction = () => {
                     {attractionData.details.must_do.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('must_do', attractionData.must_do.length - 1)}
+                            onClick={() => removeField('must_do', attractionData.details.must_do.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -199,7 +215,7 @@ const Attraction = () => {
                     {attractionData.details.tips.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('tips', attractionData.tips.length - 1)}
+                            onClick={() => removeField('tips', attractionData.details.tips.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -229,7 +245,7 @@ const Attraction = () => {
                     {attractionData.details.recomment_actions.length > 1 && (
                         <button
                             type="button"
-                            onClick={() => removeField('recomment_actions', attractionData.recomment_actions.length - 1)}
+                            onClick={() => removeField('recomment_actions', attractionData.details.recomment_actions.length - 1)}
                             className={Styles.removeButton}
                         >
                             삭제
@@ -244,7 +260,7 @@ const Attraction = () => {
                         id="photo_spot"
                         name="photo_spot"
                         placeholder='간단한 위치 설명'
-                        value={attractionData.photo_spot}
+                        value={attractionData.details.photo_spot}
                         onChange={handleChange}
                         required
                     />
@@ -257,7 +273,7 @@ const Attraction = () => {
                         id="summary"
                         name="summary"
                         placeholder='이 장소를 함축적으로 표현하는 짧은 문구'
-                        value={attractionData.summary}
+                        value={attractionData.details.summary}
                         onChange={handleChange}
                         required
                     />
