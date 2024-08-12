@@ -286,16 +286,19 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
 
   const wallpaperStyles = {
     "유통": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f4f7f6', /* 기본 배경 색상 (연한 회색-녹색) */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
+          linear-gradient(
+              180deg, /* 상단에서 하단으로 그라데이션 */
+              rgba(244, 247, 246, 1) 0%, /* 상단 부분은 흰색에 가까운 연한 색상 */
+              rgba(221, 232, 226, 1) 50%, /* 중간 부분은 서브 텍스트 색상과 비슷한 색상으로 전환 */
+              rgba(138, 112, 254, 0.8) 95%, /* 하단 부분은 제목 색상으로 전환 */
+              rgba(255, 111, 97, 0.7) 100% /* 하단 끝부분에는 약간의 붉은 계열 강조 */
+          )
       `,
-      backgroundSize: '20px 20px, 20px 20px, 60px 60px', /* 각 패턴의 크기 */
-      backgroundPosition: '0 0, 0 0, 0 0', /* 각 패턴의 위치 */
-      backgroundRepeat: 'repeat', /* 배경 반복 설정 */      // backgroundImage: 'url(/box.jpg)',
-      // backgroundSize: 'contain',
-      // backgroundRepeat: 'norepeat',
+      backgroundSize: '100% 100%', /* 배경 크기 설정 */
+      backgroundPosition: '0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat' /* 반복 설정 */
     },
     "행사알림": {
       backgroundColor: '#f6fefd', /* 기본 배경 색상 */
@@ -358,29 +361,80 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       backgroundRepeat: 'repeat'
     },
     "리뷰": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f2f7f9', /* 기본 배경 색상 */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
-    `,},
+          linear-gradient(
+              180deg, /* 상단에서 하단으로 그라데이션 */
+              rgba(242, 247, 249, 0.9) 0%, /* 상단 부분을 더 밝게 */
+              rgba(242, 247, 249, 0.7) 50%, /* 중간 부분은 기본 색상으로 */
+              rgba(242, 247, 249, 0.5) 100% /* 하단 부분은 더 투명하게 */
+          ),
+          radial-gradient(
+              circle at center, /* 중심에서 방사형 그라데이션 */
+              rgba(41, 128, 185, 0.2) 0%, /* 중앙 부분을 연한 파란색으로 */
+              rgba(41, 128, 185, 0.1) 70%, /* 외곽 부분은 더 투명하게 */
+              transparent 100%
+          ),
+          radial-gradient(
+              circle at top right, /* 별 모양 패턴 */
+              rgba(255, 221, 51, 0.6) 0%, /* 작은 별 모양을 강조 */
+              rgba(255, 221, 51, 0.4) 50%, 
+              transparent 100%
+          )
+      `,
+      backgroundSize: '100% 100%, 150px 150px, 60px 60px', /* 각 배경의 크기 설정 */
+      backgroundPosition: '0 0, 50% 50%, 0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat, no-repeat, repeat' /* 반복 설정 */
+    },
     "명소추천": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f4f7f6', /* 기본 배경 색상 (하양) */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
-    `,},
+          linear-gradient(
+              180deg, /* 상단에서 하단으로 그라데이션 */
+              rgba(255, 255, 255, 0.9) 50%, /* 상단 부분은 거의 하양 */
+              rgba(201, 236, 188, 0.8) 70%, /* 중간 부분에서 연한 녹색으로 전환 */
+              rgba(178, 224, 167, 0.6) 100% /* 하단 부분은 연한 녹색으로 강조 */
+          )
+      `,
+      backgroundSize: '100% 100%', /* 배경 크기 설정 */
+      backgroundPosition: '0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat' /* 반복 설정 */
+    },
     "약속장소": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f4f4f4', /* 기본 배경 색상 */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
-    `,},
+          linear-gradient(
+              135deg, /* 대각선 그라데이션 방향 */
+              rgba(0, 102, 204, 0.3) 0%, /* 강조된 연한 파스텔 블루 */
+              rgba(0, 102, 204, 0.3) 50%, /* 강조된 연한 파스텔 블루 */
+              rgba(102, 153, 255, 0.3) 50%, /* 강조된 연한 파스텔 스카이 블루 */
+              rgba(102, 153, 255, 0.3) 100% /* 강조된 연한 파스텔 스카이 블루 */
+          ),
+          radial-gradient(
+              circle at top left, /* 원형 그라데이션 */
+              rgba(0, 102, 204, 0.2) 0%, /* 강조된 연한 파스텔 블루 */
+              rgba(0, 102, 204, 0.1) 50%, 
+              transparent 100%
+          )
+      `,
+      backgroundSize: '200px 200px, 200px 200px', /* 배경 크기 설정 */
+      backgroundPosition: '0 0, 0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat, no-repeat' /* 반복 설정 */
+    },
     "여행기록": {
-      backgroundColor: '#d0936d', /* 붉은색 배경 */
+      backgroundColor: '#f5f3f8', /* 기본 배경 색상 (하양) */
       backgroundImage: `
-        linear-gradient(0deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수평 스트라이프 */
-        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px), /* 수직 스트라이프 */
-    `,},
+          linear-gradient(
+              180deg, /* 상단에서 하단으로 그라데이션 */
+              rgba(245, 243, 248, 0.9) 40%, /* 상단 부분은 거의 하양 */
+              rgba(227, 207, 250, 0.6) 70%, /* 중간 부분은 연한 보라색으로 전환 */
+              rgba(107, 33, 168, 0.4) 100% /* 하단 부분은 보라색으로 강조 */
+          )
+      `,
+      backgroundSize: '100% 100%', /* 배경 크기 설정 */
+      backgroundPosition: '0 0', /* 위치 설정 */
+      backgroundRepeat: 'no-repeat' /* 반복 설정 */
+    },
   };
 
   const handleWallpaperClick = () => {

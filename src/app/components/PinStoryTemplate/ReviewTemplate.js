@@ -1,5 +1,6 @@
 import React from 'react';
 import Styles from '@/app/styles/ReadTemplate.module.css';
+import { FaStar } from 'react-icons/fa';
 
 const Review = () => {
   const review = {
@@ -13,6 +14,26 @@ const Review = () => {
     comments: "전체적으로 매우 만족스러웠으나, 주차 공간이 부족해 조금 불편했습니다."
   };
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const totalStars = 5;
+  
+    return (
+      <div className={Styles.StarRatingReview}>
+        {[...Array(totalStars)].map((_, index) => {
+          if (index < fullStars) {
+            return <span key={index} className={Styles.FilledStar}><FaStar /></span>;
+          }
+          if (index === fullStars && hasHalfStar) {
+            return <span key={index} className={Styles.HalfStar}><FaStar /></span>;
+          }
+          return <span key={index} className={Styles.EmptyStar}><FaStar /></span>;
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className={Styles.ReviewContainer}>
       {/* 업소 이름 섹션 */}
@@ -24,6 +45,9 @@ const Review = () => {
       {/* 평점 섹션 */}
       <div className={`${Styles.ReviewSection} ${Styles.ReviewRatingSection}`}>
         <h2 className={Styles.ReviewTitle}>평점</h2>
+        <div className={Styles.ReviewRating}>
+          {renderStars(review.rating)}
+        </div>
         <p className={Styles.ReviewRating}>{review.rating} / 5</p>
       </div>
 

@@ -167,6 +167,7 @@ const AdTemplate = ({ data }) => {
             <div className={Styles.ReviewerRating}>
               {renderStars(review.rating)}
             </div>
+            <p>평점: {review.rating} / 5</p>
             <p className={Styles.ReviewerComment}>코멘트: {review.comment}</p>
           </div>
         ))}
