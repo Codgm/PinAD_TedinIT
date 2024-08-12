@@ -214,6 +214,12 @@
     font-size: 1rem; /* 일정 텍스트 크기 */
     color: #555; /* 중간 회색 */
   }
+
+  .StarRatingReview {
+    display: flex; /* 별점을 가로로 배치 */
+    align-items: center;
+    justify-content: center;
+  }
   
 /* AttractionRecommendation Template */
 .AttractionContainer {
@@ -461,58 +467,6 @@
     color: #666;
   }
 
-  /* 별점 관련 스타일 */
-  .StarRating {
-    display: flex; /* 별점을 가로로 배치 */
-    align-items: center; /* 수직 중앙 정렬 */
-  }
-
-  .FilledStar, .HalfStar, .EmptyStar {
-    font-size: 1.25rem; /* 별 아이콘 크기 조정 */
-    margin-right: 2px; /* 별 사이의 간격 */
-    position: relative; /* 반별 아이콘을 정확히 위치시키기 위해 */
-  }
-
-  .FilledStar {
-    color: #f5c518; /* 노란색 */
-  }
-
-  .EmptyStar {
-    color: #e4e5e9; /* 회색 */
-  }
-
-  .HalfStar {
-    position: relative;
-    display: inline-block;
-    font-size: 1.25rem; /* 아이콘 크기 */
-    color: transparent; /* 기본 색상: 투명 */
-  }
-
-  .HalfStar::before {
-    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
-    position: absolute;
-    top: -4px;
-    left: 0;
-    width: 50%; /* 왼쪽 반만 색칠되게 */
-    color: #f5c518; /* 왼쪽 반 색상: 노란색 */
-    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
-  }
-
-  .HalfStar::after {
-    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
-    font-family: 'Font Awesome 5 Free'; /* Font Awesome 사용 시 지정 */
-    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
-    position: absolute;
-    top: -6px;
-    left: 0;
-    width: 100%; /* 전체 너비 */
-    color: #e4e5e9; /* 오른쪽 반 색상: 회색 */
-    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
-    z-index: -1; /* 왼쪽 반쪽의 색상 위에 배치 */
-  }
-
   /* 리뷰 및 평점 관련 스타일 */
   .ReviewCard {
     border-top: 1px solid #ddd;
@@ -663,3 +617,57 @@
     color: #6e3e03; /* 오렌지 */
   }
   
+/* 공통 */
+
+  /* 별점 관련 스타일 */
+  .StarRating {
+    display: flex; /* 별점을 가로로 배치 */
+    align-items: center; /* 수직 중앙 정렬 */
+  }
+
+  .FilledStar, .HalfStar, .EmptyStar {
+    font-size: 1.25rem; /* 별 아이콘 크기 조정 */
+    margin-right: 2px; /* 별 사이의 간격 */
+    position: relative; /* 반별 아이콘을 정확히 위치시키기 위해 */
+  }
+
+  .FilledStar {
+    color: #f5c518; /* 노란색 */
+  }
+
+  .EmptyStar {
+    color: #e4e5e9; /* 회색 */
+    display: none;
+  }
+
+  .HalfStar {
+    position: relative;
+    display: inline-block;
+    font-size: 1.25rem; /* 아이콘 크기 */
+    color: transparent; /* 기본 색상: 투명 */
+  }
+
+  .HalfStar::before {
+    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 50%; /* 왼쪽 반만 색칠되게 */
+    color: #f5c518; /* 왼쪽 반 색상: 노란색 */
+    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
+  }
+
+  .HalfStar::after {
+    content: "\f005"; /* Font Awesome 스타 아이콘 코드 */
+    font-family: 'Font Awesome 5 Free'; /* Font Awesome 사용 시 지정 */
+    font-weight: 900; /* Font Awesome 5 Free의 두껍게 보이도록 설정 */
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%; /* 전체 너비 */
+    color: #e4e5e9; /* 오른쪽 반 색상: 회색 */
+    overflow: hidden; /* 색칠되지 않은 부분 숨기기 */
+    z-index: -1; /* 왼쪽 반쪽의 색상 위에 배치 */
+  }

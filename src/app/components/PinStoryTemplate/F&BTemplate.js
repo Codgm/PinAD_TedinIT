@@ -1,4 +1,6 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
+import { FaStar } from 'react-icons/fa';
 import Styles from '@/app/styles/ReadTemplate.module.css';
 
 const FBTemplate = ({ data }) => {
@@ -37,6 +39,37 @@ const FBTemplate = ({ data }) => {
     ],
     ownerDescription: "해피 식당은 신선한 재료로 만든 냉면을 전문으로 합니다. 고객님들께 최고의 맛과 서비스를 제공하기 위해 최선을 다하고 있습니다.",
     details: "여름 한정으로 냉면 전체 메뉴를 20% 할인된 가격에 제공합니다. 시원하고 맛있는 냉면으로 더위를 식히세요!"
+  };
+
+  // 리뷰 표시 여부 상태
+  const [showReviews, setShowReviews] = useState(true);
+
+  // 평균 평점 계산 함수
+  const calculateAverageRating = () => {
+    if (fb.reviews.length === 0) return 0;
+    const totalRating = fb.reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (totalRating / fb.reviews.length).toFixed(1);
+  };
+
+  // 별점 아이콘 렌더링 함수
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const totalStars = 5;
+  
+    return (
+      <div className={Styles.StarRating}>
+        {[...Array(totalStars)].map((_, index) => {
+          if (index < fullStars) {
+            return <span key={index} className={Styles.FilledStar}><FaStar/></span>;
+          }
+          if (index === fullStars && hasHalfStar) {
+            return <span key={index} className={Styles.HalfStar}><FaStar/></span>;
+          }
+          return <span key={index} className={Styles.EmptyStar}><FaStar/></span>;
+        })}
+      </div>
+    );
   };
 
   return (
@@ -82,9 +115,24 @@ const FBTemplate = ({ data }) => {
       {/* 리뷰 및 평점 */}
       <div className={Styles.FBReviews}>
         <h3 className={Styles.FBSubTitle}>리뷰 및 평점</h3>
-        {fb.reviews.map((review, index) => (
+        <div className={Styles.AverageRating}>
+          <h4>평균 평점: {calculateAverageRating()} / 5</h4>
+          <div className={Styles.StarRating}>
+            {renderStars(calculateAverageRating())}
+          </div>
+          <button 
+            className={Styles.ToggleButton}
+            onClick={() => setShowReviews(prev => !prev)}
+          >
+            {showReviews ? '리뷰 숨기기' : '리뷰 보기'}
+          </button>
+        </div>
+        {showReviews && fb.reviews.map((review, index) => (
           <div key={index} className={Styles.FBReviewCard}>
             <p className={Styles.FBReviewerName}>{review.reviewer}</p>
+            <div className={Styles.ReviewerRating}>
+              {renderStars(review.rating)}
+            </div>
             <p className={Styles.FBReviewerRating}>평점: {review.rating} / 5</p>
             <p className={Styles.FBReviewerComment}>코멘트: {review.comment}</p>
           </div>
