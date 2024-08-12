@@ -368,6 +368,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   const handleWallpaperClick = () => {
     setType(''); // 타입을 빈 문자열로 설정
     setSelectedCategory('')
+    setStep(2);
   };
   
   useEffect(() => {
@@ -394,7 +395,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
       ))}
       </div>
       {
-        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-md text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}} onClick={handleWallpaperClick}><span>광고/</span><span>{wallpaper}</span></span>
+        wallpaper =="" ? <span className="text-l  p-2 text-white font-bold"/> :<span className="text-l  p-2 rounded-md text-white font-bold shadow-md" style={{...wallpaperStyles[wallpaper]}} onClick={handleWallpaperClick}><span>{state.type}/</span><span>{wallpaper}</span></span>
       }    
     </div>
   );
@@ -719,7 +720,7 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
       <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
-        <div className="relative bg-slate-300	 rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+        <div className="relative bg-slate-50	 rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
         style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
         
         <div
