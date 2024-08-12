@@ -92,6 +92,16 @@ const MapList = ({ pins, showAllPins }) => {
                 viewBox="0 0 32 32"
                 className="w-16 h-16"
               >
+
+              <circle
+                  cx={32 / 2}
+                  cy={32 / 2}
+                  r={16 / 2}
+                  fill="rgba(255, 255, 255, 0.5)" // 하양색에 50% 투명도 설정
+                  stroke="rgba(0, 0, 0, 0.3)" // 검정색, 매우 얇은 테두리
+                  strokeWidth={1.5} // 매우 얇은 테두리 두께
+                />
+
                 <circle
                   cx={32 / 2}
                   cy={32 / 2}

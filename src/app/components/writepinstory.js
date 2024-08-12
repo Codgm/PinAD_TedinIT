@@ -690,13 +690,14 @@ export default function WritePinStory({ isOpen, closeModal, addPin }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 modal-overlay" onClick={handleOutsideClick}>
       <div className="absolute inset-0 bg-black opacity-50 modal-overlay"></div>
-        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col" style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
+        <div className="relative bg-slate-300 rounded-lg shadow-lg w-full max-w-lg p-2 mx-4 md:mx-0 md:max-w-xl z-10 flex flex-col"
+        style={{ height: '90vh' , ...wallpaperStyles[wallpaper]}}>
         
         <div
             className="relative bg-white rounded-lg shadow-lg max-w-lg p-2 md:mx-2  md:max-w-xl z-10 flex flex-col"
             style={{
               height: `87vh`, // padding을 제외한 높이
-              backgroundColor: '#f0f0f0', // 배경색
+              backgroundColor: 'white', // 배경색
             }}
           >
             <div className="flex justify-between items-center pb-3 border-b border-gray-200">

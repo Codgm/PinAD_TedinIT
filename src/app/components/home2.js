@@ -108,48 +108,9 @@ export default function Home2() {
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
       )}
       <div className={styles.container}>
-        {/* <header className={styles.header}>
-          <h1>Pinstory</h1>
-          <div className={styles.icons}>
-            <span
-              className={styles.notification} 
-              onClick={openWriteModal}
-            >
-              <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
-              </svg>
-            </span>
-            <span
-              className={styles.notification} 
-              onClick={handleSearchIconClick}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-            </span>
-            <span 
-              ref={notificationIconRef}
-              className={styles.notification} 
-              onClick={handleNotificationClick}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-              </svg>
-            </span>
-            <span className={styles.profile}>👤</span>
-          </div>
-        </header> */}
-
         <main className={styles.main}>
           <section className={styles.mapSection}>
-            <span 
+            {/* <span 
               ref={notificationIconRef}
               className={styles.notification} 
               onClick={handleNotificationClick}
@@ -157,8 +118,8 @@ export default function Home2() {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
               </svg>
-            </span>
-            <LanguageSwitcher></LanguageSwitcher>            
+            </span> */}
+            {/* <LanguageSwitcher></LanguageSwitcher>             */}
             <label className={styles.switch}>
               <input
                 type="checkbox"
@@ -190,12 +151,12 @@ export default function Home2() {
         <NavBar writeModal={()=>setIsWriteModalOpen(true)}/>
       </div>
 
-      <NotificationModal 
+      {/* <NotificationModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         notifications={notifications}
         anchorEl={notificationIconRef.current}
-      />
+      /> */}
     </div>
   )
 }
