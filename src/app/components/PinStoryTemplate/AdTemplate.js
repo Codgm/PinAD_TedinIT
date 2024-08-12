@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Styles from '@/app/styles/ReadTemplate.module.css';
+import { FaStar } from 'react-icons/fa';
 
 const AdTemplate = ({ data }) => {
   const ad = data || {
@@ -45,6 +46,37 @@ const AdTemplate = ({ data }) => {
       }
     ],
     details: "이번 여름 한정으로 스마트폰 대세 할인! 다양한 스마트폰 모델을 최대 30%까지 할인된 가격에 제공합니다."
+  };
+
+  // 리뷰 표시 여부 상태
+  const [showReviews, setShowReviews] = useState(true);
+
+  // 평균 평점 계산 함수
+  const calculateAverageRating = () => {
+    if (ad.reviews.length === 0) return 0;
+    const totalRating = ad.reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (totalRating / ad.reviews.length).toFixed(1);
+  };
+
+  // 별점 아이콘 렌더링 함수
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const totalStars = 5;
+  
+    return (
+      <div className={Styles.StarRating}>
+        {[...Array(totalStars)].map((_, index) => {
+          if (index < fullStars) {
+            return <span key={index} className={Styles.FilledStar}><FaStar/></span>;
+          }
+          if (index === fullStars && hasHalfStar) {
+            return <span key={index} className={Styles.HalfStar}><FaStar/></span>;
+          }
+          return <span key={index} className={Styles.EmptyStar}><FaStar/></span>;
+        })}
+      </div>
+    );
   };
 
   return (
@@ -117,10 +149,24 @@ const AdTemplate = ({ data }) => {
       {/* 리뷰 및 평점 추가 */}
       <div className={Styles.Reviews}>
         <h3 className={Styles.SubTitle}>리뷰 및 평점</h3>
-        {ad.reviews.map((review, index) => (
+        <div className={Styles.AverageRating}>
+          <h4>평균 평점: {calculateAverageRating()} / 5</h4>
+          <div className={Styles.StarRating}>
+            {renderStars(calculateAverageRating())}
+          </div>
+          <button 
+            className={Styles.ToggleButton}
+            onClick={() => setShowReviews(prev => !prev)}
+          >
+            {showReviews ? '리뷰 숨기기' : '리뷰 보기'}
+          </button>
+        </div>
+        {showReviews && ad.reviews.map((review, index) => (
           <div key={index} className={Styles.ReviewCard}>
             <p className={Styles.ReviewerName}>{review.reviewer}</p>
-            <p className={Styles.ReviewerRating}>평점: {review.rating} / 5</p>
+            <div className={Styles.ReviewerRating}>
+              {renderStars(review.rating)}
+            </div>
             <p className={Styles.ReviewerComment}>코멘트: {review.comment}</p>
           </div>
         ))}
