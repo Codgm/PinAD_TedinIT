@@ -122,14 +122,14 @@ export default function Home2() {
               </svg>
             </span> */}
             {/* <LanguageSwitcher></LanguageSwitcher>             */}
-            <label className={styles.switch}>
+            {isWriteModalOpen===1 && (<label className={styles.switch}>
               <input
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleChange}
               />
               <span className={styles.slider}></span>
-            </label>
+            </label>)}
             {/* MapList가 isWriteModalOpen이 1 또는 3일 때 보이도록 설정 */}
             {(isWriteModalOpen === 1 || isWriteModalOpen === 3) && (
               <MapList pins={pins} showAllPins={!isChecked} />
