@@ -6,7 +6,7 @@
 }
 
 .container {
-    width: 50%;
+    width: 50vw;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 10px;
@@ -67,6 +67,7 @@
 .mapContainer {
     position: relative;
     height: 75vh;
+    margin-bottom: 10px;
 }
 
 .svg-background {

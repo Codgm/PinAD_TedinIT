@@ -16,7 +16,7 @@ export default function SearchPage() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState(null);
-
+    
     const handleChange = (e) => {
         setQuery(e.target.value);
     };
@@ -36,7 +36,6 @@ export default function SearchPage() {
     };
 
     return (
-        <Layout>
             <div className={styles.pageWrapper}>
                 <div className={styles.container}>
                     <div className={styles.header}>
@@ -78,6 +77,5 @@ export default function SearchPage() {
                     </div>
                 </div>
             </div>
-        </Layout>
     );
 }
