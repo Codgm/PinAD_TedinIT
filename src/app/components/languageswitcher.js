@@ -55,7 +55,7 @@ export default function LanguageSwitcher() {
   return (
     <div className={styles.languageSwitcher}>
       <button onClick={toggleMenu} className={styles.languageButton}>
-        {languages.find(lang => lang.code === i18n.language)?.name || '언어 선택'} 
+        {languages.find(lang => lang.code === i18n.language)?.name || 'kor'} 
         <svg className={styles.arrow} width="24" height="24" fill="none" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>

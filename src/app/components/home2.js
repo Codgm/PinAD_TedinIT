@@ -9,12 +9,14 @@ import MapList from './maplist';
 import WritePinStory from './writepinstory';
 import NavBar from './navbar'; 
 import LanguageSwitcher from './languageswitcher';
+import NewUI from './hotStoryUI';
+import ProfileUI from './ProfileUI';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
-  const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
+  const [isWriteModalOpen, setIsWriteModalOpen] = useState(1);
 
   const [notifications, setNotifications] = useState([
     { text: "새로운 여행 추천이 도착했습니다!", isRead: false },
@@ -51,8 +53,8 @@ export default function Home2() {
   };
   
   const openWriteModal = () => setIsWriteModalOpen(true);
-  const closeWriteModal = () => setIsWriteModalOpen(false);
-
+  const closeWriteModal = () => setIsWriteModalOpen(1);
+  const sssModal = (e) => setIsWriteModalOpen(e);
   function formatDateToString(date) {
     // 연, 월, 일, 시, 분, 초를 추출
     const year = date.getFullYear();
@@ -104,7 +106,7 @@ export default function Home2() {
 
   return (
     <div className={styles.pageWrapper}>
-      {isWriteModalOpen && (
+      {isWriteModalOpen==3 && (
         <WritePinStory isOpen={isWriteModalOpen} closeModal={closeWriteModal} addPin={addPin} />
       )}
       <div className={styles.container}>
@@ -128,7 +130,16 @@ export default function Home2() {
               />
               <span className={styles.slider}></span>
             </label>
-            <MapList pins={pins} showAllPins={!isChecked}/>
+            {/* MapList가 isWriteModalOpen이 1 또는 3일 때 보이도록 설정 */}
+            {(isWriteModalOpen === 1 || isWriteModalOpen === 3) && (
+              <MapList pins={pins} showAllPins={!isChecked} />
+            )}
+            
+            {/* ProfileUI가 isWriteModalOpen이 5일 때 보이도록 설정 */}
+            {isWriteModalOpen === 5 && <ProfileUI />}
+            
+            {/* NewUI가 isWriteModalOpen이 4일 때 보이도록 설정 */}
+            {isWriteModalOpen === 4 && <NewUI />}
             {/* {isChecked ? <PopularRecentPinStory/> : <MapList pins={pins} showAllPins={!isChecked} />} */}
             {isSearchBarOpen && (
               <div className={styles.searchBarModal}>
@@ -148,7 +159,7 @@ export default function Home2() {
             {/* <PopularRecentPinStory/> */}
           </section>
         </main>
-        <NavBar writeModal={()=>setIsWriteModalOpen(true)}/>
+        <NavBar writeModal={sssModal}/>
       </div>
 
       {/* <NotificationModal 
