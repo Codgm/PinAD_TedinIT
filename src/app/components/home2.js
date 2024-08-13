@@ -11,6 +11,7 @@ import NavBar from './navbar';
 import LanguageSwitcher from './languageswitcher';
 import NewUI from './hotStoryUI';
 import ProfileUI from './ProfileUI';
+import SearchUI from '../search/SearchUI';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
@@ -130,6 +131,11 @@ export default function Home2() {
               />
               <span className={styles.slider}></span>
             </label>)}
+            {isWriteModalOpen ===2 && (
+              <SearchUI/>
+            )
+              
+            }
             {/* MapList가 isWriteModalOpen이 1 또는 3일 때 보이도록 설정 */}
             {(isWriteModalOpen === 1 || isWriteModalOpen === 3) && (
               <MapList pins={pins} showAllPins={!isChecked} />
