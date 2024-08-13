@@ -1,10 +1,9 @@
 .languageSwitcher {
     position: absolute;
     top: 1rem;
-    left: 3rem;
+    right: 1rem;
     z-index: 40;     
     display: inline-block;
-
   }
   
   .languageButton {
