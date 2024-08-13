@@ -1,4 +1,3 @@
-import Navbar from "../components/nav";
 import { MyContextProvider } from "../context/myContext";
 
 
