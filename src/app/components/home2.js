@@ -140,8 +140,6 @@ export default function Home2() {
             {(isWriteModalOpen === 1 || isWriteModalOpen === 3) && (
               <MapList pins={pins} showAllPins={!isChecked} />
             )}
-
-            {isWriteModalOpen === 2 && <SearchPage/>}
             
             {/* ProfileUI가 isWriteModalOpen이 5일 때 보이도록 설정 */}
             {isWriteModalOpen === 5 && <ProfileUI />}
