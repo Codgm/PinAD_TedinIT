@@ -12,11 +12,11 @@ const mockData = [
   { id: 3, name: 'Alice Johnson', businessName: 'Johnson Co.', interest: '명소', lat: 40.7128, lng: -74.0060 },
 ];
 
-export default function SearchPage() {
+export default function SearchUI() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState(null);
-    
+
     const handleChange = (e) => {
         setQuery(e.target.value);
     };
@@ -36,9 +36,9 @@ export default function SearchPage() {
     };
 
     return (
-            <div className={styles.pageWrapper}>
             <div className="relative w-full h-full bg-white shadow-lg rounded-lg overflow-hidden">
-                <div className={styles.header}>
+                <div className="relative bg-white text-black border-b border-gray-300 py-3 px-4">
+                    <div className={styles.header}>
                         <h1>Search</h1>
                         <div className={styles.icons}>
                             <input
