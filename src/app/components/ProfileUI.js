@@ -18,7 +18,7 @@ const ProfileUI = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="relative w-full h-full bg-white shadow-lg rounded-lg overflow-hidden">
       {/* Header 추가 */}
       <div className="relative bg-white text-black border-b border-gray-300 py-3 px-4">
         <h1 className="text-lg font-bold">MyPage</h1>
@@ -33,11 +33,11 @@ const ProfileUI = () => {
             </span>
       </div>
 
-      <div className="py-4 bg-gray-100">
+      <div className="bg-gray-100">
         <div className="space-y-4">
             
           <div className="relative flex items-center bg-white space-x-4 border border-gray-300 p-4">
-            <LanguageSwitcher/>
+          <LanguageSwitcher/>
             <div className="w-20 h-20 bg-gray-300 rounded-full overflow-hidden">
               <img src="/profileimg3.jpg" alt="김옥빈" className="w-full h-full object-cover" />
             </div>

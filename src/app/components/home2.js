@@ -10,6 +10,7 @@ import WritePinStory from './writepinstory';
 import NavBar from './navbar'; 
 import LanguageSwitcher from './languageswitcher';
 import NewUI from './hotStoryUI';
+import ProfileUI from './ProfileUI';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
@@ -121,15 +122,16 @@ export default function Home2() {
               </svg>
             </span> */}
             {/* <LanguageSwitcher></LanguageSwitcher>             */}
-            <label className={styles.switch}>
+            {/* <label className={styles.switch}>
               <input
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleChange}
               />
               <span className={styles.slider}></span>
-            </label>
-            <MapList pins={pins} showAllPins={!isChecked}/>
+            </label> */}
+            {/* <MapList pins={pins} showAllPins={!isChecked}/> */}
+            <ProfileUI/>
             {/* <NewUI/> */}
             {/* {isChecked ? <PopularRecentPinStory/> : <MapList pins={pins} showAllPins={!isChecked} />} */}
             {isSearchBarOpen && (
