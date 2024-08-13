@@ -41,7 +41,7 @@ const NavBar = ({ writeModal, popularstory }) => {
     const [active, setActive] = useState(0);
 
     return (
-        <div className='max-h-[4.4rem] z-30 justify-between'>
+        <div className='absolute bottom-0 left-0 w-full max-h-[4.4rem] z-30 justify-between'>
             <ul className=' bg-gray-100 flex w-auto justify-center relative opacity'>
                 <span className={`bg-gradient-to-r from-purple-300 to-purple-500 duration-500 ${Menus[active].dis} h-16 w-16 absolute
                 -top-5 rounded-full transition-transform items-center shadow-sm`}>

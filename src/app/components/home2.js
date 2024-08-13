@@ -9,6 +9,7 @@ import MapList from './maplist';
 import WritePinStory from './writepinstory';
 import NavBar from './navbar'; 
 import LanguageSwitcher from './languageswitcher';
+import NewUI from './hotStoryUI';
 
 export default function Home2() {
   const [isChecked, setIsChecked] = useState(false);
@@ -129,6 +130,7 @@ export default function Home2() {
               <span className={styles.slider}></span>
             </label>
             <MapList pins={pins} showAllPins={!isChecked}/>
+            {/* <NewUI/> */}
             {/* {isChecked ? <PopularRecentPinStory/> : <MapList pins={pins} showAllPins={!isChecked} />} */}
             {isSearchBarOpen && (
               <div className={styles.searchBarModal}>
