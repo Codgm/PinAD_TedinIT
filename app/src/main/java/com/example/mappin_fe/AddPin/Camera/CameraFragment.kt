@@ -61,6 +61,9 @@ class CameraFragment : Fragment() {
         binding.videoCaptureButton.setOnClickListener { captureVideo() }
         binding.nextButton.setOnClickListener { navigateToCategorySelection() }
 
+        // 추가: 뒤로가기 버튼 클릭 리스너 설정
+        binding.backButton.setOnClickListener { onBackToCaptureMode() }
+
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -96,8 +99,9 @@ class CameraFragment : Fragment() {
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     binding.capturedImageView.setImageURI(output.savedUri)
-                    binding.capturedImageView.visibility = View.VISIBLE
-                    binding.nextButton.visibility = View.VISIBLE
+
+                    // 미리보기 화면 표시
+                    showPreviewScreen(isImage = true)
                 }
             }
         )
@@ -155,6 +159,10 @@ class CameraFragment : Fragment() {
                             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
                                 .show()
                             Log.d(TAG, msg)
+                            binding.capturedVideoView.setVideoURI(recordEvent.outputResults.outputUri)
+
+                            // 미리보기 화면 표시
+                            showPreviewScreen(isImage = false)
                         } else {
                             recording?.close()
                             recording = null
@@ -168,6 +176,32 @@ class CameraFragment : Fragment() {
                     }
                 }
             }
+    }
+
+    private fun showPreviewScreen(isImage: Boolean) {
+        binding.previewContainer.visibility = View.VISIBLE
+        binding.viewFinder.visibility = View.GONE
+
+        // 미리보기 화면에서 촬영 버튼 숨기기
+        binding.captureButton.visibility = View.GONE
+        binding.videoCaptureButton.visibility = View.GONE
+
+        if (isImage) {
+            binding.capturedImageView.visibility = View.VISIBLE
+            binding.capturedVideoView.visibility = View.GONE
+        } else {
+            binding.capturedImageView.visibility = View.GONE
+            binding.capturedVideoView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun onBackToCaptureMode() {
+        binding.previewContainer.visibility = View.GONE
+        binding.viewFinder.visibility = View.VISIBLE
+
+        // 촬영 버튼 다시 보이기
+        binding.captureButton.visibility = View.VISIBLE
+        binding.videoCaptureButton.visibility = View.VISIBLE
     }
 
     private fun startCamera() {
