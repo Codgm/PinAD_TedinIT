@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import com.example.mappin_fe.AddPin.AddPinFragment
+import com.example.mappin_fe.AddPin.AddPinActivity
 import com.example.mappin_fe.Home.HomeFragment
 import com.example.mappin_fe.HotPin.HotPinFragment
 import com.example.mappin_fe.Login_Sign.UserSettingsActivity
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                         true
                     }
                     R.id.navigation_add_pin -> {
-                        navigateToFragment(AddPinFragment())
+                        navigateToAddPinActivity()
                         true
                     }
                     R.id.navigation_hot_pin -> {
@@ -84,6 +84,12 @@ class MainActivity : AppCompatActivity() {
         if (currentFragment?.javaClass == fragment.javaClass) return
 
         replaceFragment(fragment)
+    }
+
+    // AddPinActivity 전환 메소드
+    private fun navigateToAddPinActivity() {
+        val intent = Intent(this, AddPinActivity::class.java)
+        startActivity(intent)
     }
 
     // 화면 전환 구현 메소드
