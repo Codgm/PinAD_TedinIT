@@ -2,7 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="?attr/colorBackground"
+    android:padding="16dp"
+    style="@style/Base.Theme.Mappin_Fe">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +19,7 @@
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
             android:scaleType="centerCrop"
-            android:background="@drawable/circle_background"
+            android:background="?attr/colorBackground"
             android:src="@drawable/ic_default_profile"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
@@ -31,7 +33,8 @@
             android:text="Nickname"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:textColor="?attr/textColorPrimary"/>
 
         <!-- 사용자 이메일 -->
         <TextView
@@ -40,7 +43,8 @@
             android:layout_height="wrap_content"
             android:text="Email"
             android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="4dp"
+            android:textColor="?attr/textColorSecondary"/>
 
         <!-- 사용자 소개 -->
         <TextView
@@ -49,9 +53,9 @@
             android:layout_height="wrap_content"
             android:text="User description goes here"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:textColor="?attr/textColorSecondary"/>
 
         <!-- 관심사 표시 -->
         <LinearLayout
@@ -67,14 +71,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Interests"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"/>
 
             <TextView
                 android:id="@+id/tvInterests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Travel, Hiking"
-                android:textColor="@android:color/holo_blue_dark" />
+                android:textColor="?attr/textColorPrimary"/>
         </LinearLayout>
 
         <!-- 포인트 표시 및 충전 -->
@@ -91,21 +96,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Points"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"/>
 
             <TextView
                 android:id="@+id/tvPoints"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1000"
-                android:textColor="@android:color/holo_green_dark" />
+                android:textColor="?attr/textColorPrimary"/>
 
             <Button
                 android:id="@+id/btnChargePoints"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Charge"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="8dp"
+                android:background="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"/>
         </LinearLayout>
 
         <!-- 설정 버튼 -->
@@ -114,6 +122,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Settings"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorOnPrimary" />
     </LinearLayout>
 </ScrollView>

@@ -5,20 +5,24 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorAccent">#9C27B0</color> <!-- 보라색 계열 -->
     <color name="colorChipBackground">#D1C4E9</color> <!-- 연한 보라색 -->
-    <color name="colorPrimary">#AB47BC</color> <!-- 보라색 -->
+    <color name="colorPrimary">#8A2BE2</color> <!-- 파란 제비 꽃색 -->
     <color name="colorPrimaryVariant">#8E24AA</color> <!-- 어두운 보라색 -->
     <color name="colorOnPrimary">#FFFFFF</color> <!-- 흰색 -->
     <color name="colorSecondary">#CE93D8</color> <!-- 연한 보라색 -->
     <color name="colorSecondaryVariant">#AB47BC</color> <!-- 보라색 -->
     <color name="colorOnSecondary">#000000</color> <!-- 검정색 -->
     <color name="backgroundLight">#F3E5F5</color> <!-- 연한 보라색 배경 -->
+    <color name="colorTextPrimaryLight">#000000</color> <!-- 텍스트 기본색상 라이트 모드 -->
+    <color name="colorTextSecondaryLight">#7A7A7A</color> <!-- 텍스트 보조색상 라이트 모드 -->
     <color name="colorOnBackgroundLight">#4A148C</color> <!-- 어두운 보라색 텍스트 -->
     <color name="surfaceLight">#E1BEE7</color> <!-- 보라색 계열의 표면 색상 -->
     <color name="colorOnSurfaceLight">#4A148C</color> <!-- 어두운 보라색 텍스트 -->
-    <color name="errorLight">#D32F2F</color> <!-- 붉은색 -->
+    <color name="errorLight">#FF0000</color> <!-- 붉은색 -->
     <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
 
-    <color name="backgroundDark">#4A148C</color> <!-- 어두운 보라색 배경 -->
+    <color name="backgroundDark">#3C3C3C</color> <!-- 어두운 보라색 배경 -->
+    <color name="colorTextPrimaryDark">#FFFFFF</color> <!-- 텍스트 기본색상 다크 모드 -->
+    <color name="colorTextSecondaryDark">#B0B0B0</color> <!-- 텍스트 보조색상 다크 모드 -->
     <color name="colorOnBackgroundDark">#FFFFFF</color> <!-- 흰색 텍스트 -->
     <color name="surfaceDark">#6A1B9A</color> <!-- 보라색 계열의 어두운 표면 색상 -->
     <color name="colorOnSurfaceDark">#FFFFFF</color> <!-- 흰색 텍스트 -->

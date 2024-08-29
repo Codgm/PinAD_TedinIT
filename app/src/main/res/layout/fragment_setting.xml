@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="?attr/colorBackground"
+    style="@style/Base.Theme.Mappin_Fe">
 
     <!-- 뒤로가기 버튼 -->
     <ImageButton
@@ -40,12 +42,13 @@
                 android:layout_weight="1"
                 android:text="Notification Settings"
                 android:textSize="16sp"
-                android:textColor="@android:color/black"/>
+                android:textColor="?attr/colorOnBackground"/>
 
             <Switch
                 android:id="@+id/switchNotification"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
         <!-- 테마 설정 -->
@@ -65,14 +68,14 @@
                 android:layout_weight="1"
                 android:text="Theme Settings"
                 android:textSize="16sp"
-                android:textColor="@android:color/black"/>
+                android:textColor="?attr/colorOnBackground"/>
 
             <TextView
                 android:id="@+id/tvTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Light"
-                android:textColor="@android:color/holo_blue_dark"/>
+                android:textColor="?attr/colorPrimary"/>
         </LinearLayout>
 
         <!-- 관심사 설정 -->
@@ -92,14 +95,14 @@
                 android:layout_weight="1"
                 android:text="Interests"
                 android:textSize="16sp"
-                android:textColor="@android:color/black"/>
+                android:textColor="?attr/colorOnBackground"/>
 
             <TextView
                 android:id="@+id/tvInterestsSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Travel, Hiking"
-                android:textColor="@android:color/holo_blue_dark"/>
+                android:textColor="?attr/colorPrimary"/>
         </LinearLayout>
 
         <!-- 로그아웃 버튼 -->
@@ -109,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Logout"
-            android:textColor="@android:color/white"
+            android:textColor="?attr/colorOnPrimary"
             android:background="?attr/colorPrimary"
             android:padding="12dp"/>
 
@@ -119,8 +122,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Account"
-            android:textColor="@android:color/holo_red_dark"
-            android:background="@android:color/white"
+            android:textColor="?attr/colorError"
+            android:background="@android:color/holo_red_dark"
             android:padding="12dp"/>
     </LinearLayout>
 </RelativeLayout>

@@ -26,4 +26,5 @@
     <string name="next">next</string>
     <string name="take_photo">take_photo</string>
     <string name="stop_capture">stop_capture</string>
+    <string name="back">back</string>
 </resources>

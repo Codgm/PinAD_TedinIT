@@ -9,6 +9,9 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorBackground">@color/backgroundDark</item>
+        <item name="textColorPrimary">@color/colorTextPrimaryDark</item>
+        <item name="textColorSecondary">@color/colorTextSecondaryDark</item>
         <item name="colorOnBackground">@color/colorOnBackgroundDark</item>
         <item name="colorSurface">@color/surfaceDark</item>
         <item name="colorOnSurface">@color/colorOnSurfaceDark</item>

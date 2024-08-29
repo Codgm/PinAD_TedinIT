@@ -9,6 +9,9 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorBackground">@color/backgroundLight</item>
+        <item name="textColorPrimary">@color/colorTextPrimaryLight</item>
+        <item name="textColorSecondary">@color/colorTextSecondaryLight</item>
         <item name="colorOnBackground">@color/colorOnBackgroundLight</item>
         <item name="colorSurface">@color/surfaceLight</item>
         <item name="colorOnSurface">@color/colorOnSurfaceLight</item>
