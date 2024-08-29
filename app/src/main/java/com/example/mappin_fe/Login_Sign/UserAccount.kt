@@ -1,0 +1,13 @@
+package com.example.mappin_fe.Login_Sign
+
+import com.google.firebase.database.IgnoreExtraProperties
+
+@IgnoreExtraProperties
+data class UserAccount(
+    val idToken: String? = null,
+    val emailId: String? = null,
+    val password: String? = null,
+    val nickname: String? = null,
+    val interests: String? = null
+)
+

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login_Sign.UserSetting.UserSettingsActivity"
+    android:padding="24dp"
+    android:background="#F5F5F5">
+
+    <!-- 화면 제목 -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Settings"
+        android:textSize="32sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/et_nickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <!-- 닉네임 입력 필드 -->
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Enter your nickname"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+    <!-- 관심사 레이블 -->
+    <TextView
+        android:id="@+id/tv_interests_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select your interests"
+        android:textSize="18sp"
+        android:textColor="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_nickname"
+        android:layout_marginTop="24dp"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <!-- 관심사 선택 -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_interests"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_interests_label"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:padding="8dp">
+
+        <!-- Example Chips -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_travel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Travel"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_boat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Boat"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_hiking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hiking"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_exhibition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exhibition"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_advertising"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Advertising"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- 직접 관심사 추가 레이아웃 -->
+    <LinearLayout
+        android:id="@+id/ll_add_interest"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chip_group_interests"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/et_add_interest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_background"
+            android:hint="Add new interest"
+            android:padding="12dp"
+            android:textSize="14sp"
+            android:textColor="#333333" />
+
+        <Button
+            android:id="@+id/btn_add_interest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_background"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- 완료 버튼 -->
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_add_interest"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

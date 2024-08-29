@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9945862925",
+    "project_id": "mappinlogin",
+    "storage_bucket": "mappinlogin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9945862925:android:8345ac535809f6489e1644",
+        "android_client_info": {
+          "package_name": "com.example.mappin_fe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9945862925-l0ktqrf382vr0tndutikl70adeeegev3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIb-K2YfVdo9WP2HS0le_SMUiUixOiE68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9945862925-l0ktqrf382vr0tndutikl70adeeegev3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
