@@ -28,4 +28,49 @@
     <color name="colorOnSurfaceDark">#FFFFFF</color> <!-- 흰색 텍스트 -->
     <color name="errorDark">#CF6679</color> <!-- 붉은색 -->
     <color name="colorOnErrorDark">#000000</color> <!-- 검정색 텍스트 -->
+
+    <!-- Distribution colors -->
+    <color name="distribution_primary">#4CAF50</color>
+    <color name="distribution_text">#1B5E20</color>
+    <color name="template_distribution">#E8F5E9</color>
+
+    <!-- F&B colors -->
+    <color name="fnb_primary">#FF9800</color>
+    <color name="fnb_text">#E65100</color>
+    <color name="template_fnb">#FFF3E0</color>
+
+    <!-- Event colors -->
+    <color name="event_primary">#2196F3</color>
+    <color name="event_text">#0D47A1</color>
+    <color name="template_event">#E3F2FD</color>
+
+    <!-- Review colors -->
+    <color name="review_primary">#9C27B0</color>
+    <color name="review_text">#4A148C</color>
+    <color name="template_review">#F3E5F5</color>
+
+    <!-- Attraction colors -->
+    <color name="attraction_primary">#FFC107</color>
+    <color name="attraction_text">#FF6F00</color>
+    <color name="template_attraction">#FFFDE7</color>
+
+    <!-- Meeting Point colors -->
+    <color name="meeting_point_primary">#009688</color>
+    <color name="meeting_point_text">#004D40</color>
+    <color name="template_meeting_point">#E0F2F1</color>
+
+    <!-- Travel Note colors -->
+    <color name="travel_note_primary">#3F51B5</color>
+    <color name="travel_note_text">#1A237E</color>
+    <color name="template_travel_note">#E8EAF6</color>
+
+    <!-- Discount Request colors -->
+    <color name="discount_request_primary">#F44336</color>
+    <color name="discount_request_text">#B71C1C</color>
+    <color name="template_discount_request">#FFEBEE</color>
+
+    <!-- Default colors -->
+    <color name="default_primary">#607D8B</color>
+    <color name="default_text">#263238</color>
+    <color name="template_default">#ECEFF1</color>
 </resources>
