@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
 import com.example.mappin_fe.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -17,6 +18,7 @@ class CategoryTagFragment : Fragment() {
     private lateinit var chipGroupTags: ChipGroup
     private lateinit var etAddTag: EditText
     private lateinit var btnAddTag: Button
+    private lateinit var btnNext: Button
     private lateinit var tvInterestsLabel: TextView
 
     private val selectedColor = R.color.colorAccent
@@ -33,6 +35,7 @@ class CategoryTagFragment : Fragment() {
         chipGroupTags = view.findViewById(R.id.chip_group_tags)
         etAddTag = view.findViewById(R.id.et_add_tag)
         btnAddTag = view.findViewById(R.id.btn_add_tag)
+        btnNext = view.findViewById(R.id.btn_next)
         tvInterestsLabel = view.findViewById(R.id.tv_interests_label)
 
         // Retrieve selected subcategory from arguments
@@ -42,10 +45,28 @@ class CategoryTagFragment : Fragment() {
             addNewTag()
         }
 
+        btnNext.setOnClickListener {
+            navigateToPointSystemFragment()
+        }
+
         // Initialize default tags based on selected subcategory
         initializeDefaultTags()
 
         return view
+    }
+
+    private fun navigateToPointSystemFragment() {
+        val pointSystemFragment = PointSystemFragment()
+        val bundle = Bundle().apply {
+            putString("SELECTED_SUBCATEGORY", selectedSubCategory)
+        }
+        pointSystemFragment.arguments = bundle
+
+        // FragmentManager를 사용하여 Fragment 전환
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, pointSystemFragment) // FragmentContainer ID를 정확하게 설정해야 합니다.
+            .addToBackStack(null) // 뒤로 가기 버튼을 누르면 이전 Fragment로 돌아가도록 설정
+            .commit()
     }
 
     private fun initializeDefaultTags() {

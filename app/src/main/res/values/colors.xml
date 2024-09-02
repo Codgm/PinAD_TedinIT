@@ -20,6 +20,15 @@
     <color name="errorLight">#FF0000</color> <!-- 붉은색 -->
     <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
 
+    <!-- 현재 포인트 색상 -->
+    <color name="points_color">#B200FF</color>
+    <!-- 차감 예정 포인트 색상 -->
+    <color name="estimated_cost_color">#8745FF</color>
+    <!-- 레이블 색상 -->
+    <color name="label_color">#1E88E5</color>
+    <!-- 버튼 텍스트 색상 -->
+    <color name="button_text_color">#FFFFFF</color>
+
     <color name="backgroundDark">#3C3C3C</color> <!-- 어두운 보라색 배경 -->
     <color name="colorTextPrimaryDark">#FFFFFF</color> <!-- 텍스트 기본색상 다크 모드 -->
     <color name="colorTextSecondaryDark">#B0B0B0</color> <!-- 텍스트 보조색상 다크 모드 -->

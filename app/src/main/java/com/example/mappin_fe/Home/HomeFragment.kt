@@ -1,6 +1,7 @@
 package com.example.mappin_fe.Home
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
@@ -89,6 +90,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         this.googleMap = googleMap
         setupMap()
         setMapStyle(googleMap)
+        loadAndShowPin()
+    }
+
+    private fun loadAndShowPin() {
+        val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
+        val pinData = sharedPreferences.getString("last_pin", null)
+
+        pinData?.let {
+            val data = it.split(",")
+            if (data.size == 5) {
+                val latitude = data[0].toDouble()
+                val longitude = data[1].toDouble()
+                val title = data[2]
+                val range = data[3].toInt()
+                val duration = data[4].toInt()
+
+                val pinLocation = LatLng(latitude, longitude)
+                googleMap.addMarker(MarkerOptions().position(pinLocation).title("$title ($range km, $duration hours)"))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
+            }
+        }
     }
 
     private fun setMapStyle(map: GoogleMap) {

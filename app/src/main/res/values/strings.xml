@@ -27,4 +27,14 @@
     <string name="take_photo">take_photo</string>
     <string name="stop_capture">stop_capture</string>
     <string name="back">back</string>
+    <string-array name="ad_ranges">
+        <item>500m (Free)</item>
+        <item>1km (50 Points)</item>
+        <item>2km (100 Points)</item>
+    </string-array>
+    <string-array name="ad_durations">
+        <item>2 hours (Free)</item>
+        <item>4 hours (100 Points)</item>
+        <item>8 hours (200 Points)</item>
+    </string-array>
 </resources>
