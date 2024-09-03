@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Mappin_Fe</string>
+    <string name="kakao_app_key">607b30fba1f577a8f048920ea64a6d50</string>
+    <string name="naver_client_id">dXtaisFDzZtaLMIyRRtW</string>
+    <string name="naver_client_secret">b7cyVWDy7b</string>
     <string name="feature_image_description">Feature image for the onboarding screen</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>

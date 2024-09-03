@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mappin_Fe</string>
+    <string name="kakao_app_key">607b30fba1f577a8f048920ea64a6d50</string>
+    <string name="naver_client_id">dXtaisFDzZtaLMIyRRtW</string>
+    <string name="naver_client_secret">b7cyVWDy7b</string>
     <string name="feature_image_description">Feature image for the onboarding screen</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
@@ -28,12 +31,12 @@
     <string name="take_photo">take_photo</string>
     <string name="stop_capture">stop_capture</string>
     <string name="back">back</string>
-    <string-array name="ad_range_options">
+    <string-array name="ad_ranges">
         <item>500m (Free)</item>
         <item>1km (50 Points)</item>
         <item>2km (100 Points)</item>
     </string-array>
-    <string-array name="ad_duration_options">
+    <string-array name="ad_durations">
         <item>2 hours (Free)</item>
         <item>4 hours (100 Points)</item>
         <item>8 hours (200 Points)</item>

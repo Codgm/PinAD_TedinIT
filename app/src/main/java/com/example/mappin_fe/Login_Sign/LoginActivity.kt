@@ -1,4 +1,4 @@
-package com.example.mappin_fe.Login_Sign // 패키지 이름을 소문자로 변경
+package com.example.mappin_fe.Login_Sign
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +18,13 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.android.gms.common.SignInButton
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.oauth.view.NidOAuthLoginButton
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnGoogleSignIn: SignInButton
+    private lateinit var btnNaverSignIn: NidOAuthLoginButton
+    private lateinit var btnKakaoSignIn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +49,8 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin: Button = findViewById(R.id.btn_login)
         val btnRegister: Button = findViewById(R.id.btn_register)
         btnGoogleSignIn = findViewById(R.id.btn_google_sign_in)
+        btnKakaoSignIn = findViewById(R.id.btn_kakao_sign_in)
+        btnNaverSignIn = findViewById(R.id.btn_naver_sign_in)
 
         // Google Sign-In 설정
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -56,29 +67,24 @@ class LoginActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
                     val account = task.result
-                    if (account != null) {
-                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        firebaseAuth.signInWithCredential(credential)
-                            .addOnCompleteListener(this) { authTask ->
-                                if (authTask.isSuccessful) {
-                                    checkUserSettings()
-                                } else {
-                                    Toast.makeText(this, "Google Sign-In Failed: ${authTask.exception?.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                    } else {
-                        Toast.makeText(this, "Google Sign-In Failed: No Account", Toast.LENGTH_SHORT).show()
-                    }
+                    firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: Exception) {
                     Toast.makeText(this, "Google Sign-In Failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show()
             }
         }
 
         btnGoogleSignIn.setOnClickListener {
             signInWithGoogle()
+        }
+
+        // 카카오 로그인
+        btnKakaoSignIn.setOnClickListener {
+            signInWithKakao()
+        }
+
+        btnNaverSignIn.setOnClickListener {
+            signInWithNaver()
         }
 
         btnLogin.setOnClickListener {
@@ -109,6 +115,75 @@ class LoginActivity : AppCompatActivity() {
     private fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         googleSignInLauncher.launch(signInIntent)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    checkUserSettings()
+                } else {
+                    Toast.makeText(this, "Google Authentication Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun signInWithKakao() {
+        // 카카오톡 설치 여부 확인
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+            // 카카오톡 로그인
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                handleKakaoLoginResult(token, error)
+            }
+        } else {
+            // 카카오 계정 로그인
+            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
+                handleKakaoLoginResult(token, error)
+            }
+        }
+    }
+
+    private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
+        if (error != null) {
+            // 로그인 실패
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                Toast.makeText(this, "카카오 로그인을 취소했습니다", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "카카오 로그인 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else if (token != null) {
+            // 로그인 성공
+            Toast.makeText(this, "카카오 로그인 성공", Toast.LENGTH_SHORT).show()
+            // 여기에서 사용자 정보를 가져오거나 다음 화면으로 이동하는 로직을 추가하세요
+            checkUserSettings()
+        }
+    }
+
+    private fun signInWithNaver() {
+        val oauthLoginCallback = object : OAuthLoginCallback {
+            override fun onSuccess() {
+                // 네이버 로그인 성공
+                Toast.makeText(this@LoginActivity, "네이버 로그인 성공", Toast.LENGTH_SHORT).show()
+                val accessToken = NaverIdLoginSDK.getAccessToken()
+                checkUserSettings()
+            }
+
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                Toast.makeText(this@LoginActivity, "errorCode: $errorCode, errorDesc: $errorDescription", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+            }
+        }
+
+        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
+    }
+    private fun fetchNaverUserInfo(accessToken: String) {
+        // 여기에서 accessToken을 사용하여 추가적인 사용자 정보를 가져올 수 있습니다.
     }
 
     private fun checkUserSettings() {

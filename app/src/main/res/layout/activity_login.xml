@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -47,34 +48,64 @@
         android:id="@+id/btn_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#C894FB"
         android:text="로그인"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toStartOf="@+id/btn_google_sign_in"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_pwd" />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_google_sign_in"
+    <LinearLayout
+        android:id="@+id/social_login_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/et_pwd"
-        app:layout_constraintWidth_percent="0.6" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_login">
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_google_sign_in"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp" />
+
+        <com.navercorp.nid.oauth.view.NidOAuthLoginButton
+            android:id="@+id/btn_naver_sign_in"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="Naver"
+            android:layout_weight="1"
+            android:backgroundTint="#03C75A"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btn_kakao_sign_in"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Kakao"
+            android:backgroundTint="#FEE500"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@android:color/transparent"
         android:text="회원가입"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_google_sign_in" />
+        app:layout_constraintTop_toBottomOf="@id/social_login_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
