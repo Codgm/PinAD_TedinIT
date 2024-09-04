@@ -206,14 +206,8 @@ class LoginActivity : AppCompatActivity() {
                         val accessToken = NaverIdLoginSDK.getAccessToken()
                         val userInfo = fetchNaverUserInfo(accessToken.toString())
                         if (userInfo != null) {
-                            val userId = FirebaseAuth.getInstance().currentUser?.uid
-                            if (userId != null) {
-                                saveUserAccountToFirebase(userId, userInfo)
-                            } else {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@LoginActivity, "User is not authenticated", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                            val userId = userInfo.emailId ?: "naver_${System.currentTimeMillis()}"
+                            saveUserAccountToFirebase(userId, userInfo)
                         } else {
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(this@LoginActivity, "Naver 사용자 정보를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
@@ -240,6 +234,7 @@ class LoginActivity : AppCompatActivity() {
 
         NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
     }
+
 
     private fun fetchNaverUserInfo(accessToken: String): UserAccount? {
         val client = OkHttpClient()
