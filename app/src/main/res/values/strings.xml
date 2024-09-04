@@ -30,6 +30,7 @@
     <string name="take_photo">take_photo</string>
     <string name="stop_capture">stop_capture</string>
     <string name="back">back</string>
+    <string name="kakao">Kakao</string>
     <string-array name="ad_ranges">
         <item>500m (Free)</item>
         <item>1km (50 Points)</item>

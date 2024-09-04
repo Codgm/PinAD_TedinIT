@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "9945862925",
+    "firebase_url": "https://mappinlogin-default-rtdb.firebaseio.com",
     "project_id": "mappinlogin",
     "storage_bucket": "mappinlogin.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "9945862925-dsjncd25jkk3bd9kspsotofj5vgkek39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mappin_fe",
+            "certificate_hash": "6f47752e2ca0c71255cadf12bc2fd30f5b7d5e13"
+          }
+        },
         {
           "client_id": "9945862925-l0ktqrf382vr0tndutikl70adeeegev3.apps.googleusercontent.com",
           "client_type": 3

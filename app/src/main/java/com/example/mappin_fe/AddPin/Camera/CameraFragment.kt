@@ -27,6 +27,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+
 class CameraFragment : Fragment() {
 
     private var _binding: FragmentCameraBinding? = null
