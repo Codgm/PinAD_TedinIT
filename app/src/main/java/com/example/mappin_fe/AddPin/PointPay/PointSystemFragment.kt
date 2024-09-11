@@ -2,13 +2,19 @@ package com.example.mappin_fe.AddPin.PointPay
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.Login_Sign.UserAccount
+import com.example.mappin_fe.MainActivity
 import com.example.mappin_fe.R
+import com.example.mappin_fe.UserUtils
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class PointSystemFragment : Fragment() {
 
@@ -70,6 +76,7 @@ class PointSystemFragment : Fragment() {
         imgPointIcon.setImageResource(R.drawable.ic_point)
     }
 
+
     private fun setupListeners() {
         spinnerAdRange.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -92,19 +99,29 @@ class PointSystemFragment : Fragment() {
         }
 
         btnCompletePin.setOnClickListener {
-            calculateAndUpdatePoints()
-            val selectedRange = spinnerAdRange.selectedItemPosition
-            val selectedDuration = spinnerAdDuration.selectedItemPosition
+            UserUtils.fetchUserDetails { nickname, _ ->
+                calculateAndUpdatePoints()
 
-            savePinData(
-                latitude = 37.7749,
-                longitude = -122.4194,
-                title = "예시 핀",
-                range = selectedRange,
-                duration = selectedDuration
-            )
+                val selectedRange = spinnerAdRange.selectedItemPosition
+                val selectedDuration = spinnerAdDuration.selectedItemPosition
 
-            Toast.makeText(context, "핀 설정이 완료되었습니다!", Toast.LENGTH_SHORT).show()
+                savePinData(
+                    latitude = 37.7749,
+                    longitude = -122.4194,
+                    title = "$nickname 핀", // 사용자 닉네임을 포함한 제목
+                    range = selectedRange,
+                    duration = selectedDuration,
+                    subCategory = receivedSubCategory
+                )
+
+                Toast.makeText(context, "Pin setup completed!", Toast.LENGTH_SHORT).show()
+
+                // Navigate back to MainActivity
+                val intent = Intent(activity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                activity?.finish()
+            }
         }
     }
 
@@ -152,10 +169,10 @@ class PointSystemFragment : Fragment() {
         }
     }
 
-    private fun savePinData(latitude: Double, longitude: Double, title: String, range: Int, duration: Int) {
+    private fun savePinData(latitude: Double, longitude: Double, title: String, range: Int, duration: Int, subCategory: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        val pinData = "$latitude,$longitude,$title,$range,$duration"
+        val pinData = "$latitude,$longitude,$title,$range,$duration,$subCategory"
 
         editor.putString("last_pin", pinData)
         editor.apply()

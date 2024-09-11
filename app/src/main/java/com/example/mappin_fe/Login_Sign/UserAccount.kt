@@ -9,6 +9,7 @@ data class UserAccount(
     val password: String? = null,
     val phoneNumber: String? = null,
     val nickname: String? = null,
-    val interests: String? = null
+    val interests: String? = null,
+    val profilePicUrl: String? = null
 )
 

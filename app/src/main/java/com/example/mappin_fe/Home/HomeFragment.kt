@@ -4,6 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,16 +20,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.Login_Sign.UserAccount
 import com.example.mappin_fe.R
+import com.example.mappin_fe.UserUtils
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import java.net.URL
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
@@ -93,22 +106,92 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         loadAndShowPin()
     }
 
+
+    private fun createMarkerIcon(borderColor: Int, profilePicUrl: String, context: Context): BitmapDescriptor {
+        val size = 100 // Pin size
+        val borderWidth = 10 // Border width
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+
+        // Draw border
+        paint.color = borderColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = borderWidth.toFloat()
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f, paint)
+
+        // Draw profile picture
+        val profileBitmap = Bitmap.createBitmap(size - borderWidth * 2, size - borderWidth * 2, Bitmap.Config.ARGB_8888)
+        val profileCanvas = Canvas(profileBitmap)
+
+        val profilePaint = Paint()
+        profilePaint.isAntiAlias = true
+
+        try {
+            // Ensure URL starts with a valid protocol
+            val validProfilePicUrl = if (profilePicUrl.startsWith("http://") || profilePicUrl.startsWith("https://")) {
+                profilePicUrl
+            } else {
+                "https://$profilePicUrl"
+            }
+
+            // Load and draw profile picture
+            val profilePic = BitmapFactory.decodeStream(URL(validProfilePicUrl).openStream())
+            profileCanvas.drawBitmap(profilePic, null, Rect(0, 0, profileBitmap.width, profileBitmap.height), profilePaint)
+
+            // Draw the profile picture inside the border
+            canvas.drawBitmap(profileBitmap, borderWidth.toFloat(), borderWidth.toFloat(), null)
+        } catch (e: Exception) {
+            Log.e("CreateMarkerIcon", "Error loading profile picture: ${e.message}")
+        }
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+
+
     private fun loadAndShowPin() {
         val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
         val pinData = sharedPreferences.getString("last_pin", null)
 
         pinData?.let {
             val data = it.split(",")
-            if (data.size == 5) {
+            if (data.size >= 6) {
                 val latitude = data[0].toDouble()
                 val longitude = data[1].toDouble()
                 val title = data[2]
                 val range = data[3].toInt()
                 val duration = data[4].toInt()
+                val subCategory = data[5]
 
                 val pinLocation = LatLng(latitude, longitude)
-                googleMap.addMarker(MarkerOptions().position(pinLocation).title("$title ($range km, $duration hours)"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
+
+                // 서브카테고리에 따라 핀의 색상을 설정
+                val borderColor = when (subCategory) {
+                    "유통" -> Color.parseColor("#C8E6C9")       // 초록색
+                    "F&B" -> Color.parseColor("#FFAB91")        // 주황색
+                    "행사 알림" -> Color.parseColor("#64B5F6")  // 파란색
+                    "리뷰" -> Color.parseColor("#D1C4E9")       // 보라색
+                    "명소 추천" -> Color.parseColor("#FFD54F") // 노랑색
+                    "약속 장소" -> Color.parseColor("#4CAF50") // 녹색
+                    "여행 메모" -> Color.parseColor("#303F9F") // 어두운 파란색
+                    "할인 요청" -> Color.parseColor("#EF5350") // 빨간색
+                    else -> Color.parseColor("#FFAB91")         // 기본 색상: 주황색
+                }
+
+                UserUtils.fetchUserDetails { nickname, profilePicUrl ->
+                    val markerIcon = createMarkerIcon(borderColor, profilePicUrl, requireContext())
+
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(pinLocation)
+                            .title(title)
+                            .snippet("Range: $range km, Duration: $duration hours, Category: $subCategory")
+                            .icon(markerIcon)
+                    )
+
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
+                }
             }
         }
     }
@@ -179,8 +262,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun showUserPins() {
         googleMap.clear()
-        val userLocation = LatLng(37.7749, -122.4194) // 예시: 사용자 위치
-        googleMap.addMarker(MarkerOptions().position(userLocation).title("내 핀"))
+        loadAndShowPin()
     }
 
     private fun showOtherPins() {

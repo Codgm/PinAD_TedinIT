@@ -3,6 +3,8 @@ package com.example.mappin_fe
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -18,9 +20,21 @@ class MainActivity : AppCompatActivity() {
 
     private val frameId: Int by lazy { R.id.main_body_container }
     private val bottomNavigationView: BottomNavigationView by lazy { findViewById(R.id.bottom_navigation) }
+    private lateinit var addPinLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // ActivityResultLauncher 초기화
+        addPinLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            // 결과 처리 로직
+            if (result.resultCode == RESULT_OK) {
+                replaceFragment(HomeFragment())
+                bottomNavigationView.selectedItemId = R.id.navigation_home
+            }
+        }
 
         // SharedPreferences 초기화 (중복 제거)
         val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -44,7 +58,10 @@ class MainActivity : AppCompatActivity() {
             setContentView(R.layout.activity_main)
 
             // 첫 화면 설정
-            if (savedInstanceState == null) {
+            if (intent.getBooleanExtra("FROM_ADD_PIN", false)) {
+                replaceFragment(HomeFragment())
+                bottomNavigationView.selectedItemId = R.id.navigation_home
+            } else if (savedInstanceState == null) {
                 replaceFragment(HomeFragment())
             }
 
@@ -89,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     // AddPinActivity 전환 메소드
     private fun navigateToAddPinActivity() {
         val intent = Intent(this, AddPinActivity::class.java)
-        startActivity(intent)
+        addPinLauncher.launch(intent)
     }
 
     // 화면 전환 구현 메소드
