@@ -32,9 +32,9 @@
     <string name="back">back</string>
     <string name="kakao">Kakao</string>
     <string-array name="ad_ranges">
-        <item>500m (Free)</item>
-        <item>1km (50 Points)</item>
-        <item>2km (100 Points)</item>
+        <item>1km (Free)</item>
+        <item>2km (50 Points)</item>
+        <item>3km (100 Points)</item>
     </string-array>
     <string-array name="ad_durations">
         <item>2 hours (Free)</item>

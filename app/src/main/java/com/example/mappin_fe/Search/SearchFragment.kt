@@ -14,7 +14,6 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.mappin_fe.R
-import com.example.mappin_fe.Story.StoryActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

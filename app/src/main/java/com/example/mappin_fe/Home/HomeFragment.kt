@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.mappin_fe.Login_Sign.UserAccount
+import com.example.mappin_fe.PinData
+import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
 import com.google.android.gms.location.*
@@ -156,43 +158,56 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         pinData?.let {
             val data = it.split(",")
-            if (data.size >= 6) {
+            if (data.size >= 10) {
                 val latitude = data[0].toDouble()
                 val longitude = data[1].toDouble()
                 val title = data[2]
                 val range = data[3].toInt()
                 val duration = data[4].toInt()
-                val subCategory = data[5]
+                val mainCategory = data[5]
+                val subCategory = data[6]
+                val mediaUri = data[7]
+                val contentData = data[8]
+                val tags = data[9].split("|")
 
                 val pinLocation = LatLng(latitude, longitude)
 
-                // 서브카테고리에 따라 핀의 색상을 설정
                 val borderColor = when (subCategory) {
-                    "유통" -> Color.parseColor("#C8E6C9")       // 초록색
-                    "F&B" -> Color.parseColor("#FFAB91")        // 주황색
-                    "행사 알림" -> Color.parseColor("#64B5F6")  // 파란색
-                    "리뷰" -> Color.parseColor("#D1C4E9")       // 보라색
-                    "명소 추천" -> Color.parseColor("#FFD54F") // 노랑색
-                    "약속 장소" -> Color.parseColor("#4CAF50") // 녹색
-                    "여행 메모" -> Color.parseColor("#303F9F") // 어두운 파란색
-                    "할인 요청" -> Color.parseColor("#EF5350") // 빨간색
-                    else -> Color.parseColor("#FFAB91")         // 기본 색상: 주황색
+                    "유통" -> Color.parseColor("#C8E6C9")
+                    "F&B" -> Color.parseColor("#FFAB91")
+                    "행사 알림" -> Color.parseColor("#64B5F6")
+                    "리뷰" -> Color.parseColor("#D1C4E9")
+                    "명소 추천" -> Color.parseColor("#FFD54F")
+                    "약속 장소" -> Color.parseColor("#4CAF50")
+                    "여행 메모" -> Color.parseColor("#303F9F")
+                    "할인 요청" -> Color.parseColor("#EF5350")
+                    else -> Color.parseColor("#FFAB91")
                 }
 
                 UserUtils.fetchUserDetails { nickname, profilePicUrl ->
                     val markerIcon = createMarkerIcon(borderColor, profilePicUrl, requireContext())
 
-                    googleMap.addMarker(
+                    val marker = googleMap.addMarker(
                         MarkerOptions()
                             .position(pinLocation)
                             .title(title)
-                            .snippet("Range: $range km, Duration: $duration hours, Category: $subCategory")
                             .icon(markerIcon)
                     )
+
+                    marker?.tag = PinData(title, range, duration, mainCategory, subCategory, mediaUri, contentData, tags)
 
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
                 }
             }
+        }
+
+        googleMap.setOnMarkerClickListener { marker ->
+            val pinData = marker.tag as? PinData
+            if (pinData != null) {
+                val bottomSheet = PinDetailBottomSheet.newInstance(pinData)
+                bottomSheet.show(childFragmentManager, bottomSheet.tag)
+            }
+            true
         }
     }
 

@@ -4,17 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.example.mappin_fe.Login_Sign.UserAccount
 import com.example.mappin_fe.MainActivity
 import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class PointSystemFragment : Fragment() {
 
@@ -28,6 +26,10 @@ class PointSystemFragment : Fragment() {
     private lateinit var switchAdBoost: Switch
     private var currentPoints = 1000
     private lateinit var receivedSubCategory: String
+    private lateinit var mediaUri: String
+    private lateinit var receivedMainCategory: String
+    private lateinit var contentData: String
+    private lateinit var selectedTags: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +37,9 @@ class PointSystemFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_point_system, container, false)
         receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
-
+        receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
+        contentData = arguments?.getString("CONTENT_DATA") ?: ""
+        mediaUri = arguments?.getString("MEDIA_URI") ?: ""
         tvCurrentPoints = view.findViewById(R.id.tv_current_points)
         tvEstimatedCost = view.findViewById(R.id.tv_estimated_cost)
         imgPointIcon = view.findViewById(R.id.img_point_icon)
@@ -43,6 +47,7 @@ class PointSystemFragment : Fragment() {
         spinnerAdDuration = view.findViewById(R.id.spinner_ad_duration)
         switchAdBoost = view.findViewById(R.id.switch_ad_boost)
         btnCompletePin = view.findViewById(R.id.btn_complete_pin)
+        selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
 
         setupSpinners()
         updateCurrentPointsText()
@@ -102,8 +107,18 @@ class PointSystemFragment : Fragment() {
             UserUtils.fetchUserDetails { nickname, _ ->
                 calculateAndUpdatePoints()
 
-                val selectedRange = spinnerAdRange.selectedItemPosition
-                val selectedDuration = spinnerAdDuration.selectedItemPosition
+                val selectedRange = when (spinnerAdRange.selectedItemPosition) {
+                    0 -> 1
+                    1 -> 2
+                    2 -> 3
+                    else -> 0
+                }
+                val selectedDuration = when (spinnerAdDuration.selectedItemPosition) {
+                    0 -> 2
+                    1 -> 4
+                    2 -> 8
+                    else -> 0
+                }
 
                 savePinData(
                     latitude = 37.7749,
@@ -111,7 +126,11 @@ class PointSystemFragment : Fragment() {
                     title = "$nickname 핀", // 사용자 닉네임을 포함한 제목
                     range = selectedRange,
                     duration = selectedDuration,
-                    subCategory = receivedSubCategory
+                    mainCategory = receivedMainCategory,
+                    subCategory = receivedSubCategory,
+                    mediaUri = mediaUri,
+                    contentData = contentData,
+                    tags = selectedTags
                 )
 
                 Toast.makeText(context, "Pin setup completed!", Toast.LENGTH_SHORT).show()
@@ -169,11 +188,11 @@ class PointSystemFragment : Fragment() {
         }
     }
 
-    private fun savePinData(latitude: Double, longitude: Double, title: String, range: Int, duration: Int, subCategory: String) {
+    private fun savePinData(latitude: Double, longitude: Double, title: String, range: Int, duration: Int, mainCategory: String, subCategory: String, mediaUri: String, contentData: String, tags: List<String>) {
         val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        val pinData = "$latitude,$longitude,$title,$range,$duration,$subCategory"
-
+        val pinData = "$latitude,$longitude,$title,$range,$duration,$mainCategory,$subCategory,$mediaUri,$contentData,${tags.joinToString(separator = "|")}"
+        Log.d("PinData", "Saving Pin Data: $pinData")
         editor.putString("last_pin", pinData)
         editor.apply()
     }

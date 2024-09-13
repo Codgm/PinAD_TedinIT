@@ -23,7 +23,7 @@ object UserUtils {
         }
 
         val database = FirebaseDatabase.getInstance().reference
-        val userRef = database.child("users").child(userId)
+        val userRef = database.child("Users").child(userId)
 
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -37,7 +37,7 @@ object UserUtils {
                     callback(nickname, profilePicUrl)
                 } else {
                     Log.w(TAG, "UserAccount is null")
-                    callback("Unknown", "")
+                    callback("규민", "")
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.example.mappin_fe.AddPin.Category
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,9 @@ class CategoryTagFragment : Fragment() {
     private val selectedColor = R.color.colorAccent
     private val defaultColor = R.color.colorChipBackground
 
-    private lateinit var selectedSubCategory: String
+    private lateinit var receivedMainCategory: String
+    private lateinit var receivedSubCategory: String
+    private lateinit var contentData: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +42,13 @@ class CategoryTagFragment : Fragment() {
         tvInterestsLabel = view.findViewById(R.id.tv_interests_label)
 
         // Retrieve selected subcategory from arguments
-        selectedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
+        receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
+        receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
+        contentData = arguments?.getString("CONTENT_DATA") ?: ""
+
+        Log.d("CategoryTagFragment", "Selected Main Category: $receivedMainCategory")
+        Log.d("CategoryTagFragment", "Selected Subcategory: $receivedSubCategory")
+        Log.d("CategoryTagFragment", "Content Data: $contentData")
 
         btnAddTag.setOnClickListener {
             addNewTag()
@@ -58,7 +67,10 @@ class CategoryTagFragment : Fragment() {
     private fun navigateToPointSystemFragment() {
         val pointSystemFragment = PointSystemFragment()
         val bundle = Bundle().apply {
-            putString("SELECTED_SUBCATEGORY", selectedSubCategory)
+            putString("SELECTED_MAINCATEGORY", receivedMainCategory)
+            putString("SELECTED_SUBCATEGORY", receivedSubCategory)
+            putString("CONTENT_DATA", contentData)
+            putStringArray("SELECTED_TAGS", getSelectedTags().toTypedArray())
         }
         pointSystemFragment.arguments = bundle
 
@@ -70,7 +82,7 @@ class CategoryTagFragment : Fragment() {
     }
 
     private fun initializeDefaultTags() {
-        val defaultTags = getDefaultTagsForSubCategory(selectedSubCategory)
+        val defaultTags = getDefaultTagsForSubCategory(receivedSubCategory)
         for (tag in defaultTags) {
             val chip = Chip(requireContext()).apply {
                 text = tag
@@ -133,5 +145,16 @@ class CategoryTagFragment : Fragment() {
             chip.setChipBackgroundColorResource(selectedColor)
             chip.tag = true
         }
+    }
+
+    private fun getSelectedTags(): List<String> {
+        val selectedTags = mutableListOf<String>()
+        for (i in 0 until chipGroupTags.childCount) {
+            val view = chipGroupTags.getChildAt(i)
+            if (view is Chip && view.tag as? Boolean == true) {
+                selectedTags.add(view.text.toString())
+            }
+        }
+        return selectedTags
     }
 }

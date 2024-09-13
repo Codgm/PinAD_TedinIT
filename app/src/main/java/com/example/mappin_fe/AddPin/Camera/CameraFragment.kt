@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import com.example.mappin_fe.AddPin.Category.CategorySelectionFragment
+import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
 import com.example.mappin_fe.R
 import com.example.mappin_fe.databinding.FragmentCameraBinding
 import java.text.SimpleDateFormat
@@ -45,6 +46,15 @@ class CameraFragment : Fragment() {
     ): View {
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    private fun saveMediaUriToPinData(mediaUri: String) {
+        // Fragment 간 데이터 전달: Bundle을 사용하여 PointSystemFragment로 미디어 URI 전달
+        val pointSystemFragment =  parentFragmentManager.findFragmentByTag(PointSystemFragment::class.java.simpleName) as? PointSystemFragment
+
+        pointSystemFragment?.arguments = Bundle().apply {
+                putString("MEDIA_URI", mediaUri)
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,6 +110,9 @@ class CameraFragment : Fragment() {
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     binding.capturedImageView.setImageURI(output.savedUri)
+
+                    // 미디어 URI 저장
+                    saveMediaUriToPinData(output.savedUri.toString())
 
                     // 미리보기 화면 표시
                     showPreviewScreen(isImage = true)
@@ -161,6 +174,9 @@ class CameraFragment : Fragment() {
                                 .show()
                             Log.d(TAG, msg)
                             binding.capturedVideoView.setVideoURI(recordEvent.outputResults.outputUri)
+
+                            // 미디어 URI 저장
+                            saveMediaUriToPinData(recordEvent.outputResults.outputUri.toString())
 
                             // 미리보기 화면 표시
                             showPreviewScreen(isImage = false)

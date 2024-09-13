@@ -14,6 +14,7 @@ import com.example.mappin_fe.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class CategorySelectionFragment : Fragment() {
@@ -49,8 +50,14 @@ class CategorySelectionFragment : Fragment() {
         nextButton.setOnClickListener {
             if (areAllFieldsFilled()) {
                 // 선택한 서브카테고리 정보를 번들에 담아 전달
+                val content = gatherContentData()
+                val selectedMainChip = mainCategoryChipGroup.findViewById<Chip>(mainCategoryChipGroup.checkedChipId)
+                val selectedSubChip = subCategoryChipGroup.findViewById<Chip>(subCategoryChipGroup.checkedChipId)
+
                 val bundle = Bundle().apply {
-                    putString("SELECTED_SUBCATEGORY", selectedSubCategory)
+                    putString("SELECTED_MAIN_CATEGORY", selectedMainChip?.text.toString())
+                    putString("SELECTED_SUBCATEGORY", selectedSubChip?.text.toString())
+                    putString("CONTENT_DATA", content)
                 }
                 val categoryTagFragment = CategoryTagFragment().apply {
                     arguments = bundle
@@ -64,6 +71,22 @@ class CategorySelectionFragment : Fragment() {
             }
         }
     }
+
+    private fun gatherContentData(): String {
+        val contentBuilder = StringBuilder()
+        for (i in 0 until templateContent.childCount) {
+            val view = templateContent.getChildAt(i)
+            if (view is TextInputLayout) {
+                val editText = view.getChildAt(0) as? TextInputEditText
+                contentBuilder.append(editText?.text.toString()).append("\n")
+            } else if (view is RatingBar) {
+                contentBuilder.append("평점: ${view.rating}\n")
+            }
+        }
+        return contentBuilder.toString()
+    }
+
+
 
     private fun areAllFieldsFilled(): Boolean {
         return mainCategoryChipGroup.checkedChipId != -1 && templateContent.childCount > 0
@@ -302,7 +325,7 @@ class CategorySelectionFragment : Fragment() {
 
     private fun addStyledField(hint: String, styleResId: Int, multiLine: Boolean = false) {
         val inputLayout = TextInputLayout(ContextThemeWrapper(context, styleResId))
-        val editText = EditText(inputLayout.context)
+        val editText =  TextInputEditText(inputLayout.context)
         editText.hint = hint
         if (multiLine) {
             editText.minLines = 3
