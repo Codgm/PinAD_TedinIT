@@ -2,13 +2,13 @@ package com.example.mappin_fe.Login_Sign
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.R
 import com.example.mappin_fe.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn

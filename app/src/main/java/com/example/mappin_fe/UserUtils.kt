@@ -1,7 +1,7 @@
 package com.example.mappin_fe
 
 import android.util.Log
-import com.example.mappin_fe.Login_Sign.UserAccount
+import com.example.mappin_fe.Data.UserAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

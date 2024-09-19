@@ -15,13 +15,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.example.mappin_fe.Login_Sign.UserAccount
-import com.example.mappin_fe.PinData
+import androidx.lifecycle.lifecycleScope
+import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
@@ -36,8 +38,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.net.URL
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
@@ -103,13 +105,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        setupMap()
         setMapStyle(googleMap)
+        // 마커 클릭 리스너 설정
+        googleMap.setOnMarkerClickListener { marker ->
+            val pinData = marker.tag as? PinDataResponse
+            if (pinData != null) {
+                val bottomSheet = PinDetailBottomSheet.newInstance(pinData.toString())
+                bottomSheet.show(childFragmentManager, bottomSheet.tag)
+            }
+            true
+        }
+        setupMap()
         loadAndShowPin()
     }
 
 
-    private fun createMarkerIcon(borderColor: Int, profilePicUrl: String, context: Context): BitmapDescriptor {
+    private fun createMarkerIcon(borderColor: Int): BitmapDescriptor {
         val size = 100 // Pin size
         val borderWidth = 10 // Border width
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -122,92 +133,84 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         paint.strokeWidth = borderWidth.toFloat()
         canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f, paint)
 
-        // Draw profile picture
-        val profileBitmap = Bitmap.createBitmap(size - borderWidth * 2, size - borderWidth * 2, Bitmap.Config.ARGB_8888)
-        val profileCanvas = Canvas(profileBitmap)
-
-        val profilePaint = Paint()
-        profilePaint.isAntiAlias = true
-
-        try {
-            // Ensure URL starts with a valid protocol
-            val validProfilePicUrl = if (profilePicUrl.startsWith("http://") || profilePicUrl.startsWith("https://")) {
-                profilePicUrl
-            } else {
-                "https://$profilePicUrl"
-            }
-
-            // Load and draw profile picture
-            val profilePic = BitmapFactory.decodeStream(URL(validProfilePicUrl).openStream())
-            profileCanvas.drawBitmap(profilePic, null, Rect(0, 0, profileBitmap.width, profileBitmap.height), profilePaint)
-
-            // Draw the profile picture inside the border
-            canvas.drawBitmap(profileBitmap, borderWidth.toFloat(), borderWidth.toFloat(), null)
-        } catch (e: Exception) {
-            Log.e("CreateMarkerIcon", "Error loading profile picture: ${e.message}")
-        }
+//        // Draw profile picture
+//        val profileBitmap = Bitmap.createBitmap(size - borderWidth * 2, size - borderWidth * 2, Bitmap.Config.ARGB_8888)
+//        val profileCanvas = Canvas(profileBitmap)
+//
+//        val profilePaint = Paint()
+//        profilePaint.isAntiAlias = true
+//
+//        try {
+//            // Ensure URL starts with a valid protocol
+//            val validProfilePicUrl = if (profilePicUrl.startsWith("http://") || profilePicUrl.startsWith("https://")) {
+//                profilePicUrl
+//            } else {
+//                "https://$profilePicUrl"
+//            }
+//
+//            // Load and draw profile picture
+//            val profilePic = BitmapFactory.decodeStream(URL(validProfilePicUrl).openStream())
+//            profileCanvas.drawBitmap(profilePic, null, Rect(0, 0, profileBitmap.width, profileBitmap.height), profilePaint)
+//
+//            // Draw the profile picture inside the border
+//            canvas.drawBitmap(profileBitmap, borderWidth.toFloat(), borderWidth.toFloat(), null)
+//        } catch (e: Exception) {
+//            Log.e("CreateMarkerIcon", "Error loading profile picture: ${e.message}")
+//        }
+        // Draw default icon (a circle in the center)
+        paint.color = Color.WHITE // Icon color
+        paint.style = Paint.Style.FILL
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f - 1, paint)
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
-
-
     private fun loadAndShowPin() {
-        val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
-        val pinData = sharedPreferences.getString("last_pin", null)
+        lifecycleScope.launch {
+            try {
+                // 서버에서 핀 데이터 목록을 가져오기
+                val pinDataList = RetrofitInstance.api.getUserPins() // API 호출
 
-        pinData?.let {
-            val data = it.split(",")
-            if (data.size >= 10) {
-                val latitude = data[0].toDouble()
-                val longitude = data[1].toDouble()
-                val title = data[2]
-                val range = data[3].toInt()
-                val duration = data[4].toInt()
-                val mainCategory = data[5]
-                val subCategory = data[6]
-                val mediaUri = data[7]
-                val contentData = data[8]
-                val tags = data[9].split("|")
+                // 핀 데이터를 지도에 표시
+                pinDataList.forEach { pinDataResponse ->
+                    // 위치 데이터 추출
+                    val latitude = pinDataResponse.latitude
+                    val longitude = pinDataResponse.longitude
+                    val pinLocation = LatLng(latitude, longitude)
 
-                val pinLocation = LatLng(latitude, longitude)
+                    // 서브카테고리에 따라 색상 설정
+                    val borderColor = when (pinDataResponse.subCategory?: "") {
+                        "유통" -> Color.parseColor("#C8E6C9")
+                        "F&B" -> Color.parseColor("#FFAB91")
+                        "행사 알림" -> Color.parseColor("#64B5F6")
+                        "리뷰" -> Color.parseColor("#D1C4E9")
+                        "명소 추천" -> Color.parseColor("#FFD54F")
+                        "약속 장소" -> Color.parseColor("#4CAF50")
+                        "여행 메모" -> Color.parseColor("#303F9F")
+                        "할인 요청" -> Color.parseColor("#EF5350")
+                        else -> Color.parseColor("#FFAB91")
+                    }
 
-                val borderColor = when (subCategory) {
-                    "유통" -> Color.parseColor("#C8E6C9")
-                    "F&B" -> Color.parseColor("#FFAB91")
-                    "행사 알림" -> Color.parseColor("#64B5F6")
-                    "리뷰" -> Color.parseColor("#D1C4E9")
-                    "명소 추천" -> Color.parseColor("#FFD54F")
-                    "약속 장소" -> Color.parseColor("#4CAF50")
-                    "여행 메모" -> Color.parseColor("#303F9F")
-                    "할인 요청" -> Color.parseColor("#EF5350")
-                    else -> Color.parseColor("#FFAB91")
-                }
-
-                UserUtils.fetchUserDetails { nickname, profilePicUrl ->
-                    val markerIcon = createMarkerIcon(borderColor, profilePicUrl, requireContext())
+                    // 기본 아이콘으로 마커 생성
+                    val markerIcon = createMarkerIcon(borderColor)
 
                     val marker = googleMap.addMarker(
                         MarkerOptions()
                             .position(pinLocation)
-                            .title(title)
+                            .title(pinDataResponse.title ?: "제목 없음")
+                            .snippet(pinDataResponse.description ?: "제목 없음")
                             .icon(markerIcon)
                     )
 
-                    marker?.tag = PinData(title, range, duration, mainCategory, subCategory, mediaUri, contentData, tags)
-
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
+                    marker?.tag = pinDataResponse
                 }
+            } catch (e: HttpException) {
+                Log.e("LoadPinData", "Error fetching pin data: ${e.message()}")
+                Toast.makeText(requireContext(), "Error fetching pin data", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e("LoadPinData", "Error: ${e.message}")
+                Toast.makeText(requireContext(), "Unexpected error", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        googleMap.setOnMarkerClickListener { marker ->
-            val pinData = marker.tag as? PinData
-            if (pinData != null) {
-                val bottomSheet = PinDetailBottomSheet.newInstance(pinData)
-                bottomSheet.show(childFragmentManager, bottomSheet.tag)
-            }
-            true
         }
     }
 

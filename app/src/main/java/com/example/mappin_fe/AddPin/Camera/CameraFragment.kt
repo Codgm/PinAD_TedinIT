@@ -48,12 +48,12 @@ class CameraFragment : Fragment() {
         return binding.root
     }
 
-    private fun saveMediaUriToPinData(mediaUri: String) {
+    private fun saveMediaUriToPinData(media: String) {
         // Fragment 간 데이터 전달: Bundle을 사용하여 PointSystemFragment로 미디어 URI 전달
         val pointSystemFragment =  parentFragmentManager.findFragmentByTag(PointSystemFragment::class.java.simpleName) as? PointSystemFragment
 
         pointSystemFragment?.arguments = Bundle().apply {
-                putString("MEDIA_URI", mediaUri)
+                putString("MEDIA_URI", media)
             }
     }
 

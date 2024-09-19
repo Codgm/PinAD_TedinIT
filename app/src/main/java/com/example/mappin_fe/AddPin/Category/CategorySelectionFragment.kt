@@ -16,6 +16,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.json.JSONObject
 
 class CategorySelectionFragment : Fragment() {
 
@@ -85,6 +86,7 @@ class CategorySelectionFragment : Fragment() {
         }
         return contentBuilder.toString()
     }
+
 
 
 
@@ -160,6 +162,8 @@ class CategorySelectionFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun showDistributionTemplate(styleResId: Int) {
+        addStyledField("타이틀", styleResId)
+        addStyledField("부제목", styleResId, true)
         addStyledField("상품명", styleResId)
         addStyledField("판매 수량", styleResId)
         addStyledField("세부사항", styleResId, true)

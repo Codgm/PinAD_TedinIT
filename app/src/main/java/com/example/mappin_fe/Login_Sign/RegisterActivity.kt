@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.R
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth

@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.MainActivity
 
 class UserSettingsActivity : AppCompatActivity() {

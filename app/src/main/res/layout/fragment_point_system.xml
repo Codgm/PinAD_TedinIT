@@ -57,6 +57,12 @@
             android:textColor="@color/estimated_cost_color"/>
     </LinearLayout>
 
+    <Switch
+        android:id="@+id/switch_visibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Public/Private" />
+
     <!-- 광고 반경 설정 -->
     <TextView
         android:layout_width="wrap_content"

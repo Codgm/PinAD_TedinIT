@@ -10,9 +10,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.MainActivity
 import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
+import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class PointSystemFragment : Fragment() {
 
@@ -26,20 +36,34 @@ class PointSystemFragment : Fragment() {
     private lateinit var switchAdBoost: Switch
     private var currentPoints = 1000
     private lateinit var receivedSubCategory: String
-    private lateinit var mediaUri: String
+    private lateinit var media: String
     private lateinit var receivedMainCategory: String
     private lateinit var contentData: String
     private lateinit var selectedTags: List<String>
+    private lateinit var switchVisibility: Switch
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_point_system, container, false)
+        initializeViews(view)
+        setupSpinners()
+        updateCurrentPointsText()
+        setupListeners()
+        return view
+    }
+
+    private fun initializeViews(view: View) {
         receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
         receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
         contentData = arguments?.getString("CONTENT_DATA") ?: ""
-        mediaUri = arguments?.getString("MEDIA_URI") ?: ""
+        Log.d("PointSystemFragment", "Received Main Category: $receivedMainCategory")
+        Log.d("PointSystemFragment", "Received Sub Category: $receivedSubCategory")
+        Log.d("PointSystemFragment", "Content Data: $contentData")
+//        media = arguments?.getString("MEDIA_URI") ?: ""
         tvCurrentPoints = view.findViewById(R.id.tv_current_points)
         tvEstimatedCost = view.findViewById(R.id.tv_estimated_cost)
         imgPointIcon = view.findViewById(R.id.img_point_icon)
@@ -48,16 +72,10 @@ class PointSystemFragment : Fragment() {
         switchAdBoost = view.findViewById(R.id.switch_ad_boost)
         btnCompletePin = view.findViewById(R.id.btn_complete_pin)
         selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
-
-        setupSpinners()
-        updateCurrentPointsText()
-        setupListeners()
-
-        return view
+        switchVisibility = view.findViewById(R.id.switch_visibility)
     }
 
     private fun setupSpinners() {
-        // 광고 범위 스피너 어댑터
         val rangeAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.ad_ranges,
@@ -66,7 +84,6 @@ class PointSystemFragment : Fragment() {
         rangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAdRange.adapter = rangeAdapter
 
-        // 광고 기간 스피너 어댑터
         val durationAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.ad_durations,
@@ -81,13 +98,11 @@ class PointSystemFragment : Fragment() {
         imgPointIcon.setImageResource(R.drawable.ic_point)
     }
 
-
     private fun setupListeners() {
         spinnerAdRange.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 calculateEstimatedCost()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
@@ -95,7 +110,6 @@ class PointSystemFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 calculateEstimatedCost()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
@@ -105,46 +119,18 @@ class PointSystemFragment : Fragment() {
 
         btnCompletePin.setOnClickListener {
             UserUtils.fetchUserDetails { nickname, _ ->
-                calculateAndUpdatePoints()
-
-                val selectedRange = when (spinnerAdRange.selectedItemPosition) {
-                    0 -> 1
-                    1 -> 2
-                    2 -> 3
-                    else -> 0
+                if (calculateAndUpdatePoints()) {
+                    val pinData = createPinData(nickname)
+                    sendPinDataToServer(pinData)
+                    navigateToMainActivity()
+                } else {
+                    Toast.makeText(context, "Insufficient points!", Toast.LENGTH_SHORT).show()
                 }
-                val selectedDuration = when (spinnerAdDuration.selectedItemPosition) {
-                    0 -> 2
-                    1 -> 4
-                    2 -> 8
-                    else -> 0
-                }
-
-                savePinData(
-                    latitude = 37.7749,
-                    longitude = -122.4194,
-                    title = "$nickname 핀", // 사용자 닉네임을 포함한 제목
-                    range = selectedRange,
-                    duration = selectedDuration,
-                    mainCategory = receivedMainCategory,
-                    subCategory = receivedSubCategory,
-                    mediaUri = mediaUri,
-                    contentData = contentData,
-                    tags = selectedTags
-                )
-
-                Toast.makeText(context, "Pin setup completed!", Toast.LENGTH_SHORT).show()
-
-                // Navigate back to MainActivity
-                val intent = Intent(activity, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                activity?.finish()
             }
         }
     }
 
-    private fun calculateEstimatedCost() {
+    private fun calculateEstimatedCost(): Int {
         val rangeCost = when (spinnerAdRange.selectedItemPosition) {
             1 -> 50
             2 -> 100
@@ -161,39 +147,83 @@ class PointSystemFragment : Fragment() {
 
         val totalCost = rangeCost + durationCost + boostCost
         tvEstimatedCost.text = "Estimated Cost: $totalCost"
+        return totalCost
     }
 
-    private fun calculateAndUpdatePoints() {
-        val rangeCost = when (spinnerAdRange.selectedItemPosition) {
-            1 -> 50
-            2 -> 100
-            else -> 0
-        }
-
-        val durationCost = when (spinnerAdDuration.selectedItemPosition) {
-            1 -> 100
-            2 -> 200
-            else -> 0
-        }
-
-        val boostCost = if (switchAdBoost.isChecked) 50 else 0
-
-        val totalCost = rangeCost + durationCost + boostCost
-
-        if (currentPoints >= totalCost) {
+    private fun calculateAndUpdatePoints(): Boolean {
+        val totalCost = calculateEstimatedCost()
+        return if (currentPoints >= totalCost) {
             currentPoints -= totalCost
             updateCurrentPointsText()
+            true
         } else {
-            Toast.makeText(context, "포인트가 부족합니다!", Toast.LENGTH_SHORT).show()
+            false
         }
     }
 
-    private fun savePinData(latitude: Double, longitude: Double, title: String, range: Int, duration: Int, mainCategory: String, subCategory: String, mediaUri: String, contentData: String, tags: List<String>) {
-        val sharedPreferences = requireActivity().getSharedPreferences("PinData", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val pinData = "$latitude,$longitude,$title,$range,$duration,$mainCategory,$subCategory,$mediaUri,$contentData,${tags.joinToString(separator = "|")}"
-        Log.d("PinData", "Saving Pin Data: $pinData")
-        editor.putString("last_pin", pinData)
-        editor.apply()
+    private fun createPinData(nickname: String): PinDataResponse {
+        val now = Date()
+        val location = LatLng(latitude,longitude)
+//        val mediaList = listOf(media)
+        return PinDataResponse(
+            id = UUID.randomUUID().toString(),
+            latitude = 37.7749,
+            longitude = -122.4194,
+            location = location.toString(),
+            user = nickname.toIntOrNull() ?: 0,
+            title = "$nickname 핀",
+            description = "Your description here",
+            range = getSelectedRange(),
+            duration = getSelectedDuration(),
+            mainCategory = receivedMainCategory,
+            subCategory = receivedSubCategory,
+//            media = mediaList,
+            contentData = contentData,
+            tags = selectedTags,
+            visibility = if (switchVisibility.isChecked) "public" else "private",
+            created_at = now,
+            updated_at = Date(now.time + (getSelectedDuration() * 60 * 60 * 1000))
+        )
+    }
+
+    private fun sendPinDataToServer(pinData: PinDataResponse) {
+        lifecycleScope.launch {
+            Log.d("PinData", "Pin data to be sent: ${Gson().toJson(pinData)}")
+            try {
+                val response = RetrofitInstance.api.savePinData(pinData)
+                if (response.isSuccessful) {
+                    Log.d("PinData", "Pin data saved successfully: ${response.body()}")
+                    navigateToMainActivity()
+                } else {
+                    Log.e("PinData", "Error saving pin data: HTTP ${response.code()} - ${response.errorBody()?.string()}")
+                    Toast.makeText(context, "Error saving pin data: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("PinData", "Exception saving pin data", e)
+                Toast.makeText(context, "Exception saving pin data", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(activity, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun getSelectedRange(): Int = when (spinnerAdRange.selectedItemPosition) {
+        0 -> 1
+        1 -> 2
+        2 -> 3
+        else -> 0
+    }
+
+    private fun getSelectedDuration(): Int = when (spinnerAdDuration.selectedItemPosition) {
+        0 -> 2
+        1 -> 4
+        2 -> 8
+        else -> 0
     }
 }

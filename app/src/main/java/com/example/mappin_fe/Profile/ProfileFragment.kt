@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.mappin_fe.R
-import com.example.mappin_fe.Login_Sign.UserAccount
+import com.example.mappin_fe.Data.UserAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 

@@ -13,7 +13,6 @@
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
 
-
     <application
         android:name=".Login_Sign.GlobalApplication.GlobalApplication"
         android:allowBackup="true"
@@ -23,19 +22,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.Mappin_Fe"
         tools:targetApi="31">
-        <activity
-            android:name=".AddPin.AddPinActivity"
-            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.shortcuts"
             android:resource="@xml/shortcuts" />
-
-        <activity
-            android:name=".Story.StoryActivity"
-            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -43,13 +37,8 @@
 
         <activity
             android:name=".splash.screen.SplashActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".splash.screen.OnboardingFragment"
             android:exported="false"
@@ -63,8 +52,19 @@
         <activity
             android:name=".Login_Sign.RegisterActivity"
             android:exported="false" />
-        <activity android:name=".Login_Sign.UserSettingsActivity" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".Login_Sign.UserSettingsActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AddPin.AddPinActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
