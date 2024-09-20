@@ -14,10 +14,11 @@ data class PinDataResponse(
     val duration: Int,
     val mainCategory: String,
     val subCategory: String,
-//    val media: List<String>,
-    val contentData: String,
+    val mediafiles: List<String>,
+    val info: String,
     val tags: List<String>,
     val visibility: String,
+    val is_ads: Boolean,
     val created_at: Date,
     val updated_at: Date
 )

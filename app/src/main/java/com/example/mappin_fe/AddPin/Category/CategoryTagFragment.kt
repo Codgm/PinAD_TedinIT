@@ -10,10 +10,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.AddPin.Camera.MediaFile
 import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
 import com.example.mappin_fe.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class CategoryTagFragment : Fragment() {
     private lateinit var chipGroupTags: ChipGroup
@@ -27,7 +30,11 @@ class CategoryTagFragment : Fragment() {
 
     private lateinit var receivedMainCategory: String
     private lateinit var receivedSubCategory: String
-    private lateinit var contentData: String
+    private lateinit var info: String
+    private lateinit var title: String
+    private lateinit var description: String
+    private var is_ads: Boolean = false
+    private lateinit var mediaFiles: List<MediaFile>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +51,23 @@ class CategoryTagFragment : Fragment() {
         // Retrieve selected subcategory from arguments
         receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
         receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
-        contentData = arguments?.getString("CONTENT_DATA") ?: ""
+        info = arguments?.getString("INFO") ?: ""
+        title = arguments?.getString("TITLE") ?: ""
+        description = arguments?.getString("DESCRIPTION") ?: ""
+        is_ads = arguments?.getBoolean("is_Ads", false) ?: false
+        // 미디어 파일 정보 받기
+        arguments?.let {
+            val mediaFilesJson = it.getString("MEDIA_FILES")
+            mediaFiles = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
+        }
 
+        Log.d("CategoryTagFragment", "Number of media files: ${mediaFiles.size}")
         Log.d("CategoryTagFragment", "Selected Main Category: $receivedMainCategory")
         Log.d("CategoryTagFragment", "Selected Subcategory: $receivedSubCategory")
-        Log.d("CategoryTagFragment", "Content Data: $contentData")
+        Log.d("CategoryTagFragment", "Info: $info")
+        Log.d("CategoryTagFragment", "Title: $title")
+        Log.d("CategoryTagFragment", "Description: $description")
+        Log.d("CategoryTagFragment", "is_Ads: $is_ads")
 
         btnAddTag.setOnClickListener {
             addNewTag()
@@ -67,10 +86,14 @@ class CategoryTagFragment : Fragment() {
     private fun navigateToPointSystemFragment() {
         val pointSystemFragment = PointSystemFragment()
         val bundle = Bundle().apply {
-            putString("SELECTED_MAINCATEGORY", receivedMainCategory)
+            putString("SELECTED_MAIN_CATEGORY", receivedMainCategory)
             putString("SELECTED_SUBCATEGORY", receivedSubCategory)
-            putString("CONTENT_DATA", contentData)
+            putString("INFO", info)
+            putString("TITLE", title)
+            putString("DESCRIPTION", description)
+            putBoolean("is_Ads", is_ads)
             putStringArray("SELECTED_TAGS", getSelectedTags().toTypedArray())
+            putString("MEDIA_FILES", Gson().toJson(mediaFiles))
         }
         pointSystemFragment.arguments = bundle
 

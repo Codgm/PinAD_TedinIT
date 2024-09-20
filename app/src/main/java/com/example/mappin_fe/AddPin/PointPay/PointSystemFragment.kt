@@ -1,8 +1,8 @@
 package com.example.mappin_fe.AddPin.PointPay
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.mappin_fe.AddPin.Camera.MediaFile
 import com.example.mappin_fe.Data.PinDataResponse
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.MainActivity
@@ -18,10 +19,17 @@ import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 class PointSystemFragment : Fragment() {
@@ -36,13 +44,16 @@ class PointSystemFragment : Fragment() {
     private lateinit var switchAdBoost: Switch
     private var currentPoints = 1000
     private lateinit var receivedSubCategory: String
-    private lateinit var media: String
     private lateinit var receivedMainCategory: String
-    private lateinit var contentData: String
-    private lateinit var selectedTags: List<String>
+    private lateinit var info: String // contentData 대신 info 사용
+    private lateinit var title: String // title 추가
+    private lateinit var description: String // description 추가
+    private var is_ads: Boolean = false // is_ads 추가
+    private var selectedTags: List<String> = listOf()
     private lateinit var switchVisibility: Switch
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private lateinit var mediafiles: List<MediaFile>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,11 +70,24 @@ class PointSystemFragment : Fragment() {
     private fun initializeViews(view: View) {
         receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
         receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
-        contentData = arguments?.getString("CONTENT_DATA") ?: ""
+        info = arguments?.getString("INFO") ?: ""
+        title = arguments?.getString("TITLE") ?: "" // title 수신
+        description = arguments?.getString("DESCRIPTION") ?: "" // description 수신
+        is_ads = arguments?.getBoolean("is_Ads", false) ?: false // is_ads 수신
+        selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
+        // 미디어 파일 정보 받기
+        arguments?.let {
+            val mediaFilesJson = it.getString("MEDIA_FILES")
+            mediafiles = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
+        }
+        Log.d("PointSystemFragment", "Number of media files: ${mediafiles.size}")
         Log.d("PointSystemFragment", "Received Main Category: $receivedMainCategory")
         Log.d("PointSystemFragment", "Received Sub Category: $receivedSubCategory")
-        Log.d("PointSystemFragment", "Content Data: $contentData")
-//        media = arguments?.getString("MEDIA_URI") ?: ""
+        Log.d("PointSystemFragment", "tags: $selectedTags")
+        Log.d("PointSystemFragment", "Info: $info")
+        Log.d("PointSystemFragment", "Title: $title") // title 로깅
+        Log.d("PointSystemFragment", "Description: $description") // description 로깅
+        Log.d("PointSystemFragment", "is_Ads: $is_ads") // is_ads 로깅
         tvCurrentPoints = view.findViewById(R.id.tv_current_points)
         tvEstimatedCost = view.findViewById(R.id.tv_estimated_cost)
         imgPointIcon = view.findViewById(R.id.img_point_icon)
@@ -71,7 +95,6 @@ class PointSystemFragment : Fragment() {
         spinnerAdDuration = view.findViewById(R.id.spinner_ad_duration)
         switchAdBoost = view.findViewById(R.id.switch_ad_boost)
         btnCompletePin = view.findViewById(R.id.btn_complete_pin)
-        selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
         switchVisibility = view.findViewById(R.id.switch_visibility)
     }
 
@@ -164,23 +187,23 @@ class PointSystemFragment : Fragment() {
     private fun createPinData(nickname: String): PinDataResponse {
         val now = Date()
         val location = LatLng(latitude,longitude)
-//        val mediaList = listOf(media)
         return PinDataResponse(
             id = UUID.randomUUID().toString(),
             latitude = 37.7749,
             longitude = -122.4194,
             location = location.toString(),
             user = nickname.toIntOrNull() ?: 0,
-            title = "$nickname 핀",
-            description = "Your description here",
+            title = title, // title 추가
+            description = description, // description 추가
             range = getSelectedRange(),
             duration = getSelectedDuration(),
             mainCategory = receivedMainCategory,
             subCategory = receivedSubCategory,
-//            media = mediaList,
-            contentData = contentData,
+            mediafiles = mediafiles.map { it.uri },
+            info = info,
             tags = selectedTags,
             visibility = if (switchVisibility.isChecked) "public" else "private",
+            is_ads = is_ads, // is_ads 추가
             created_at = now,
             updated_at = Date(now.time + (getSelectedDuration() * 60 * 60 * 1000))
         )
@@ -188,22 +211,69 @@ class PointSystemFragment : Fragment() {
 
     private fun sendPinDataToServer(pinData: PinDataResponse) {
         lifecycleScope.launch {
-            Log.d("PinData", "Pin data to be sent: ${Gson().toJson(pinData)}")
             try {
                 val response = RetrofitInstance.api.savePinData(pinData)
                 if (response.isSuccessful) {
                     Log.d("PinData", "Pin data saved successfully: ${response.body()}")
-                    navigateToMainActivity()
+                    response.body()?.let { savedPinData ->
+                        uploadMediaFiles(savedPinData.id)
+                    } ?: run {
+                        Log.e("PinData", "Saved pin data is null")
+                        Toast.makeText(context, "Error: Saved pin data is null", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Log.e("PinData", "Error saving pin data: HTTP ${response.code()} - ${response.errorBody()?.string()}")
                     Toast.makeText(context, "Error saving pin data: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("PinData", "Exception saving pin data", e)
-                Toast.makeText(context, "Exception saving pin data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Exception saving pin data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+
+    private suspend fun uploadMediaFiles(pinId: String) {
+        withContext(Dispatchers.IO) {
+            for (media in mediafiles) {
+                try {
+                    val file = getFileFromUri(media.uri)
+                    file?.let {
+                        val requestFile = it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                        val part = MultipartBody.Part.createFormData("file", it.name, requestFile)
+                        val response = RetrofitInstance.api.uploadMedia(pinId, part)
+                        if (response.isSuccessful) {
+                            Log.d("MediaUpload", "Media uploaded successfully: ${response.body()}")
+                        } else {
+                            Log.e("MediaUpload", "Error uploading media: HTTP ${response.code()} - ${response.errorBody()?.string()}")
+                        }
+                    } ?: Log.e("MediaUpload", "File is null for URI: ${media.uri}")
+                } catch (e: Exception) {
+                    Log.e("MediaUpload", "Exception uploading media", e)
+                }
+            }
+        }
+        withContext(Dispatchers.Main) {
+            navigateToMainActivity()
+        }
+    }
+
+    private fun getFileFromUri(uri: String): File? {
+        return try {
+            val inputStream = requireContext().contentResolver.openInputStream(Uri.parse(uri))
+            val tempFile = File.createTempFile("media", ".jpg", requireContext().cacheDir)
+            inputStream?.use { input ->
+                FileOutputStream(tempFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            Log.e("FileError", "Error getting file from URI: $uri", e)
+            null
+        }
+    }
+
 
 
     private fun navigateToMainActivity() {

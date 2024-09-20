@@ -1,11 +1,13 @@
 package com.example.mappin_fe.Data
 
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -30,4 +32,12 @@ interface ApiService {
 
     @POST("pins/")
     suspend fun savePinData(@Body pinData: PinDataResponse): Response<PinDataResponse>
+
+    @Multipart
+    @POST("pins/{pinId}")
+    suspend fun uploadMedia(
+        @Path("pinId") pinId: String,
+        @Part file: MultipartBody.Part // 변경
+    ): Response<PinDataResponse>
+
 }

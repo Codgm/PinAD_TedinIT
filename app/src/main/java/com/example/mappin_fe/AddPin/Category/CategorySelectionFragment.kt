@@ -10,12 +10,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import com.example.mappin_fe.AddPin.Camera.MediaFile
 import com.example.mappin_fe.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
 
 class CategorySelectionFragment : Fragment() {
@@ -27,12 +30,17 @@ class CategorySelectionFragment : Fragment() {
     private lateinit var templateContent: LinearLayout
     private lateinit var nextButton: Button
     private var selectedSubCategory: String? = null
+    private lateinit var mediaFiles: List<MediaFile>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_category_selection, container, false)
+        arguments?.let {
+            val mediaFilesJson = it.getString("MEDIA_FILES")
+            mediaFiles = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
+        }
 
         mainCategoryChipGroup = view.findViewById(R.id.mainCategoryChipGroup)
         subCategoryChipGroup = view.findViewById(R.id.subCategoryChipGroup)
@@ -51,14 +59,18 @@ class CategorySelectionFragment : Fragment() {
         nextButton.setOnClickListener {
             if (areAllFieldsFilled()) {
                 // 선택한 서브카테고리 정보를 번들에 담아 전달
-                val content = gatherContentData()
+                val (title, description, info) = gatherContentData()
                 val selectedMainChip = mainCategoryChipGroup.findViewById<Chip>(mainCategoryChipGroup.checkedChipId)
                 val selectedSubChip = subCategoryChipGroup.findViewById<Chip>(subCategoryChipGroup.checkedChipId)
+                val is_ads = selectedMainChip?.text.toString() == "광고"
 
                 val bundle = Bundle().apply {
-                    putString("SELECTED_MAIN_CATEGORY", selectedMainChip?.text.toString())
                     putString("SELECTED_SUBCATEGORY", selectedSubChip?.text.toString())
-                    putString("CONTENT_DATA", content)
+                    putString("TITLE", title)
+                    putString("DESCRIPTION", description)
+                    putString("INFO", info) // info 추가
+                    putBoolean("is_Ads", is_ads)
+                    putString("MEDIA_FILES", Gson().toJson(mediaFiles))
                 }
                 val categoryTagFragment = CategoryTagFragment().apply {
                     arguments = bundle
@@ -73,25 +85,52 @@ class CategorySelectionFragment : Fragment() {
         }
     }
 
-    private fun gatherContentData(): String {
-        val contentBuilder = StringBuilder()
+    private fun gatherContentData(): Triple<String, String, String> {
+        val titleBuilder = StringBuilder()
+        val descriptionBuilder = StringBuilder()
+        val infoBuilder = JSONObject()
+
+        var fieldCount = 0
         for (i in 0 until templateContent.childCount) {
             val view = templateContent.getChildAt(i)
             if (view is TextInputLayout) {
-                val editText = view.getChildAt(0) as? TextInputEditText
-                contentBuilder.append(editText?.text.toString()).append("\n")
+                val editText = view.editText
+                val text = editText?.text?.toString() ?: ""
+
+                when (fieldCount) {
+                    0 -> titleBuilder.append(text)
+                    1 -> descriptionBuilder.append(text)
+                    else -> infoBuilder.put("field${fieldCount - 1}", text)
+                }
+                fieldCount++
             } else if (view is RatingBar) {
-                contentBuilder.append("평점: ${view.rating}\n")
+                infoBuilder.put("rating", view.rating)
             }
         }
-        return contentBuilder.toString()
+
+        return Triple(
+            titleBuilder.toString(),
+            descriptionBuilder.toString(),
+            infoBuilder.toString()
+        )
     }
 
 
-
-
     private fun areAllFieldsFilled(): Boolean {
-        return mainCategoryChipGroup.checkedChipId != -1 && templateContent.childCount > 0
+        if (mainCategoryChipGroup.checkedChipId == -1) return false
+
+        var filledFields = 0
+        for (i in 0 until templateContent.childCount) {
+            val view = templateContent.getChildAt(i)
+            if (view is TextInputLayout) {
+                val editText = view.editText
+                if (!editText?.text.isNullOrBlank()) {
+                    filledFields++
+                }
+            }
+        }
+
+        return filledFields >= 2 // At least title and description should be filled
     }
 
     private fun setupMainCategories() {
@@ -163,10 +202,9 @@ class CategorySelectionFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun showDistributionTemplate(styleResId: Int) {
         addStyledField("타이틀", styleResId)
-        addStyledField("부제목", styleResId, true)
+        addStyledField("세부사항", styleResId, true)
         addStyledField("상품명", styleResId)
         addStyledField("판매 수량", styleResId)
-        addStyledField("세부사항", styleResId, true)
 
         val discountTypeGroup = RadioGroup(ContextThemeWrapper(context, styleResId))
         val simpleDiscount = RadioButton(ContextThemeWrapper(context, styleResId)).apply {
@@ -180,9 +218,10 @@ class CategorySelectionFragment : Fragment() {
 
         discountTypeGroup.setOnCheckedChangeListener { _, checkedId ->
             templateContent.removeAllViews()
+            addStyledField("타이틀", styleResId)
             addStyledField("상품명", styleResId)
-            addStyledField("판매 수량", styleResId)
             addStyledField("세부사항", styleResId, true)
+            addStyledField("판매 수량", styleResId)
 
             when (checkedId) {
                 simpleDiscount.id -> {
@@ -200,8 +239,8 @@ class CategorySelectionFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun showFnBTemplate(styleResId: Int) {
         addStyledField("업소명", styleResId)
-        addStyledField("운영 시간", styleResId)
         addStyledField("세부 사항", styleResId, true)
+        addStyledField("운영 시간", styleResId)
         addStyledField("메뉴 이름", styleResId)
         addStyledField("메뉴 가격", styleResId)
         addStyledField("메뉴 설명", styleResId, true)
@@ -222,9 +261,9 @@ class CategorySelectionFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun showEventAlertTemplate(styleResId: Int) {
         addStyledField("행사 제목", styleResId)
+        addStyledField("행사 내용", styleResId, true)
         addStyledField("행사 날짜 및 시간", styleResId)
         addStyledField("행사 장소", styleResId)
-        addStyledField("행사 내용", styleResId, true)
         addStyledField("참가 방법", styleResId, true)
 
         val costTypeGroup = RadioGroup(ContextThemeWrapper(context, styleResId))
@@ -283,8 +322,8 @@ class CategorySelectionFragment : Fragment() {
 
     private fun showAttractionTemplate(styleResId: Int) {
         addStyledField("명소 이름", styleResId)
-        addStyledField("명소 위치", styleResId)
         addStyledField("한 줄 소개", styleResId)
+        addStyledField("명소 위치", styleResId)
         addStyledField("최적의 방문 시기 (계절, 월 또는 시간대)", styleResId)
         addStyledField("특별한 이유", styleResId, true)
         addStyledField("꼭 봐야 할 것들", styleResId, true)
@@ -297,10 +336,10 @@ class CategorySelectionFragment : Fragment() {
 
     private fun showMeetingPointTemplate(styleResId: Int) {
         addStyledField("약속 장소", styleResId)
+        addStyledField("목적", styleResId)
         addStyledField("장소 위치", styleResId)
         addStyledField("누구와", styleResId)
         addStyledField("언제", styleResId)
-        addStyledField("목적", styleResId)
         addStyledField("준비물", styleResId, true)
     }
 

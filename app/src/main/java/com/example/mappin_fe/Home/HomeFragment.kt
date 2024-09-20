@@ -35,6 +35,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -176,7 +177,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     // 위치 데이터 추출
                     val latitude = pinDataResponse.latitude
                     val longitude = pinDataResponse.longitude
-                    val pinLocation = LatLng(latitude, longitude)
+                    if (latitude != null && longitude != null) {
+                        val pinLocation = LatLng(latitude, longitude)
 
                     // 서브카테고리에 따라 색상 설정
                     val borderColor = when (pinDataResponse.subCategory?: "") {
@@ -198,11 +200,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         MarkerOptions()
                             .position(pinLocation)
                             .title(pinDataResponse.title ?: "제목 없음")
-                            .snippet(pinDataResponse.description ?: "제목 없음")
+                            .snippet(pinDataResponse.description ?: "설명 없음")
                             .icon(markerIcon)
                     )
 
                     marker?.tag = pinDataResponse
+                    }
+                }
+                // 모든 핀을 포함하는 영역으로 카메라 이동
+                if (pinDataList.isNotEmpty()) {
+                    val builder = LatLngBounds.Builder()
+                    pinDataList.forEach { pin ->
+                        if (pin.latitude != null && pin.longitude != null) {
+                            builder.include(LatLng(pin.latitude, pin.longitude))
+                        }
+                    }
+                    val bounds = builder.build()
+                    val padding = 100 // 화면 가장자리와의 여백
+                    val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                    googleMap.animateCamera(cameraUpdate)
                 }
             } catch (e: HttpException) {
                 Log.e("LoadPinData", "Error fetching pin data: ${e.message()}")

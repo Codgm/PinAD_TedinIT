@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation("com.google.android.material:material:1.12.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
     // Retrofit 라이브러리
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Gson 변환기
