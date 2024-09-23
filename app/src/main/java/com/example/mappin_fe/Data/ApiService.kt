@@ -34,8 +34,18 @@ interface ApiService {
     @Multipart
     @POST("pins/")
     suspend fun savePinDataWithMedia(
-        @Part("pinData") pinData: RequestBody,
-        @Part media_files: List<MultipartBody.Part>
+        @Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("latitude") latitude: RequestBody,
+        @Part("longitude") longitude: RequestBody,
+        @Part("range") range: RequestBody,
+        @Part("duration") duration: RequestBody,
+        @Part("mainCategory") mainCategory: RequestBody,
+        @Part("subCategory") subCategory: RequestBody,
+        @Part mediaFiles: List<MultipartBody.Part>,
+        @Part("info") info: RequestBody,
+        @Part("tags") tags: RequestBody,
+        @Part("visibility") visibility: RequestBody,
     ): Response<PinDataResponse>
 
 }

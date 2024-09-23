@@ -2,7 +2,6 @@ package com.example.mappin_fe.AddPin.PointPay
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,16 +22,14 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Part
 import java.io.File
-import java.io.FileOutputStream
 import java.util.*
-import kotlin.coroutines.cancellation.CancellationException
 
 class PointSystemFragment : Fragment() {
 
@@ -226,11 +223,33 @@ class PointSystemFragment : Fragment() {
     private fun sendPinDataToServer(pinData: PinDataResponse, onComplete: (Boolean) -> Unit) {
         lifecycleScope.launch {
             try {
+                val titlePart = pinData.title.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descriptionPart = pinData.description.toRequestBody("text/plain".toMediaTypeOrNull())
+                val latitudePart = pinData.latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val longitudePart = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val rangePart = pinData.range.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val durationPart = pinData.duration.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val mainCategoryPart = pinData.mainCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+                val subCategoryPart = pinData.subCategory.toRequestBody("text/plain".toMediaTypeOrNull())
+                val infoPart = Gson().toJson(pinData.info).toRequestBody("text/plain".toMediaTypeOrNull())
+                val tagsPart = Gson().toJson(pinData.tags).toRequestBody("application/json".toMediaTypeOrNull())
+                val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
-                val pinDataPart = preparePinDataPart(pinData)
-
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitInstance.api.savePinDataWithMedia(pinDataPart, mediaFileParts)
+                    RetrofitInstance.api.savePinDataWithMedia(
+                        title = titlePart,
+                        description = descriptionPart,
+                        latitude = latitudePart,
+                        longitude = longitudePart,
+                        range = rangePart,
+                        duration = durationPart,
+                        mainCategory = mainCategoryPart,
+                        subCategory = subCategoryPart,
+                        mediaFiles = mediaFileParts,
+                        info = infoPart,
+                        tags = tagsPart,
+                        visibility = visibilityPart
+                    )
                 }
 
                 if (response.isSuccessful) {

@@ -98,7 +98,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         tvMoreDetails.setOnClickListener {
             ivMedia.load(pinData.media_files)
             ivMedia.visibility = View.VISIBLE
-            tvContent.text = pinData.info
+            tvContent.text = pinData.info.toString()
             tvContent.visibility = View.VISIBLE
         }
     }

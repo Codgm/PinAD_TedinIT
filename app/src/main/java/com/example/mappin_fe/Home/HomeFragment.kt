@@ -170,7 +170,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         lifecycleScope.launch {
             try {
                 // 서버에서 핀 데이터 목록을 가져오기
-                val pinDataList = RetrofitInstance.api.getUserPins() // API 호출
+                Log.d("PinDataFetch", "Starting pin data fetch")
+                val pinDataList = RetrofitInstance.api.getUserPins()
+                Log.d("PinDataFetch", "Fetched Pins: $pinDataList")
+
+                if (pinDataList.isEmpty()) {
+                    Log.d("PinDataFetch", "No pins received")
+                    Toast.makeText(requireContext(), "No pins available", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
 
                 // 핀 데이터를 지도에 표시
                 pinDataList.forEach { pinDataResponse ->
@@ -181,7 +189,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         val pinLocation = LatLng(latitude, longitude)
 
                     // 서브카테고리에 따라 색상 설정
-                    val borderColor = when (pinDataResponse.subCategory?: "") {
+                    val borderColor = when (pinDataResponse.subCategory) {
                         "유통" -> Color.parseColor("#C8E6C9")
                         "F&B" -> Color.parseColor("#FFAB91")
                         "행사 알림" -> Color.parseColor("#64B5F6")
@@ -221,10 +229,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     googleMap.animateCamera(cameraUpdate)
                 }
             } catch (e: HttpException) {
-                Log.e("LoadPinData", "Error fetching pin data: ${e.message()}")
+                Log.e("PinDataFetch", "HTTP Exception: ${e.code()} - ${e.message()}")
                 Toast.makeText(requireContext(), "Error fetching pin data", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Log.e("LoadPinData", "Error: ${e.message}")
+                Log.e("LoadPinData", "Error: ${e.message}",e)
                 Toast.makeText(requireContext(), "Unexpected error", Toast.LENGTH_SHORT).show()
             }
         }

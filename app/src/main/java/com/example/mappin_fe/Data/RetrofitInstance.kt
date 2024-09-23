@@ -1,12 +1,17 @@
 package com.example.mappin_fe.Data
 
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://4b09-175-198-127-14.ngrok-free.app"
+    private const val BASE_URL = "https://bd9d-175-198-127-14.ngrok-free.app"
+
+    private val gson = GsonBuilder()
+        .setLenient()
+        .registerTypeAdapter(List::class.java, TagsDeserializer())
+        .create()
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -24,7 +29,7 @@ object RetrofitInstance {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 

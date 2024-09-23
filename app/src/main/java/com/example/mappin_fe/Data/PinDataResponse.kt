@@ -1,5 +1,6 @@
 package com.example.mappin_fe.Data
 
+import com.google.gson.annotations.JsonAdapter
 import java.util.Date
 import com.google.gson.annotations.SerializedName
 
@@ -16,7 +17,8 @@ data class PinDataResponse(
     @SerializedName("mainCategory") val mainCategory: String,
     @SerializedName("subCategory") val subCategory: String,
     @SerializedName("media_files") val media_files: List<String>,
-    @SerializedName("info") val info: String,
+    @SerializedName("info") val info: Any?,
+    @JsonAdapter(TagsDeserializer::class)
     @SerializedName("tags") val tags: List<String>,
     @SerializedName("visibility") val visibility: String,
     @SerializedName("is_ads") val is_ads: Boolean,
