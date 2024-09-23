@@ -28,9 +28,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.coroutines.cancellation.CancellationException
 
 class PointSystemFragment : Fragment() {
 
@@ -53,7 +55,7 @@ class PointSystemFragment : Fragment() {
     private lateinit var switchVisibility: Switch
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
-    private lateinit var mediafiles: List<MediaFile>
+    private lateinit var media_files: List<MediaFile>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,9 +80,9 @@ class PointSystemFragment : Fragment() {
         // 미디어 파일 정보 받기
         arguments?.let {
             val mediaFilesJson = it.getString("MEDIA_FILES")
-            mediafiles = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
+            media_files = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
         }
-        Log.d("PointSystemFragment", "Number of media files: ${mediafiles.size}")
+        Log.d("PointSystemFragment", "Number of media files: ${media_files}")
         Log.d("PointSystemFragment", "Received Main Category: $receivedMainCategory")
         Log.d("PointSystemFragment", "Received Sub Category: $receivedSubCategory")
         Log.d("PointSystemFragment", "tags: $selectedTags")
@@ -141,16 +143,28 @@ class PointSystemFragment : Fragment() {
         }
 
         btnCompletePin.setOnClickListener {
+            btnCompletePin.isEnabled = false
             UserUtils.fetchUserDetails { nickname, _ ->
                 if (calculateAndUpdatePoints()) {
                     val pinData = createPinData(nickname)
-                    sendPinDataToServer(pinData)
-                    navigateToMainActivity()
+                    if (isAdded && userVisibleHint) { // Fragment가 활성화되어 있는지 확인
+                        sendPinDataToServer(pinData) { success ->
+                            btnCompletePin.isEnabled = true
+                            if (success) {
+                                navigateToMainActivity()
+                            }
+                        }
+                    } else {
+                        showSafeToast("Fragment is not active")
+                        btnCompletePin.isEnabled = true
+                    }
                 } else {
                     Toast.makeText(context, "Insufficient points!", Toast.LENGTH_SHORT).show()
+                    btnCompletePin.isEnabled = true
                 }
             }
         }
+
     }
 
     private fun calculateEstimatedCost(): Int {
@@ -199,7 +213,7 @@ class PointSystemFragment : Fragment() {
             duration = getSelectedDuration(),
             mainCategory = receivedMainCategory,
             subCategory = receivedSubCategory,
-            mediafiles = mediafiles.map { it.uri },
+            media_files = media_files.map { it.uri },
             info = info,
             tags = selectedTags,
             visibility = if (switchVisibility.isChecked) "public" else "private",
@@ -209,71 +223,63 @@ class PointSystemFragment : Fragment() {
         )
     }
 
-    private fun sendPinDataToServer(pinData: PinDataResponse) {
+    private fun sendPinDataToServer(pinData: PinDataResponse, onComplete: (Boolean) -> Unit) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitInstance.api.savePinData(pinData)
+                val mediaFileParts = prepareMediaFiles()
+                val pinDataPart = preparePinDataPart(pinData)
+
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitInstance.api.savePinDataWithMedia(pinDataPart, mediaFileParts)
+                }
+
                 if (response.isSuccessful) {
-                    Log.d("PinData", "Pin data saved successfully: ${response.body()}")
-                    response.body()?.let { savedPinData ->
-                        uploadMediaFiles(savedPinData.id)
-                    } ?: run {
-                        Log.e("PinData", "Saved pin data is null")
-                        Toast.makeText(context, "Error: Saved pin data is null", Toast.LENGTH_SHORT).show()
-                    }
+                    Log.d("PinData", "Pin data and media saved successfully: ${response.body()}")
+                    onComplete(true)
                 } else {
-                    Log.e("PinData", "Error saving pin data: HTTP ${response.code()} - ${response.errorBody()?.string()}")
-                    Toast.makeText(context, "Error saving pin data: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    Log.e("PinData", "Error saving pin data and media: HTTP ${response.code()} - ${response.errorBody()?.string()}")
+                    showSafeToast("Error saving pin data and media: ${response.code()}")
+                    onComplete(false)
                 }
             } catch (e: Exception) {
-                Log.e("PinData", "Exception saving pin data", e)
-                Toast.makeText(context, "Exception saving pin data: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("PinData", "Exception saving pin data and media", e)
+                showSafeToast("Exception saving pin data and media: ${e.message}")
+                onComplete(false)
+            }
+        }
+    }
+
+    private suspend fun prepareMediaFiles(): List<MultipartBody.Part> = withContext(Dispatchers.IO) {
+        media_files.mapNotNull { mediaFile ->
+            try {
+                val filePath = mediaFile.uri // 여기에서 mediaFile.uri가 실제 파일 경로라고 가정
+                val file = File(filePath)
+                val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull()) // 이미지 MIME 타입 설정
+                MultipartBody.Part.createFormData("media", file.name, requestFile)
+            } catch (e: Exception) {
+                Log.e("PinData", "Error preparing media file: ${mediaFile.uri}", e)
+                null
+            }
+        }
+    }
+
+    private fun showSafeToast(message: String) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (isAdded && context != null) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            } else {
+                Log.w("PinData", "Cannot show toast, fragment is not attached or context is null")
             }
         }
     }
 
 
-    private suspend fun uploadMediaFiles(pinId: String) {
-        withContext(Dispatchers.IO) {
-            for (media in mediafiles) {
-                try {
-                    val file = getFileFromUri(media.uri)
-                    file?.let {
-                        val requestFile = it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                        val part = MultipartBody.Part.createFormData("file", it.name, requestFile)
-                        val response = RetrofitInstance.api.uploadMedia(pinId, part)
-                        if (response.isSuccessful) {
-                            Log.d("MediaUpload", "Media uploaded successfully: ${response.body()}")
-                        } else {
-                            Log.e("MediaUpload", "Error uploading media: HTTP ${response.code()} - ${response.errorBody()?.string()}")
-                        }
-                    } ?: Log.e("MediaUpload", "File is null for URI: ${media.uri}")
-                } catch (e: Exception) {
-                    Log.e("MediaUpload", "Exception uploading media", e)
-                }
-            }
-        }
-        withContext(Dispatchers.Main) {
-            navigateToMainActivity()
-        }
+    private fun preparePinDataPart(pinData: PinDataResponse): RequestBody {
+        val gson = Gson()
+        val pinDataJson = gson.toJson(pinData)
+        Log.d("PinData", "Prepared JSON: $pinDataJson")
+        return pinDataJson.toRequestBody("application/json".toMediaTypeOrNull())
     }
-
-    private fun getFileFromUri(uri: String): File? {
-        return try {
-            val inputStream = requireContext().contentResolver.openInputStream(Uri.parse(uri))
-            val tempFile = File.createTempFile("media", ".jpg", requireContext().cacheDir)
-            inputStream?.use { input ->
-                FileOutputStream(tempFile).use { output ->
-                    input.copyTo(output)
-                }
-            }
-            tempFile
-        } catch (e: Exception) {
-            Log.e("FileError", "Error getting file from URI: $uri", e)
-            null
-        }
-    }
-
 
 
     private fun navigateToMainActivity() {

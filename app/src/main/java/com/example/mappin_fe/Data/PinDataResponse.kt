@@ -1,24 +1,25 @@
 package com.example.mappin_fe.Data
 
 import java.util.Date
+import com.google.gson.annotations.SerializedName
 
 data class PinDataResponse(
-    val id: String,
-    val latitude: Double,
-    val longitude: Double,
-    val location: String,
-    val user: Int,
-    val title: String,
-    val description: String,
-    val range: Int,
-    val duration: Int,
-    val mainCategory: String,
-    val subCategory: String,
-    val mediafiles: List<String>,
-    val info: String,
-    val tags: List<String>,
-    val visibility: String,
-    val is_ads: Boolean,
-    val created_at: Date,
-    val updated_at: Date
+    @SerializedName("id") val id: String,
+    @SerializedName("latitude") val latitude: Double,
+    @SerializedName("longitude") val longitude: Double,
+    @SerializedName("location") val location: String,
+    @SerializedName("user") val user: Int,
+    @SerializedName("title") val title: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("range") val range: Int,
+    @SerializedName("duration") val duration: Int,
+    @SerializedName("mainCategory") val mainCategory: String,
+    @SerializedName("subCategory") val subCategory: String,
+    @SerializedName("media_files") val media_files: List<String>,
+    @SerializedName("info") val info: String,
+    @SerializedName("tags") val tags: List<String>,
+    @SerializedName("visibility") val visibility: String,
+    @SerializedName("is_ads") val is_ads: Boolean,
+    @SerializedName("created_at") val created_at: Date,
+    @SerializedName("updated_at") val updated_at: Date
 )

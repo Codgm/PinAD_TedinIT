@@ -2,7 +2,9 @@ package com.example.mappin_fe.AddPin.Camera
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +27,7 @@ import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
 import com.example.mappin_fe.R
 import com.example.mappin_fe.databinding.FragmentCameraBinding
 import com.google.gson.Gson
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -51,10 +54,6 @@ class CameraFragment : Fragment() {
     ): View {
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    private fun saveMediaFile(uri: Uri, type: String) {
-        mediaFiles.add(MediaFile(uri.toString(), type))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -275,6 +274,26 @@ class CameraFragment : Fragment() {
             }
         }
     }
+
+    private fun getRealPathFromUri(contentUri: Uri): String? {
+        val cursor = requireContext().contentResolver.query(contentUri, null, null, null, null)
+        return cursor?.use {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+            it.moveToFirst()
+            it.getString(columnIndex)
+        }
+    }
+
+    private fun saveMediaFile(uri: Uri, type: String) {
+        val mediaFilePath = getRealPathFromUri(uri)
+        if (mediaFilePath != null) {
+            mediaFiles.add(MediaFile(mediaFilePath, type))
+            Log.d(TAG, "Saved media file: $mediaFilePath, Type: $type")
+        } else {
+            Log.e(TAG, "Failed to get file path from URI: $uri")
+        }
+    }
+
 
     private fun navigateToCategorySelection() {
         val mediaFilesJson = Gson().toJson(mediaFiles)

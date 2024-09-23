@@ -1,6 +1,7 @@
 package com.example.mappin_fe.Data
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -30,14 +31,11 @@ interface ApiService {
     @GET("pins/") // 핀 데이터 API 엔드포인트
     suspend fun getUserPins(): List<PinDataResponse>
 
-    @POST("pins/")
-    suspend fun savePinData(@Body pinData: PinDataResponse): Response<PinDataResponse>
-
     @Multipart
-    @POST("pins/{pinId}")
-    suspend fun uploadMedia(
-        @Path("pinId") pinId: String,
-        @Part file: MultipartBody.Part // 변경
+    @POST("pins/")
+    suspend fun savePinDataWithMedia(
+        @Part("pinData") pinData: RequestBody,
+        @Part media_files: List<MultipartBody.Part>
     ): Response<PinDataResponse>
 
 }

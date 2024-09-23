@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://bd0d-175-198-127-14.ngrok-free.app"
+    private const val BASE_URL = "https://4b09-175-198-127-14.ngrok-free.app"
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()

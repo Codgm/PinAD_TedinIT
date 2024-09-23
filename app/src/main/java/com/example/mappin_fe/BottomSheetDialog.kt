@@ -96,7 +96,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         val ivMedia = view.findViewById<ImageView>(R.id.ivMedia)
         val tvContent = view.findViewById<TextView>(R.id.tvContent)
         tvMoreDetails.setOnClickListener {
-//            ivMedia.load(pinData.media)
+            ivMedia.load(pinData.media_files)
             ivMedia.visibility = View.VISIBLE
             tvContent.text = pinData.info
             tvContent.visibility = View.VISIBLE
