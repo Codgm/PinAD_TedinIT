@@ -1,15 +1,12 @@
 package com.example.mappin_fe.Home
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,8 +23,12 @@ import com.example.mappin_fe.Data.PinDataResponse
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
-import com.example.mappin_fe.UserUtils
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -40,8 +41,9 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.HttpException
-import java.net.URL
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
@@ -55,6 +57,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var currentLocation: LatLng? = null
 
     private val defaultLocation = LatLng(37.5042, 126.9537) // 서울 상도동
+
+    private val jsonData = """
+        [
+            {"id":1,"latitude":37.5665,"longitude":126.978,"title":"서울시청","description":"서울특별시의 시청입니다.","category":"광고"},
+            {"id":2,"latitude":37.570,"longitude":126.985,"title":"남산타워","description":"서울의 대표적인 관광명소입니다.","category":"광고"},
+            {"id":3,"latitude":37.5502,"longitude":126.982,"title":"동대문디자인플라자","description":"서울의 현대적인 건축물입니다.","mainCategory":"문화"},
+            {"id":4,"latitude":37.574,"longitude":127.008,"title":"경복궁","description":"조선 왕조의 주요 궁궐입니다.","mainCategory":"문화"},
+            {"id":5,"latitude":37.6103,"longitude":126.9811,"title":"홍대","description":"젊음의 거리, 다양한 문화와 예술이 있는 곳입니다.","category":"문화"}
+        ]
+        """
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,7 +121,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         setMapStyle(googleMap)
         // 마커 클릭 리스너 설정
         googleMap.setOnMarkerClickListener { marker ->
-            val pinData = marker.tag as? PinDataResponse
+            val pinData = marker.tag as? String
             if (pinData != null) {
                 val bottomSheet = PinDetailBottomSheet.newInstance(pinData.toString())
                 bottomSheet.show(childFragmentManager, bottomSheet.tag)
@@ -169,74 +181,73 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun loadAndShowPin() {
         lifecycleScope.launch {
             try {
-                // 서버에서 핀 데이터 목록을 가져오기
                 Log.d("PinDataFetch", "Starting pin data fetch")
-                val pinDataList = RetrofitInstance.api.getUserPins()
-                Log.d("PinDataFetch", "Fetched Pins: $pinDataList")
+                val pinDataListString = RetrofitInstance.api.getUserPins()
+                Log.d("PinDataFetch", "Fetched Pins: $pinDataListString")
 
-                if (pinDataList.isEmpty()) {
+                if (pinDataListString.isEmpty()) {
                     Log.d("PinDataFetch", "No pins received")
                     Toast.makeText(requireContext(), "No pins available", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
 
-                // 핀 데이터를 지도에 표시
-                pinDataList.forEach { pinDataResponse ->
-                    // 위치 데이터 추출
-                    val latitude = pinDataResponse.latitude
-                    val longitude = pinDataResponse.longitude
-                    if (latitude != null && longitude != null) {
-                        val pinLocation = LatLng(latitude, longitude)
+                val jsonArray = JSONArray(pinDataListString)
+                val builder = LatLngBounds.Builder()
+                var hasPins = false
 
-                    // 서브카테고리에 따라 색상 설정
-                    val borderColor = when (pinDataResponse.subCategory) {
-                        "유통" -> Color.parseColor("#C8E6C9")
-                        "F&B" -> Color.parseColor("#FFAB91")
-                        "행사 알림" -> Color.parseColor("#64B5F6")
-                        "리뷰" -> Color.parseColor("#D1C4E9")
-                        "명소 추천" -> Color.parseColor("#FFD54F")
-                        "약속 장소" -> Color.parseColor("#4CAF50")
-                        "여행 메모" -> Color.parseColor("#303F9F")
-                        "할인 요청" -> Color.parseColor("#EF5350")
-                        else -> Color.parseColor("#FFAB91")
-                    }
+                for (i in 0 until jsonArray.length()) {
+                    val jsonString = jsonArray.getString(i)
+                    val jsonObject = JSONObject(jsonString)
 
-                    // 기본 아이콘으로 마커 생성
-                    val markerIcon = createMarkerIcon(borderColor)
+                    // location 문자열에서 위도와 경도 추출
+                    val locationStr = jsonObject.getString("location")
+                    val regex = """POINT \((-?\d+\.?\d*) (-?\d+\.?\d*)\)""".toRegex()
+                    val matchResult = regex.find(locationStr)
 
-                    val marker = googleMap.addMarker(
-                        MarkerOptions()
-                            .position(pinLocation)
-                            .title(pinDataResponse.title ?: "제목 없음")
-                            .snippet(pinDataResponse.description ?: "설명 없음")
-                            .icon(markerIcon)
-                    )
+                    if (matchResult != null) {
+                        val (longitude, latitude) = matchResult.destructured
+                        val title = jsonObject.optString("title", "제목 없음")
+                        val description = jsonObject.optString("description", "설명 없음")
+                        val isAds = jsonObject.optBoolean("is_ads", true)
 
-                    marker?.tag = pinDataResponse
+                        val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
+                        builder.include(pinLocation)
+                        hasPins = true
+
+                        // 광고 여부에 따라 색상 설정
+                        val borderColor = if (isAds) {
+                            Color.parseColor("#C8E6C9") // 광고용 색상
+                        } else {
+                            Color.parseColor("#FFAB91") // 일반 핀 색상
+                        }
+
+                        // 마커 생성
+                        val markerIcon = createMarkerIcon(borderColor)
+                        val marker = googleMap.addMarker(
+                            MarkerOptions()
+                                .position(pinLocation)
+                                .title(title)
+                                .snippet(description)
+                                .icon(markerIcon)
+                        )
+                        marker?.tag = jsonObject.toString()
                     }
                 }
+
                 // 모든 핀을 포함하는 영역으로 카메라 이동
-                if (pinDataList.isNotEmpty()) {
-                    val builder = LatLngBounds.Builder()
-                    pinDataList.forEach { pin ->
-                        if (pin.latitude != null && pin.longitude != null) {
-                            builder.include(LatLng(pin.latitude, pin.longitude))
-                        }
-                    }
+                if (hasPins) {
                     val bounds = builder.build()
                     val padding = 100 // 화면 가장자리와의 여백
                     val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
                     googleMap.animateCamera(cameraUpdate)
                 }
-            } catch (e: HttpException) {
-                Log.e("PinDataFetch", "HTTP Exception: ${e.code()} - ${e.message()}")
-                Toast.makeText(requireContext(), "Error fetching pin data", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Log.e("LoadPinData", "Error: ${e.message}",e)
-                Toast.makeText(requireContext(), "Unexpected error", Toast.LENGTH_SHORT).show()
+                Log.e("LoadPinData", "Error: ${e.message}", e)
+                Toast.makeText(requireContext(), "Error loading pins: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun setMapStyle(map: GoogleMap) {
         try {

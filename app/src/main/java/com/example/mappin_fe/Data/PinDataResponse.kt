@@ -12,10 +12,7 @@ data class PinDataResponse(
     @SerializedName("user") val user: Int,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String,
-    @SerializedName("range") val range: Int,
-    @SerializedName("duration") val duration: Int,
-    @SerializedName("mainCategory") val mainCategory: String,
-    @SerializedName("subCategory") val subCategory: String,
+    @SerializedName("category") val category: String,
     @SerializedName("media_files") val media_files: List<String>,
     @SerializedName("info") val info: Any?,
     @JsonAdapter(TagsDeserializer::class)

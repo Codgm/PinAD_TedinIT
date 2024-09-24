@@ -24,7 +24,7 @@
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/mainCategoryChipGroup"
+            android:id="@+id/categoryChipGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:singleSelection="true"
@@ -34,14 +34,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Subcategory"
+            android:text="Select Interests"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="?attr/textColorPrimary"
             android:layout_marginBottom="8dp"/>
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/subCategoryChipGroup"
+            android:id="@+id/tagChipGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:singleSelection="true"

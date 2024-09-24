@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://bd9d-175-198-127-14.ngrok-free.app"
+    private const val BASE_URL = "http://43.200.81.103:8000"
 
     private val gson = GsonBuilder()
         .setLenient()
@@ -18,7 +18,7 @@ object RetrofitInstance {
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
                 val requestWithToken = originalRequest.newBuilder()
-                    .header("Authorization", "Token 381e06cef85ad6823f1a6a589666f2d62f48b6b6")
+                    .header("Authorization", "Token 0083ef850ca36cb7dbe9ccf7cfba1c1834bb6906")
                     .build()
                 chain.proceed(requestWithToken)
             }

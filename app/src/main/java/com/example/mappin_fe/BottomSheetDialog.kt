@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
+import org.json.JSONObject
 import java.util.*
 
 class PinDetailBottomSheet : BottomSheetDialogFragment() {
@@ -50,20 +51,25 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupUI(view: View, pinData: PinDataResponse) {
         view.findViewById<TextView>(R.id.tvTitle).text = pinData.title
-        view.findViewById<TextView>(R.id.tvCategory).text = "${pinData.mainCategory} > ${pinData.subCategory}"
-        view.findViewById<TextView>(R.id.tvRange).text = "Range: ${pinData.range} km"
-        view.findViewById<TextView>(R.id.tvDuration).text = "Duration: ${pinData.duration} hours"
+        view.findViewById<TextView>(R.id.tvDescription).text = "${pinData.description}"
+
+        val infoJson = JSONObject(pinData.info.toString())
+        val range = infoJson.optInt("range", 0)
+        val duration = infoJson.optInt("duration", 0)
+
+        view.findViewById<TextView>(R.id.tvRange).text = "Range: $range km"
+        view.findViewById<TextView>(R.id.tvDuration).text = "Duration: $duration hours"
 
         setupPurchaseButton(view, pinData)
         setupTags(view, pinData)
-        setupChronometer(view, pinData)
+        setupChronometer(view, pinData, duration)
         setupProgressBar(view)
         setupMoreDetailsButton(view, pinData)
     }
 
     private fun setupPurchaseButton(view: View, pinData: PinDataResponse) {
         val btnPurchase = view.findViewById<Button>(R.id.btnPurchase)
-        btnPurchase.visibility = if (pinData.subCategory == "유통") View.VISIBLE else View.GONE
+        btnPurchase.visibility = if (pinData.category == "광고") View.VISIBLE else View.GONE
     }
 
     private fun setupTags(view: View, pinData: PinDataResponse) {
@@ -75,11 +81,16 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun setupChronometer(view: View, pinData: PinDataResponse) {
+    private fun setupChronometer(view: View, pinData: PinDataResponse, duration: Int) {
         val chronometer = view.findViewById<Chronometer>(R.id.chronometer)
-        val remainingTime = pinData.created_at.time - Date().time
-        chronometer.base = SystemClock.elapsedRealtime() + remainingTime
-        chronometer.start()
+        val endTime = pinData.created_at.time + (duration * 60 * 60 * 1000)
+        val remainingTime = endTime - System.currentTimeMillis()
+        if (remainingTime > 0) {
+            chronometer.base = SystemClock.elapsedRealtime() + remainingTime
+            chronometer.start()
+        } else {
+            chronometer.text = "Expired"
+        }
     }
 
     private fun setupProgressBar(view: View) {
@@ -95,11 +106,28 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         val tvMoreDetails = view.findViewById<TextView>(R.id.tvMoreDetails)
         val ivMedia = view.findViewById<ImageView>(R.id.ivMedia)
         val tvContent = view.findViewById<TextView>(R.id.tvContent)
+
         tvMoreDetails.setOnClickListener {
-            ivMedia.load(pinData.media_files)
-            ivMedia.visibility = View.VISIBLE
-            tvContent.text = pinData.info.toString()
+            if (pinData.media_files.isNotEmpty()) {
+                ivMedia.load(pinData.media_files[0])
+                ivMedia.visibility = View.VISIBLE
+            } else {
+                ivMedia.visibility = View.GONE
+            }
+
+            val infoJson = JSONObject(pinData.info.toString())
+            val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
+            tvContent.text = additionalInfo
             tvContent.visibility = View.VISIBLE
+
+            // 토글 기능 추가
+            if (tvMoreDetails.text == "More Details") {
+                tvMoreDetails.text = "Less Details"
+            } else {
+                tvMoreDetails.text = "More Details"
+                ivMedia.visibility = View.GONE
+                tvContent.visibility = View.GONE
+            }
         }
     }
 }

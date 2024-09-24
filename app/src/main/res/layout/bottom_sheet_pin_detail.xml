@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="10dp"
-    android:background="?attr/colorBackground">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="구매"
+            android:text="발행"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +74,7 @@
 
         <!-- 카테고리 -->
         <TextView
-            android:id="@+id/tvCategory"
+            android:id="@+id/tvDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -91,7 +91,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@id/tvDuration"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvCategory" />
+            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
 
         <!-- Duration -->
         <TextView
@@ -101,7 +101,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvRange"
-            app:layout_constraintTop_toBottomOf="@id/tvCategory" />
+            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
 
         <!-- 태그 ChipGroup -->
         <com.google.android.material.chip.ChipGroup

@@ -67,44 +67,85 @@
 
         <!-- Example Chips -->
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_travel"
+            android:id="@+id/chip_beauty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Travel"
+            android:text="뷰티"
             app:closeIconVisible="false"
             android:background="@drawable/border_black"/>
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_boat"
+            android:id="@+id/chip_electronics"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Boat"
+            android:text="전자기기"
             app:closeIconVisible="false"
             android:background="@drawable/border_black"/>
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_hiking"
+            android:id="@+id/chip_furniture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hiking"
+            android:text="가구"
             app:closeIconVisible="false"
             android:background="@drawable/border_black"/>
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_exhibition"
+            android:id="@+id/chip_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Exhibition"
+            android:text="식품"
             app:closeIconVisible="false"
             android:background="@drawable/border_black"/>
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_advertising"
+            android:id="@+id/chip_lifestyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Advertising"
+            android:text="생활용품"
             app:closeIconVisible="false"
             android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_bestseller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="베스트셀러"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_books"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="도서"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_sports"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="스포츠/레저"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_car_accessories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="자동차용품"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_clothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="의류"
+            app:closeIconVisible="false"
+            android:background="@drawable/border_black"/>
+
 
     </com.google.android.material.chip.ChipGroup>
 

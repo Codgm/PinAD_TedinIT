@@ -27,6 +27,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.http.Part
 import java.io.File
 import java.util.*
@@ -42,8 +43,7 @@ class PointSystemFragment : Fragment() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var switchAdBoost: Switch
     private var currentPoints = 1000
-    private lateinit var receivedSubCategory: String
-    private lateinit var receivedMainCategory: String
+    private lateinit var category: String
     private lateinit var info: String // contentData 대신 info 사용
     private lateinit var title: String // title 추가
     private lateinit var description: String // description 추가
@@ -67,21 +67,18 @@ class PointSystemFragment : Fragment() {
     }
 
     private fun initializeViews(view: View) {
-        receivedSubCategory = arguments?.getString("SELECTED_SUBCATEGORY") ?: ""
-        receivedMainCategory = arguments?.getString("SELECTED_MAIN_CATEGORY") ?: ""
         info = arguments?.getString("INFO") ?: ""
         title = arguments?.getString("TITLE") ?: "" // title 수신
         description = arguments?.getString("DESCRIPTION") ?: "" // description 수신
         is_ads = arguments?.getBoolean("is_Ads", false) ?: false // is_ads 수신
         selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
+        category = arguments?.getString("CATEGORY") ?: ""
         // 미디어 파일 정보 받기
         arguments?.let {
             val mediaFilesJson = it.getString("MEDIA_FILES")
             media_files = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
         }
         Log.d("PointSystemFragment", "Number of media files: ${media_files}")
-        Log.d("PointSystemFragment", "Received Main Category: $receivedMainCategory")
-        Log.d("PointSystemFragment", "Received Sub Category: $receivedSubCategory")
         Log.d("PointSystemFragment", "tags: $selectedTags")
         Log.d("PointSystemFragment", "Info: $info")
         Log.d("PointSystemFragment", "Title: $title") // title 로깅
@@ -198,6 +195,12 @@ class PointSystemFragment : Fragment() {
     private fun createPinData(nickname: String): PinDataResponse {
         val now = Date()
         val location = LatLng(latitude,longitude)
+        val infoJson = JSONObject().apply {
+            put("range", getSelectedRange())
+            put("duration", getSelectedDuration())
+            // 기존 info 내용이 있다면 여기에 추가
+            put("additionalInfo", info)
+        }
         return PinDataResponse(
             id = UUID.randomUUID().toString(),
             latitude = 37.7749,
@@ -206,12 +209,9 @@ class PointSystemFragment : Fragment() {
             user = nickname.toIntOrNull() ?: 0,
             title = title, // title 추가
             description = description, // description 추가
-            range = getSelectedRange(),
-            duration = getSelectedDuration(),
-            mainCategory = receivedMainCategory,
-            subCategory = receivedSubCategory,
+            category = category,
             media_files = media_files.map { it.uri },
-            info = info,
+            info = infoJson.toString(),
             tags = selectedTags,
             visibility = if (switchVisibility.isChecked) "public" else "private",
             is_ads = is_ads, // is_ads 추가
@@ -227,11 +227,8 @@ class PointSystemFragment : Fragment() {
                 val descriptionPart = pinData.description.toRequestBody("text/plain".toMediaTypeOrNull())
                 val latitudePart = pinData.latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val longitudePart = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-                val rangePart = pinData.range.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-                val durationPart = pinData.duration.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-                val mainCategoryPart = pinData.mainCategory.toRequestBody("text/plain".toMediaTypeOrNull())
-                val subCategoryPart = pinData.subCategory.toRequestBody("text/plain".toMediaTypeOrNull())
-                val infoPart = Gson().toJson(pinData.info).toRequestBody("text/plain".toMediaTypeOrNull())
+                val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
+                val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
                 val tagsPart = Gson().toJson(pinData.tags).toRequestBody("application/json".toMediaTypeOrNull())
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
@@ -241,10 +238,7 @@ class PointSystemFragment : Fragment() {
                         description = descriptionPart,
                         latitude = latitudePart,
                         longitude = longitudePart,
-                        range = rangePart,
-                        duration = durationPart,
-                        mainCategory = mainCategoryPart,
-                        subCategory = subCategoryPart,
+                        category = categoryPart,
                         mediaFiles = mediaFileParts,
                         info = infoPart,
                         tags = tagsPart,
