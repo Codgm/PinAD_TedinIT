@@ -2,6 +2,7 @@ package com.example.mappin_fe.Login_Sign
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -30,9 +31,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONObject
+import java.io.IOException
 
 class LoginActivity : AppCompatActivity() {
 
@@ -64,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
+            .requestServerAuthCode(getString(R.string.default_web_client_id))
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -75,7 +82,14 @@ class LoginActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
                     val account = task.result
+                    val authCode = account.serverAuthCode
+                    Log.d("AuthCode", "Auth Code: $authCode")
                     firebaseAuthWithGoogle(account.idToken!!)
+                    if (authCode != null) {
+                        getAccessToken(authCode)
+                    } else {
+                        Toast.makeText(this, "Auth Code를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 } catch (e: Exception) {
                     Toast.makeText(this, "Google Sign-In Failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -118,6 +132,46 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    // access_token을 받기 위한 메서드
+    private fun getAccessToken(authCode: String) {
+        val client = OkHttpClient()
+        val requestBody = FormBody.Builder()
+            .add("grant_type", "authorization_code")
+            .add("client_id", getString(R.string.default_web_client_id)) // web client ID 사용
+//            .add("client_secret", getString(R.string.client_secret)) // client secret 추가 (구글 API 콘솔에서 확인)
+            .add("redirect_uri", "") // 필요한 경우 redirect URI 설정
+            .add("code", authCode)
+            .build()
+
+        val request = Request.Builder()
+            .url("https://oauth2.googleapis.com/token")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("AccessTokenError", "Failed to get access token: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                if (response.isSuccessful && responseData != null) {
+                    try {
+                        val json = JSONObject(responseData)
+                        val accessToken = json.getString("access_token")
+                        Log.d("AccessToken", "Access Token: $accessToken")
+
+                        // 필요한 경우 access_token으로 추가 작업 가능
+                    } catch (e: Exception) {
+                        Log.e("AccessTokenError", "Failed to parse access token response: ${e.message}")
+                    }
+                } else {
+                    Log.e("AccessTokenError", "Failed to get access token: ${response.message}")
+                }
+            }
+        })
     }
 
     private fun signInWithGoogle() {

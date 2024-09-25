@@ -124,7 +124,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val pinData = marker.tag as? String
             if (pinData != null) {
                 val bottomSheet = PinDetailBottomSheet.newInstance(pinData.toString())
-                bottomSheet.show(childFragmentManager, bottomSheet.tag)
+                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             }
             true
         }
@@ -209,6 +209,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         val title = jsonObject.optString("title", "제목 없음")
                         val description = jsonObject.optString("description", "설명 없음")
                         val isAds = jsonObject.optBoolean("is_ads", true)
+                        val media_files = jsonObject.getString("media")
+                        Log.d("PinDataFetch", "Media Files: $media_files")
 
                         val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
                         builder.include(pinLocation)

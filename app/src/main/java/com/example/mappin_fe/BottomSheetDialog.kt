@@ -2,6 +2,7 @@ package com.example.mappin_fe
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,16 +41,18 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 
         try {
             val pinDataJson = arguments?.getString("PIN_DATA_JSON") ?: return
+            val jsonObject = JSONObject(pinDataJson)
             val gson = Gson()
             val pinData = gson.fromJson(pinDataJson, PinDataResponse::class.java)
 
-            setupUI(view, pinData)
+
+            setupUI(view, pinData, jsonObject)
         } catch (e: Exception) {
             // Handle error (e.g., show error message)
         }
     }
 
-    private fun setupUI(view: View, pinData: PinDataResponse) {
+    private fun setupUI(view: View, pinData: PinDataResponse,  jsonObject: JSONObject) {
         view.findViewById<TextView>(R.id.tvTitle).text = pinData.title
         view.findViewById<TextView>(R.id.tvDescription).text = "${pinData.description}"
 
@@ -64,7 +67,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         setupTags(view, pinData)
         setupChronometer(view, pinData, duration)
         setupProgressBar(view)
-        setupMoreDetailsButton(view, pinData)
+        setupMoreDetailsButton(view, pinData, jsonObject)
     }
 
     private fun setupPurchaseButton(view: View, pinData: PinDataResponse) {
@@ -102,18 +105,21 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         view.findViewById<TextView>(R.id.tvParticipantInfo).text = "Current participants: $currentParticipants / $maxParticipants"
     }
 
-    private fun setupMoreDetailsButton(view: View, pinData: PinDataResponse) {
+    private fun setupMoreDetailsButton(view: View, pinData: PinDataResponse, jsonObject: JSONObject) {
         val tvMoreDetails = view.findViewById<TextView>(R.id.tvMoreDetails)
         val ivMedia = view.findViewById<ImageView>(R.id.ivMedia)
         val tvContent = view.findViewById<TextView>(R.id.tvContent)
+        val mediaUrl = jsonObject.optString("media", "")
+        Log.d("PinDetail", "Media URL: $mediaUrl")
 
         tvMoreDetails.setOnClickListener {
-            if (pinData.media_files.isNotEmpty()) {
-                ivMedia.load(pinData.media_files[0])
+            if (mediaUrl.isNotEmpty()) {
+                ivMedia.load(mediaUrl)
                 ivMedia.visibility = View.VISIBLE
             } else {
                 ivMedia.visibility = View.GONE
             }
+
 
             val infoJson = JSONObject(pinData.info.toString())
             val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
@@ -121,10 +127,10 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             tvContent.visibility = View.VISIBLE
 
             // 토글 기능 추가
-            if (tvMoreDetails.text == "More Details") {
-                tvMoreDetails.text = "Less Details"
+            if (tvMoreDetails.text == "자세히 보기") {
+                tvMoreDetails.text = "접기"
             } else {
-                tvMoreDetails.text = "More Details"
+                tvMoreDetails.text = "자세히 보기"
                 ivMedia.visibility = View.GONE
                 tvContent.visibility = View.GONE
             }

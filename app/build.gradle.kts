@@ -69,7 +69,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.0.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation("io.coil-kt:coil:2.5.0")
+    implementation(libs.coil)
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)

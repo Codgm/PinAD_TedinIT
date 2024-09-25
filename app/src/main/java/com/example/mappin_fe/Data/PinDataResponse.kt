@@ -13,7 +13,7 @@ data class PinDataResponse(
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String,
     @SerializedName("category") val category: String,
-    @SerializedName("media_files") val media_files: List<String>,
+    @SerializedName("media_files") var media_files: List<String>,
     @SerializedName("info") val info: Any?,
     @JsonAdapter(TagsDeserializer::class)
     @SerializedName("tags") val tags: List<String>,
