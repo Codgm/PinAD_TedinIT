@@ -62,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
 
         btnRegister.setOnClickListener {
             if (isPhoneVerified) {
-                registerUser()
+//                registerUser()
             } else {
                 Toast.makeText(this, "Please verify your phone number first", Toast.LENGTH_SHORT).show()
             }
@@ -119,48 +119,48 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun registerUser() {
-        val email = etEmail.text.toString().trim()
-        val password = etPassword.text.toString().trim()
-        val confirmPassword = etConfirmPassword.text.toString().trim()
-        val phoneNumber = etPhoneNumber.text.toString().trim()
-
-        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phoneNumber.isEmpty()) {
-            Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.length < 6) {
-            Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password != confirmPassword) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val userId = firebaseAuth.currentUser?.uid
-                    if (userId != null) {
-                        val user = UserAccount(idToken = userId, emailId = email, password = password, phoneNumber = phoneNumber)
-                        databaseRef.child(userId).setValue(user)
-                            .addOnCompleteListener { dbTask ->
-                                if (dbTask.isSuccessful) {
-                                    Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this, LoginActivity::class.java)
-                                    startActivity(intent)
-                                    finish()
-                                } else {
-                                    Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                    }
-                } else {
-                    Toast.makeText(this, "Registration Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
+//    private fun registerUser() {
+//        val email = etEmail.text.toString().trim()
+//        val password = etPassword.text.toString().trim()
+//        val confirmPassword = etConfirmPassword.text.toString().trim()
+//        val phoneNumber = etPhoneNumber.text.toString().trim()
+//
+//        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phoneNumber.isEmpty()) {
+//            Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//        if (password.length < 6) {
+//            Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//        if (password != confirmPassword) {
+//            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//        firebaseAuth.createUserWithEmailAndPassword(email, password)
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    val userId = firebaseAuth.currentUser?.uid
+//                    if (userId != null) {
+//                        val user = UserAccount(idToken = userId, emailId = email, password = password, phoneNumber = phoneNumber)
+//                        databaseRef.child(userId).setValue(user)
+//                            .addOnCompleteListener { dbTask ->
+//                                if (dbTask.isSuccessful) {
+//                                    Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
+//                                    val intent = Intent(this, LoginActivity::class.java)
+//                                    startActivity(intent)
+//                                    finish()
+//                                } else {
+//                                    Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
+//                    }
+//                } else {
+//                    Toast.makeText(this, "Registration Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//    }
 }

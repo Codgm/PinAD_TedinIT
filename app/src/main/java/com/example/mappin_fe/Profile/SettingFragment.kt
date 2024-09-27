@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment
 import com.example.mappin_fe.R
 import com.example.mappin_fe.Login_Sign.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+//import com.google.firebase.database.DatabaseReference
+//import com.google.firebase.database.FirebaseDatabase
 
 class SettingFragment : Fragment() {
 
@@ -26,8 +26,8 @@ class SettingFragment : Fragment() {
     private lateinit var btnDeleteAccount: Button
     private lateinit var btnBack: ImageButton
 
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var databaseReference: DatabaseReference
+//    private lateinit var firebaseAuth: FirebaseAuth
+//    private lateinit var databaseReference: DatabaseReference
     private lateinit var currentUserUid: String
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -47,9 +47,9 @@ class SettingFragment : Fragment() {
         btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount)
 
         // Firebase 초기화
-        firebaseAuth = FirebaseAuth.getInstance()
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
+//        firebaseAuth = FirebaseAuth.getInstance()
+//        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+//        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
 
         // SharedPreferences 초기화
         sharedPreferences = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -78,13 +78,13 @@ class SettingFragment : Fragment() {
         }
 
         // 로그아웃 버튼 클릭 리스너
-        btnLogout.setOnClickListener {
-            firebaseAuth.signOut()
-            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-            val intent = Intent(activity, LoginActivity::class.java)
-            startActivity(intent)
-            activity?.finish() // 현재 액티비티 종료
-        }
+//        btnLogout.setOnClickListener {
+//            firebaseAuth.signOut()
+//            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(activity, LoginActivity::class.java)
+//            startActivity(intent)
+//            activity?.finish() // 현재 액티비티 종료
+//        }
 
         // 회원 탈퇴 버튼 클릭 리스너
         btnDeleteAccount.setOnClickListener {
@@ -125,7 +125,7 @@ class SettingFragment : Fragment() {
             .setPositiveButton("Save") { dialog, _ ->
                 val newInterests = input.text.toString()
                 tvInterestsSetting.text = newInterests
-                saveInterestsToDatabase(newInterests)
+//                saveInterestsToDatabase(newInterests)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -147,22 +147,22 @@ class SettingFragment : Fragment() {
         tvTheme.text = theme?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 
-    private fun saveInterestsToDatabase(interests: String) {
-        databaseReference.child(currentUserUid).child("interests").setValue(interests).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(requireContext(), "Interests Updated", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Failed to Update Interests", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+//    private fun saveInterestsToDatabase(interests: String) {
+//        databaseReference.child(currentUserUid).child("interests").setValue(interests).addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                Toast.makeText(requireContext(), "Interests Updated", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(requireContext(), "Failed to Update Interests", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 
     private fun showDeleteAccountConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirm Account Deletion")
             .setMessage("Are you sure you want to delete your account? This action cannot be undone and you will lose all your pins, stories, and other data.")
             .setPositiveButton("Delete") { dialog, _ ->
-                deleteUserAccount()
+//                deleteUserAccount()
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -172,24 +172,24 @@ class SettingFragment : Fragment() {
             .show()
     }
 
-    private fun deleteUserAccount() {
-        // 데이터베이스에서 사용자 정보 삭제
-        databaseReference.child(currentUserUid).removeValue().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // 사용자 계정 삭제
-                firebaseAuth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
-                    if (deleteTask.isSuccessful) {
-                        Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(activity, LoginActivity::class.java)
-                        startActivity(intent)
-                        activity?.finish() // 현재 액티비티 종료
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } else {
-                Toast.makeText(requireContext(), "Failed to Delete User Data", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+//    private fun deleteUserAccount() {
+//        // 데이터베이스에서 사용자 정보 삭제
+//        databaseReference.child(currentUserUid).removeValue().addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                // 사용자 계정 삭제
+//                firebaseAuth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
+//                    if (deleteTask.isSuccessful) {
+//                        Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
+//                        val intent = Intent(activity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                        activity?.finish() // 현재 액티비티 종료
+//                    } else {
+//                        Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            } else {
+//                Toast.makeText(requireContext(), "Failed to Delete User Data", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 }

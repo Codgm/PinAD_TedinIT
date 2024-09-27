@@ -32,7 +32,7 @@ object UserUtils {
 
                 if (userAccount != null) {
                     val nickname = userAccount.nickname ?: "Unknown"
-                    val profilePicUrl = userAccount.profilePicUrl ?: ""
+                    val profilePicUrl = userAccount.profile_picture ?: ""
                     Log.d(TAG, "Fetched nickname: $nickname, profilePicUrl: $profilePicUrl")
                     callback(nickname, profilePicUrl)
                 } else {

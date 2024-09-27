@@ -2,11 +2,22 @@ package com.example.mappin_fe.Data
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://e3f4-175-198-127-14.ngrok-free.app"
+    private const val BASE_URL = "https://b26c-175-198-127-14.ngrok-free.app/"
+    private var accessToken: String? = null
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY // 요청과 응답의 바디를 모두 로깅
+    }
+
+
+    fun setAccessToken(token: String) {
+        accessToken = token
+    }
 
     private val gson = GsonBuilder()
         .setLenient()
@@ -17,10 +28,14 @@ object RetrofitInstance {
         OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
-                val requestWithToken = originalRequest.newBuilder()
-                    .header("Authorization", "Token 381e06cef85ad6823f1a6a589666f2d62f48b6b6")
-                    .build()
-                chain.proceed(requestWithToken)
+                val requestBuilder = originalRequest.newBuilder()
+                loggingInterceptor
+
+                accessToken?.let {
+                    requestBuilder.header("Authorization", "Bearer $it")
+                }
+
+                chain.proceed(requestBuilder.build())
             }
             .build()
     }

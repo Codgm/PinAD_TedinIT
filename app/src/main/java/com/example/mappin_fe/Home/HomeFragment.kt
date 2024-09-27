@@ -56,7 +56,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: LatLng? = null
 
-    private val defaultLocation = LatLng(37.5042, 126.9537) // 서울 상도동
 
     private val jsonData = """
         [
@@ -284,9 +283,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         googleMap.uiSettings.isTiltGesturesEnabled = true
         googleMap.uiSettings.isRotateGesturesEnabled = true
 
-        // 서울 상도동으로 초기 위치 설정
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14f))
-        addSampleMarkers(defaultLocation)
 
         // 요청한 위치 업데이트
         requestLocationUpdate()

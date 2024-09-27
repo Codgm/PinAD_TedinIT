@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mappin_fe.Data.LoginRequest
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.R
 import com.example.mappin_fe.MainActivity
@@ -83,13 +85,10 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val account = task.result
                     val authCode = account.serverAuthCode
+                    val idToken = account.idToken
+                    Log.d("idtoken", "$idToken")
                     Log.d("AuthCode", "Auth Code: $authCode")
-                    firebaseAuthWithGoogle(account.idToken!!)
-                    if (authCode != null) {
-                        getAccessToken(authCode)
-                    } else {
-                        Toast.makeText(this, "Auth Code를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
-                    }
+                    sendIdTokenToServer(account.idToken!!)
                 } catch (e: Exception) {
                     Toast.makeText(this, "Google Sign-In Failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -102,11 +101,11 @@ class LoginActivity : AppCompatActivity() {
 
         // 카카오 로그인
         btnKakaoSignIn.setOnClickListener {
-            signInWithKakao()
+//            signInWithKakao()
         }
 
         btnNaverSignIn.setOnClickListener {
-            signInWithNaver()
+//            signInWithNaver()
         }
 
         btnLogin.setOnClickListener {
@@ -120,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            checkUserSettings()
+//                            checkUserSettings(accessToken)
                         } else {
                             Toast.makeText(this, "Login Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -134,94 +133,86 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // access_token을 받기 위한 메서드
-    private fun getAccessToken(authCode: String) {
-        val client = OkHttpClient()
-        val requestBody = FormBody.Builder()
-            .add("grant_type", "authorization_code")
-            .add("client_id", getString(R.string.default_web_client_id)) // web client ID 사용
-//            .add("client_secret", getString(R.string.client_secret)) // client secret 추가 (구글 API 콘솔에서 확인)
-            .add("redirect_uri", "") // 필요한 경우 redirect URI 설정
-            .add("code", authCode)
-            .build()
-
-        val request = Request.Builder()
-            .url("https://oauth2.googleapis.com/token")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("AccessTokenError", "Failed to get access token: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                if (response.isSuccessful && responseData != null) {
-                    try {
-                        val json = JSONObject(responseData)
-                        val accessToken = json.getString("access_token")
-                        Log.d("AccessToken", "Access Token: $accessToken")
-
-                        // 필요한 경우 access_token으로 추가 작업 가능
-                    } catch (e: Exception) {
-                        Log.e("AccessTokenError", "Failed to parse access token response: ${e.message}")
-                    }
-                } else {
-                    Log.e("AccessTokenError", "Failed to get access token: ${response.message}")
-                }
-            }
-        })
-    }
-
     private fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         googleSignInLauncher.launch(signInIntent)
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
+    private fun sendIdTokenToServer(idToken: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = firebaseAuth.signInWithCredential(credential).await()
-                val user = authResult.user
-                if (user != null) {
-                    val userAccount = UserAccount(
-                        idToken = idToken,
-                        emailId = user.email,
-                        nickname = user.displayName
-                    )
-                    saveUserAccountToFirebase(user.uid, userAccount)
+                val loginRequest = LoginRequest(id_token = idToken) // 서버에 보낼 요청
+                val response = RetrofitInstance.api.loginUser(loginRequest)
+
+                withContext(Dispatchers.Main) {
+                    when (response.code()) {
+                        201 -> { // 로그인 성공
+                            val loginResponse = response.body()
+                            val accessToken = loginResponse?.access_token // 서버에서 발급한 access_token
+
+                            if (accessToken != null) {
+                                Log.d("AccessToken", "Access Token: $accessToken")
+                                // access_token을 이용한 추가 작업 처리
+                                RetrofitInstance.setAccessToken(accessToken)
+
+                                // UserSettingActivity로 이동
+                                val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
+                                    putExtra("ACCESS_TOKEN", accessToken)
+                                }
+                                startActivity(intent)
+                                finish() // 현재 액티비티 종료
+                            } else {
+                                Log.e("AccessTokenError", "Access Token is null")
+                            }
+                        }
+                        200 -> { // 이미 로그인된 상태
+                            val loginResponse = response.body()
+                            val accessToken = loginResponse?.access_token
+                            Log.d("LoginStatus", "User is already logged in.")
+                            Log.d("AccessToken", "Access Token: $accessToken")
+                            if (accessToken != null) {
+                                RetrofitInstance.setAccessToken(accessToken)
+                                checkUserSettings(accessToken)
+                            } else {
+                                Log.e("LoginError", "Access token is null when checking user settings")
+                            }
+                        }
+                        else -> { // 다른 오류 처리
+                            Log.e("LoginError", "Login failed: ${response.message()}")
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@LoginActivity, "Google Authentication Failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("LoginError", "Exception during login: ${e.message}")
                 }
             }
         }
     }
 
-    private fun signInWithKakao() {
-        // 카카오톡으로 로그인 가능한지 확인하고, 가능한 경우 카카오톡으로 로그인 시도
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                if (error != null) {
-                    handleKakaoError(error)
-                } else if (token != null) {
-                    fetchKakaoUserInfo(token.accessToken)
-                }
-            }
-        } else {
-            // 카카오톡이 없으면 카카오 계정으로 로그인
-            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
-                if (error != null) {
-                    handleKakaoError(error)
-                } else if (token != null) {
-                    fetchKakaoUserInfo(token.accessToken)
-                }
-            }
-        }
-    }
+
+
+//    private fun signInWithKakao() {
+//        // 카카오톡으로 로그인 가능한지 확인하고, 가능한 경우 카카오톡으로 로그인 시도
+//        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+//            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+//                if (error != null) {
+//                    handleKakaoError(error)
+//                } else if (token != null) {
+//                    fetchKakaoUserInfo(token.accessToken)
+//                }
+//            }
+//        } else {
+//            // 카카오톡이 없으면 카카오 계정으로 로그인
+//            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
+//                if (error != null) {
+//                    handleKakaoError(error)
+//                } else if (token != null) {
+//                    fetchKakaoUserInfo(token.accessToken)
+//                }
+//            }
+//        }
+//    }
 
     // 카카오 로그인 에러 처리 함수
     private fun handleKakaoError(error: Throwable) {
@@ -234,128 +225,125 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 카카오 사용자 정보 가져오는 함수
-    private fun fetchKakaoUserInfo(accessToken: String) {
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Toast.makeText(this, "카카오 사용자 정보 가져오기 실패: ${error.message}", Toast.LENGTH_SHORT).show()
-            } else if (user != null) {
-                val userId = user.id.toString()
-                val userAccount = UserAccount(
-                    idToken = accessToken,
-                    emailId = user.kakaoAccount?.email,
-                    nickname = user.kakaoAccount?.profile?.nickname
-                )
-                saveUserAccountToFirebase(userId, userAccount)
-            }
+//    // 카카오 사용자 정보 가져오는 함수
+//    private fun fetchKakaoUserInfo(accessToken: String) {
+//        UserApiClient.instance.me { user, error ->
+//            if (error != null) {
+//                Toast.makeText(this, "카카오 사용자 정보 가져오기 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+//            } else if (user != null) {
+//                val userId = user.id.toString()
+//                val userAccount = UserAccount(
+//                    idToken = accessToken,
+//                    emailId = user.kakaoAccount?.email,
+//                    nickname = user.kakaoAccount?.profile?.nickname
+//                )
+//                saveUserAccountToFirebase(userId, userAccount)
+//            }
+//        }
+//    }
+
+
+//    private fun signInWithNaver() {
+//        val oauthLoginCallback = object : OAuthLoginCallback {
+//            override fun onSuccess() {
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    try {
+//                        val accessToken = NaverIdLoginSDK.getAccessToken()
+//                        val userInfo = fetchNaverUserInfo(accessToken.toString())
+//                        if (userInfo != null) {
+//                            val userId = userInfo.emailId ?: "naver_${System.currentTimeMillis()}"
+//                            saveUserAccountToFirebase(userId, userInfo)
+//                        } else {
+//                            withContext(Dispatchers.Main) {
+//                                Toast.makeText(this@LoginActivity, "Naver 사용자 정보를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                    } catch (e: Exception) {
+//                        withContext(Dispatchers.Main) {
+//                            Toast.makeText(this@LoginActivity, "네이버 로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(httpStatus: Int, message: String) {
+//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+//                Toast.makeText(this@LoginActivity, "errorCode: $errorCode, errorDesc: $errorDescription", Toast.LENGTH_SHORT).show()
+//            }
+//
+//            override fun onError(errorCode: Int, message: String) {
+//                onFailure(errorCode, message)
+//            }
+//        }
+//
+//        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
+//    }
+
+
+//    private fun fetchNaverUserInfo(accessToken: String): UserAccount? {
+//        val client = OkHttpClient()
+//        val request = Request.Builder()
+//            .url("https://openapi.naver.com/v1/nid/me")
+//            .addHeader("Authorization", "Bearer $accessToken")
+//            .build()
+//
+//        return try {
+//            val response = client.newCall(request).execute()
+//            val responseBody = response.body?.string()
+//            if (response.isSuccessful && responseBody != null) {
+//                val jsonObject = JSONObject(responseBody)
+//                val responseObj = jsonObject.getJSONObject("response")
+//
+//                // 사용자 정보 추출
+//                val email = responseObj.optString("email")
+//                val nickname = responseObj.optString("nickname")
+//
+//                // UserAccount 객체 생성 및 반환
+//                UserAccount(
+//                    idToken = accessToken,
+//                    emailId = email,
+//                    nickname = nickname
+//                )
+//            } else {
+//                null
+//            }
+//        } catch (e: Exception) {
+//            null
+//        }
+//    }
+//
+//    private fun saveUserAccountToFirebase(userId: String, userAccount: UserAccount) {
+//        val database: DatabaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
+//        database.setValue(userAccount)
+//            .addOnSuccessListener {
+//                checkUserSettings() // 설정 확인 및 화면 전환
+//            }
+//            .addOnFailureListener { e ->
+//                Toast.makeText(this, "Failed to save user account: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//    }
+
+    private fun checkUserSettings(accessToken: String?) {
+        if (accessToken == null) {
+            Log.e("CheckUserSettingsError", "Access Token is null")
+            return
         }
-    }
+        val sharedPreferences = getSharedPreferences("UserSettings", MODE_PRIVATE)
+        val isSettingsCompleted = sharedPreferences.getBoolean("isSettingsCompleted", false)
 
-
-    private fun signInWithNaver() {
-        val oauthLoginCallback = object : OAuthLoginCallback {
-            override fun onSuccess() {
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        val accessToken = NaverIdLoginSDK.getAccessToken()
-                        val userInfo = fetchNaverUserInfo(accessToken.toString())
-                        if (userInfo != null) {
-                            val userId = userInfo.emailId ?: "naver_${System.currentTimeMillis()}"
-                            saveUserAccountToFirebase(userId, userInfo)
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(this@LoginActivity, "Naver 사용자 정보를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@LoginActivity, "네이버 로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+        if (isSettingsCompleted) {
+            // 설정이 완료된 경우 MainActivity로 이동
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            // 설정이 완료되지 않은 경우 UserSettingsActivity로 이동
+            val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
+                putExtra("ACCESS_TOKEN", accessToken)
             }
-
-            override fun onFailure(httpStatus: Int, message: String) {
-                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-                Toast.makeText(this@LoginActivity, "errorCode: $errorCode, errorDesc: $errorDescription", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onError(errorCode: Int, message: String) {
-                onFailure(errorCode, message)
-            }
-        }
-
-        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
-    }
-
-
-    private fun fetchNaverUserInfo(accessToken: String): UserAccount? {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://openapi.naver.com/v1/nid/me")
-            .addHeader("Authorization", "Bearer $accessToken")
-            .build()
-
-        return try {
-            val response = client.newCall(request).execute()
-            val responseBody = response.body?.string()
-            if (response.isSuccessful && responseBody != null) {
-                val jsonObject = JSONObject(responseBody)
-                val responseObj = jsonObject.getJSONObject("response")
-
-                // 사용자 정보 추출
-                val email = responseObj.optString("email")
-                val nickname = responseObj.optString("nickname")
-
-                // UserAccount 객체 생성 및 반환
-                UserAccount(
-                    idToken = accessToken,
-                    emailId = email,
-                    nickname = nickname
-                )
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun saveUserAccountToFirebase(userId: String, userAccount: UserAccount) {
-        val database: DatabaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
-        database.setValue(userAccount)
-            .addOnSuccessListener {
-                checkUserSettings() // 설정 확인 및 화면 전환
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to save user account: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun checkUserSettings() {
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
-            val userId = currentUser.uid
-            val database: DatabaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
-
-            database.get().addOnSuccessListener { dataSnapshot ->
-                val userAccount = dataSnapshot.getValue(UserAccount::class.java)
-
-                if (userAccount != null && userAccount.nickname != null && userAccount.interests != null) {
-                    // 사용자 정보가 완전하면 MainActivity로 이동
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // 사용자 정보가 불완전하면 UserSettingsActivity로 이동
-                    val intent = Intent(this, UserSettingsActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }.addOnFailureListener {
-                Toast.makeText(this, "Failed to check user settings", Toast.LENGTH_SHORT).show()
-            }
+            startActivity(intent)
+            finish()
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.mappin_fe.Login_Sign
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -10,14 +11,17 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserSettingsActivity : AppCompatActivity() {
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var databaseRef: DatabaseReference
+    private var accessToken: String? = null
 
     private lateinit var etNickname: EditText
     private lateinit var chipGroupInterests: ChipGroup
@@ -33,8 +37,9 @@ class UserSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_settings)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-        databaseRef = FirebaseDatabase.getInstance().getReference("Users")
+        // Intent로부터 access_token을 받음
+        accessToken = intent.getStringExtra("ACCESS_TOKEN")
+        Log.d("token", "$accessToken")
 
         etNickname = findViewById(R.id.et_nickname)
         chipGroupInterests = findViewById(R.id.chip_group_interests)
@@ -49,6 +54,7 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // Add click listener for "Done" button
         btnDone.setOnClickListener {
+            Log.d("UserSettingsActivity", "Done button clicked")
             saveUserSettings()
         }
 
@@ -108,48 +114,59 @@ class UserSettingsActivity : AppCompatActivity() {
     }
 
     private fun saveUserSettings() {
-        val userId = firebaseAuth.currentUser?.uid
+        val accessToken = accessToken
         val nickname = etNickname.text.toString().trim()
         val interests = getSelectedInterests()
 
-        if (userId != null) {
-            if (nickname.isNotEmpty()) {
-                val userAccount = UserAccount(
-                    idToken = firebaseAuth.currentUser?.getIdToken(false)?.result?.token,
-                    emailId = firebaseAuth.currentUser?.email,
-                    password = null,
-                    nickname = nickname,
-                    interests = interests
-                )
+        Log.d("saveUserSettings", "nickname = $nickname, interests = $interests")
 
-                databaseRef.child(userId).setValue(userAccount)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // 설정이 완료되었음을 SharedPreferences에 저장
+        if (nickname.isNotEmpty()) {
+            val userAccount = UserAccount(
+                nickname = nickname,
+//                tags = interests
+            )
+            Log.d("saveUserSettings", "userAccount 생성됨 = $userAccount")
+
+            // 서버에 사용자 설정 저장
+            CoroutineScope(Dispatchers.Main).launch {
+                Log.d("saveUserSettings", "서버 요청 시작")
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        RetrofitInstance.api.updateUserSettings("Bearer $accessToken", userAccount)
+                    }
+                    withContext(Dispatchers.Main) {
+                        if (response.isSuccessful) {
+                            // Save the completed settings status to SharedPreferences
                             val sharedPreferences = getSharedPreferences("UserSettings", MODE_PRIVATE)
-                            val editor = sharedPreferences.edit()
-                            editor.putBoolean("isSettingsCompleted", true)
-                            editor.apply()
+                            sharedPreferences.edit().apply {
+                                putBoolean("isSettingsCompleted", true)
+                                apply()
+                            }
 
-                            Toast.makeText(this, "Settings Updated", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@UserSettingsActivity, "Settings Updated Successfully", Toast.LENGTH_SHORT).show()
 
-                            val intent = Intent(this, MainActivity::class.java)
+                            // Navigate to MainActivity
+                            val intent = Intent(this@UserSettingsActivity, MainActivity::class.java)
                             startActivity(intent)
-                            finish()
+                            finish() // Close the UserSettingsActivity
                         } else {
-                            Toast.makeText(this, "Failed to Update Settings: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@UserSettingsActivity, "Failed to Update Settings: ${response.message()}", Toast.LENGTH_SHORT).show()
                         }
                     }
-            } else {
-                Toast.makeText(this, "Please enter a nickname", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@UserSettingsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         } else {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter a nickname and ensure you're logged in", Toast.LENGTH_SHORT).show()
         }
     }
 
 
-    private fun getSelectedInterests(): String {
+
+    private fun getSelectedInterests(): List<String> {
         val interests = mutableListOf<String>()
         for (i in 0 until chipGroupInterests.childCount) {
             val chip = chipGroupInterests.getChildAt(i) as Chip
@@ -157,6 +174,6 @@ class UserSettingsActivity : AppCompatActivity() {
                 interests.add(chip.text.toString())
             }
         }
-        return interests.joinToString(", ")
+        return interests
     }
 }

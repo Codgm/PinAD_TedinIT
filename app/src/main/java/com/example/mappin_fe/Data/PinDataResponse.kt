@@ -15,7 +15,6 @@ data class PinDataResponse(
     @SerializedName("category") val category: String,
     @SerializedName("media_files") var media_files: List<String>,
     @SerializedName("info") val info: Any?,
-    @JsonAdapter(TagsDeserializer::class)
     @SerializedName("tags") val tags: List<String>,
     @SerializedName("visibility") val visibility: String,
     @SerializedName("is_ads") val is_ads: Boolean,

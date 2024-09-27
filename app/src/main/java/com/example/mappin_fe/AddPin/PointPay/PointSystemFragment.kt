@@ -16,6 +16,8 @@ import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.MainActivity
 import com.example.mappin_fe.R
 import com.example.mappin_fe.UserUtils
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -53,6 +55,7 @@ class PointSystemFragment : Fragment() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var media_files: List<MediaFile>
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,8 +66,33 @@ class PointSystemFragment : Fragment() {
         setupSpinners()
         updateCurrentPointsText()
         setupListeners()
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // 현재 위치를 가져오는 함수 호출
+        getCurrentLocation()
         return view
     }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                location?.let {
+                    latitude = it.latitude
+                    longitude = it.longitude
+                    Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
+                } ?: run {
+                    Log.e("Location", "Unable to get current location")
+                    // 위치를 가져올 수 없을 때의 처리
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Location", "Error getting location", e)
+                // 위치 가져오기 실패 시 처리
+            }
+    }
+
 
     private fun initializeViews(view: View) {
         info = arguments?.getString("INFO") ?: ""
@@ -203,8 +231,8 @@ class PointSystemFragment : Fragment() {
         }
         return PinDataResponse(
             id = UUID.randomUUID().toString(),
-            latitude = 37.7749,
-            longitude = -122.4194,
+            latitude = latitude,
+            longitude = longitude,
             location = location.toString(),
             user = nickname.toIntOrNull() ?: 0,
             title = title, // title 추가
@@ -239,7 +267,7 @@ class PointSystemFragment : Fragment() {
                         latitude = latitudePart,
                         longitude = longitudePart,
                         category = categoryPart,
-                        mediaFiles = mediaFileParts,
+                        media_files = mediaFileParts,
                         info = infoPart,
                         tags = tagsPart,
                         visibility = visibilityPart
@@ -268,7 +296,7 @@ class PointSystemFragment : Fragment() {
                 val filePath = mediaFile.uri // 여기에서 mediaFile.uri가 실제 파일 경로라고 가정
                 val file = File(filePath)
                 val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull()) // 이미지 MIME 타입 설정
-                MultipartBody.Part.createFormData("media", file.name, requestFile)
+                MultipartBody.Part.createFormData("media_files", file.name, requestFile)
             } catch (e: Exception) {
                 Log.e("PinData", "Error preparing media file: ${mediaFile.uri}", e)
                 null

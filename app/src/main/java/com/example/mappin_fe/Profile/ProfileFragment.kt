@@ -11,9 +11,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.mappin_fe.R
-import com.example.mappin_fe.Data.UserAccount
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+//import com.google.firebase.auth.FirebaseAuth
+//import com.google.firebase.database.*
 
 class ProfileFragment : Fragment() {
 
@@ -26,8 +25,8 @@ class ProfileFragment : Fragment() {
     private lateinit var btnSettings: Button
     private lateinit var tvInterests: TextView
 
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var databaseReference: DatabaseReference
+//    private lateinit var firebaseAuth: FirebaseAuth
+//    private lateinit var databaseReference: DatabaseReference
     private lateinit var currentUserUid: String
 
     override fun onCreateView(
@@ -47,9 +46,9 @@ class ProfileFragment : Fragment() {
         tvInterests = view.findViewById(R.id.tvInterests)
 
         // Firebase 초기화
-        firebaseAuth = FirebaseAuth.getInstance()
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
+//        firebaseAuth = FirebaseAuth.getInstance()
+//        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+//        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
 
         // 프로필 데이터 로드
         loadUserProfile()
@@ -72,21 +71,21 @@ class ProfileFragment : Fragment() {
     }
 
     private fun loadUserProfile() {
-        databaseReference.child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val userAccount = snapshot.getValue(UserAccount::class.java)
-                userAccount?.let {
-                    tvUserEmail.text = userAccount.emailId ?: "No email provided"
-                    tvUserNickname.text = userAccount.nickname ?: "No nickname provided"
-                    tvUserDescription.text = "Introduce yourself..."  // 사용자 소개는 필요에 따라 변경 가능
-                    tvInterests.text = userAccount.interests ?: "No interests specified"
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Error handling
-                Toast.makeText(context, "Error loading user data: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+//        databaseReference.child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val userAccount = snapshot.getValue(UserAccount::class.java)
+//                userAccount?.let {
+//                    tvUserEmail.text = userAccount.emailId ?: "No email provided"
+//                    tvUserNickname.text = userAccount.nickname ?: "No nickname provided"
+//                    tvUserDescription.text = "Introduce yourself..."  // 사용자 소개는 필요에 따라 변경 가능
+//                    tvInterests.text = userAccount.interests ?: "No interests specified"
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Error handling
+//                Toast.makeText(context, "Error loading user data: ${error.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        })
     }
 }

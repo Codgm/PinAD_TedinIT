@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.mappin_fe.AddPin.AddPinActivity
 import com.example.mappin_fe.Home.HomeFragment
 import com.example.mappin_fe.HotPin.HotPinFragment
-import com.example.mappin_fe.Login_Sign.UserSettingsActivity
+//import com.example.mappin_fe.Login_Sign.UserSettingsActivity
 import com.example.mappin_fe.Profile.ProfileFragment
 import com.example.mappin_fe.Search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         if (!isSettingsCompleted) {
             // 설정이 완료되지 않았다면 UserSettingsActivity로 이동
-            val intent = Intent(this, UserSettingsActivity::class.java)
+//            val intent = Intent(this, UserSettingsActivity::class.java)
             startActivity(intent)
             finish()
         } else {

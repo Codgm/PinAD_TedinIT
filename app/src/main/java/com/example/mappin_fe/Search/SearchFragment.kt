@@ -13,6 +13,8 @@ import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,6 +23,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
@@ -28,7 +34,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var searchResultsList: ListView
     private lateinit var searchResultsAdapter: ArrayAdapter<String>
     private val searchHistory = mutableListOf<String>()
-    private val searchResults = mutableListOf<String>()
+    private val searchResults = mutableListOf<PinDataResponse>()
 
     private lateinit var map: GoogleMap
 
@@ -45,18 +51,19 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         searchResultsAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1,
-            searchResults
+            mutableListOf<String>() // 어댑터는 String 리스트로 초기화
         )
         searchResultsList.adapter = searchResultsAdapter
 
         // 검색바 입력 이벤트 처리
         searchBar.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // 서치 버튼 클릭 시 결과 리스트 업데이트
-                searchResultsList.visibility = View.VISIBLE
-                searchResults.clear()
-                searchResults.addAll(searchPins(v.text.toString().trim())) // 검색 결과 추가
-                searchResultsAdapter.notifyDataSetChanged()
+                val query = v.text.toString().trim()
+
+                if (query.isNotEmpty()) {
+                    searchResultsList.visibility = View.VISIBLE
+                    searchPins(query) // 서버로 검색 요청
+                }
                 true
             } else {
                 false
@@ -114,21 +121,52 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
-    private fun searchPins(query: String): List<String> {
-        // 여기에 데이터베이스에서 핀 검색 로직을 구현
-        return listOf("Pin 1", "Pin 2", "Pin 3").filter {
-            it.contains(query, ignoreCase = true)
+    private fun searchPins(query: String) {
+        val userLatitude = 37.7749 // 사용자의 위도, 실제로는 현재 위치를 가져와야 함
+        val userLongitude = -122.4194 // 사용자의 경도, 실제로는 현재 위치를 가져와야 함
+        val searchRadius = 1000 // 검색 반경 (미터 단위)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // 서버에 검색 요청 보내기
+                val response = RetrofitInstance.api.searchPins(query, userLatitude, userLongitude, searchRadius)
+
+                if (response.isSuccessful) {
+                    val searchResultsFromServer = response.body() ?: emptyList()
+
+                    // 쿼리를 title 및 tags로 필터링
+                    val filteredResults = searchResultsFromServer.filter { pin ->
+                        pin.title.contains(query, ignoreCase = true) ||
+                                pin.tags.any { tag -> tag.contains(query, ignoreCase = true) }
+                    }
+
+                    // UI 스레드에서 결과 업데이트
+                    withContext(Dispatchers.Main) {
+                        searchResults.clear()
+                        searchResults.addAll(filteredResults)
+
+                        // 어댑터에 title만 추가
+                        val titles = filteredResults.map { it.title }
+                        searchResultsAdapter.clear()
+                        searchResultsAdapter.addAll(titles) // 타이틀 리스트를 어댑터에 추가
+                        searchResultsAdapter.notifyDataSetChanged() // 리스트 업데이트
+                    }
+                } else {
+                    Log.e("SearchFragment", "Failed to fetch search results: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("SearchFragment", "Error during search", e)
+            }
         }
     }
 
-    private fun showPinOnMap(pin: String) {
-        // 여기에 핀의 위치를 좌표로 변환하여 지도에 마커를 추가합니다.
-        val pinLocation = LatLng(37.7749, -122.4194) // 예시 위치를 사용하세요
+
+    private fun showPinOnMap(pinData: PinDataResponse) {
+        val pinLocation = LatLng(pinData.latitude, pinData.longitude) // 서버로부터 받은 좌표 사용
         map.clear() // 현재 지도에서 모든 마커 제거
-        map.addMarker(MarkerOptions().position(pinLocation).title(pin))
+        map.addMarker(MarkerOptions().position(pinLocation).title(pinData.title))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
 
-        // 결과 리스트 화면을 숨깁니다.
         searchResultsList.visibility = View.GONE
     }
 }
