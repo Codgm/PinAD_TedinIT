@@ -1,5 +1,6 @@
 package com.example.mappin_fe.Search
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment
 import com.example.mappin_fe.Data.PinDataResponse
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -35,6 +38,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var searchResultsAdapter: ArrayAdapter<String>
     private val searchHistory = mutableListOf<String>()
     private val searchResults = mutableListOf<PinDataResponse>()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var userLocation: LatLng? = null
 
     private lateinit var map: GoogleMap
 
@@ -83,6 +88,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
         mapFragment.getMapAsync(this)
 
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        getCurrentLocation() // 현재 위치 가져오기
+
         return view
     }
 
@@ -97,6 +106,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         val seoul = LatLng(37.5665, 126.978) // 서울의 위도와 경도
         map.addMarker(MarkerOptions().position(seoul).title("Marker in Seoul"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 10f))
+
+        getCurrentLocation()
     }
 
     private fun setMapStyle(map: GoogleMap) {
@@ -119,12 +130,31 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                location?.let {
+                    userLocation = LatLng(location.latitude, location.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation!!, 15f))
+                } ?: run {
+                    Log.e("Location", "Unable to get current location")
+                    // 위치를 가져올 수 없을 때의 처리
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Location", "Error getting location", e)
+                // 위치 가져오기 실패 시 처리
+            }
+    }
+
+
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
     private fun searchPins(query: String) {
-        val userLatitude = 37.7749 // 사용자의 위도, 실제로는 현재 위치를 가져와야 함
-        val userLongitude = -122.4194 // 사용자의 경도, 실제로는 현재 위치를 가져와야 함
-        val searchRadius = 1000 // 검색 반경 (미터 단위)
+        val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자의 위도, 현재 위치가 없으면 기본값 사용
+        val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자의 경도, 현재 위치가 없으면 기본값 사용
+        val searchRadius = 1000
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
