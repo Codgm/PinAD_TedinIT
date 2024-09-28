@@ -260,6 +260,7 @@ class PointSystemFragment : Fragment() {
                 val tagsPart = Gson().toJson(pinData.tags).toRequestBody("application/json".toMediaTypeOrNull())
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
+                val isAdsPart = (if (pinData.is_ads == true) 1 else 0).toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val response = withContext(Dispatchers.IO) {
                     RetrofitInstance.api.savePinDataWithMedia(
                         title = titlePart,
@@ -270,7 +271,8 @@ class PointSystemFragment : Fragment() {
                         media_files = mediaFileParts,
                         info = infoPart,
                         tags = tagsPart,
-                        visibility = visibilityPart
+                        visibility = visibilityPart,
+                        is_ads = isAdsPart
                     )
                 }
 

@@ -17,7 +17,7 @@ data class PinDataResponse(
     @SerializedName("info") val info: Any?,
     @SerializedName("tags") val tags: List<String>,
     @SerializedName("visibility") val visibility: String,
-    @SerializedName("is_ads") val is_ads: Boolean,
+    @SerializedName("is_ads") val is_ads: Boolean?,
     @SerializedName("created_at") val created_at: Date,
     @SerializedName("updated_at") val updated_at: Date
 )

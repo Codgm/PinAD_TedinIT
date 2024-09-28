@@ -72,7 +72,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupPurchaseButton(view: View, pinData: PinDataResponse) {
         val btnPurchase = view.findViewById<Button>(R.id.btnPurchase)
-        btnPurchase.visibility = if (pinData.category == "광고") View.VISIBLE else View.GONE
+        btnPurchase.visibility = if (pinData.is_ads == true) View.VISIBLE else View.GONE
     }
 
     private fun setupTags(view: View, pinData: PinDataResponse) {
@@ -108,9 +108,24 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
     private fun setupMoreDetailsButton(view: View, pinData: PinDataResponse, jsonObject: JSONObject) {
         val tvMoreDetails = view.findViewById<TextView>(R.id.tvMoreDetails)
         val ivMedia = view.findViewById<ImageView>(R.id.ivMedia)
-        val tvContent = view.findViewById<TextView>(R.id.tvContent)
-        val mediaUrl = jsonObject.optString("media", "")
+        val tvContent = view.findViewById<TextView>(R.id.contentLayout)
+        val mediaUrl: String = when {
+            jsonObject.has("media") -> jsonObject.optString("media") // media 필드가 있을 때
+            jsonObject.has("media_files") -> {
+                val mediaFiles = jsonObject.optJSONArray("media_files")
+                if (mediaFiles != null && mediaFiles.length() > 0) {
+                    mediaFiles.optString(0) // media_files 배열이 있을 때 첫 번째 항목을 가져옴
+                } else {
+                    ""
+                }
+            }
+            else -> ""
+        }
         Log.d("PinDetail", "Media URL: $mediaUrl")
+
+        val tvField1 = view.findViewById<TextView>(R.id.tvField1)
+        val tvField2 = view.findViewById<TextView>(R.id.tvField2)
+        val tvField3 = view.findViewById<TextView>(R.id.tvField3)
 
         tvMoreDetails.setOnClickListener {
             if (mediaUrl.isNotEmpty()) {
@@ -123,12 +138,37 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 
             val infoJson = JSONObject(pinData.info.toString())
             val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
+            val additionalInfoJson = JSONObject(additionalInfo)
             tvContent.text = additionalInfo
             tvContent.visibility = View.VISIBLE
+
+            if (pinData.is_ads == true) {
+                // is_ads가 true일 때 필드명을 바꿔서 표시
+                tvField1.text = "상품명 : ${additionalInfoJson.optString("field1", "N/A")}"
+                tvField2.text = "판매 수량 : ${additionalInfoJson.optString("field2", "N/A")}"
+                tvField3.text = "할인율 또는 할인가 : ${additionalInfoJson.optString("field3", "N/A")}"
+
+                // 필드들을 표시
+                tvField1.visibility = View.VISIBLE
+                tvField2.visibility = View.VISIBLE
+                tvField3.visibility = View.VISIBLE
+                tvContent.visibility = View.GONE
+            } else {
+                // is_ads가 false일 때 필드 하나만 표시
+                tvContent.text = "요청 사유 : ${additionalInfoJson.optString("field1", "N/A")}"
+
+                // 필드들을 감추고 요청 사유만 표시
+                tvField1.visibility = View.GONE
+                tvField2.visibility = View.GONE
+                tvField3.visibility = View.GONE
+                tvContent.visibility = View.VISIBLE
+            }
 
             // 토글 기능 추가
             if (tvMoreDetails.text == "자세히 보기") {
                 tvMoreDetails.text = "접기"
+                ivMedia.visibility = View.VISIBLE
+                tvContent.visibility = View.VISIBLE
             } else {
                 tvMoreDetails.text = "자세히 보기"
                 ivMedia.visibility = View.GONE

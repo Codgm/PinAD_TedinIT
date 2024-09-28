@@ -11,7 +11,6 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -43,6 +42,7 @@ interface ApiService {
         @Part("info") info: RequestBody,
         @Part("tags") tags: RequestBody,
         @Part("visibility") visibility: RequestBody,
+        @Part("is_ads") is_ads: RequestBody,
     ): Response<PinDataResponse>
 
     @GET("pins/search/")

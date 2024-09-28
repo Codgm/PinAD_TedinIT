@@ -1,8 +1,11 @@
 package com.example.mappin_fe.Search
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,10 +15,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.mappin_fe.Data.PinDataResponse
 import com.example.mappin_fe.Data.RetrofitInstance
+import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -23,13 +29,20 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
@@ -41,7 +54,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var userLocation: LatLng? = null
 
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
+    private var isMapReady = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,14 +112,28 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     // 지도 준비 완료 시 호출되는 콜백
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        isMapReady = true
 
         // 지도 스타일 적용
-        setMapStyle(map)
+        setMapStyle(map!!)
+
+        map?.setOnMarkerClickListener { marker ->
+            val pinData = marker.tag as? PinDataResponse
+            Log.d("pinData", "$pinData")
+            if (pinData != null) {
+                val bottomSheet = PinDetailBottomSheet.newInstance(Gson().toJson(pinData))
+                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+            }
+            true
+        }
 
         // 서울 초기 위치 설정
         val seoul = LatLng(37.5665, 126.978) // 서울의 위도와 경도
-        map.addMarker(MarkerOptions().position(seoul).title("Marker in Seoul"))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 10f))
+        map?.addMarker(MarkerOptions().position(seoul).title("Marker in Seoul"))
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 10f))
+
+        map?.uiSettings?.isZoomControlsEnabled = true // 확대/축소 버튼 활성화
+        map?.uiSettings?.isZoomGesturesEnabled = true // 제스처로 확대/축소 가능
 
         getCurrentLocation()
     }
@@ -132,11 +160,17 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
+
+        if (!isMapReady || map == null) {
+            Log.d("SearchFragment", "Map is not ready yet")
+            return
+        }
+
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 location?.let {
                     userLocation = LatLng(location.latitude, location.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation!!, 15f))
+                    map?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation!!, 15f))
                 } ?: run {
                     Log.e("Location", "Unable to get current location")
                     // 위치를 가져올 수 없을 때의 처리
@@ -152,51 +186,139 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
     private fun searchPins(query: String) {
-        val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자의 위도, 현재 위치가 없으면 기본값 사용
-        val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자의 경도, 현재 위치가 없으면 기본값 사용
-        val searchRadius = 1000
+        val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자 위치의 위도
+        val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자 위치의 경도
+        val searchRadius = 10000 // 10km 반경
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                // 서버에 검색 요청 보내기
+                // 핀 검색
                 val response = RetrofitInstance.api.searchPins(query, userLatitude, userLongitude, searchRadius)
+                Log.d("response", "$response")
 
                 if (response.isSuccessful) {
-                    val searchResultsFromServer = response.body() ?: emptyList()
+                    val Data = response.body()?.toString()
+                    Log.d("PinData", "$Data")
+                    if (Data.isNullOrEmpty()) {
+                        Log.d("SearchFragment", "No pins received")
+                        Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // JSON 배열을 수동으로 파싱
+                        val jsonArray = JSONArray(Data)
 
-                    // 쿼리를 title 및 tags로 필터링
-                    val filteredResults = searchResultsFromServer.filter { pin ->
-                        pin.title.contains(query, ignoreCase = true) ||
-                                pin.tags.any { tag -> tag.contains(query, ignoreCase = true) }
-                    }
+                        for (i in 0 until jsonArray.length()) {
+                            val jsonObject = jsonArray.getJSONObject(i)
 
-                    // UI 스레드에서 결과 업데이트
-                    withContext(Dispatchers.Main) {
-                        searchResults.clear()
-                        searchResults.addAll(filteredResults)
+                            if (jsonObject.has("media")) {
+                                val media = jsonObject.getString("media")
+                                jsonObject.put("media_files", JSONArray().put(media)) // media_files로 추가
+                            }
 
-                        // 어댑터에 title만 추가
-                        val titles = filteredResults.map { it.title }
-                        searchResultsAdapter.clear()
-                        searchResultsAdapter.addAll(titles) // 타이틀 리스트를 어댑터에 추가
-                        searchResultsAdapter.notifyDataSetChanged() // 리스트 업데이트
+                            val pinData = Gson().fromJson(jsonObject.toString(), PinDataResponse::class.java)
+                            searchResults.add(pinData)
+                            searchResultsAdapter.add(pinData.title ?: "제목 없음")
+                        }
                     }
                 } else {
-                    Log.e("SearchFragment", "Failed to fetch search results: ${response.message()}")
+                    Log.e("SearchFragment", "Failed to fetch search results: ${response.errorBody()?.string()}")
+                    Toast.makeText(requireContext(), "Error fetching pins: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("SearchFragment", "Error during search", e)
+                Toast.makeText(requireContext(), "Error during search: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
-    private fun showPinOnMap(pinData: PinDataResponse) {
-        val pinLocation = LatLng(pinData.latitude, pinData.longitude) // 서버로부터 받은 좌표 사용
-        map.clear() // 현재 지도에서 모든 마커 제거
-        map.addMarker(MarkerOptions().position(pinLocation).title(pinData.title))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pinLocation, 15f))
 
-        searchResultsList.visibility = View.GONE
+    private fun createMarkerIcon(borderColor: Int): BitmapDescriptor {
+        val size = 100 // Pin size
+        val borderWidth = 10 // Border width
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+
+        // Draw border
+        paint.color = borderColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = borderWidth.toFloat()
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f, paint)
+
+//        // Draw profile picture
+//        val profileBitmap = Bitmap.createBitmap(size - borderWidth * 2, size - borderWidth * 2, Bitmap.Config.ARGB_8888)
+//        val profileCanvas = Canvas(profileBitmap)
+//
+//        val profilePaint = Paint()
+//        profilePaint.isAntiAlias = true
+//
+//        try {
+//            // Ensure URL starts with a valid protocol
+//            val validProfilePicUrl = if (profilePicUrl.startsWith("http://") || profilePicUrl.startsWith("https://")) {
+//                profilePicUrl
+//            } else {
+//                "https://$profilePicUrl"
+//            }
+//
+//            // Load and draw profile picture
+//            val profilePic = BitmapFactory.decodeStream(URL(validProfilePicUrl).openStream())
+//            profileCanvas.drawBitmap(profilePic, null, Rect(0, 0, profileBitmap.width, profileBitmap.height), profilePaint)
+//
+//            // Draw the profile picture inside the border
+//            canvas.drawBitmap(profileBitmap, borderWidth.toFloat(), borderWidth.toFloat(), null)
+//        } catch (e: Exception) {
+//            Log.e("CreateMarkerIcon", "Error loading profile picture: ${e.message}")
+//        }
+        // Draw default icon (a circle in the center)
+        paint.color = Color.WHITE // Icon color
+        paint.style = Paint.Style.FILL
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f - 1, paint)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+
+
+
+    private fun showPinOnMap(pin: PinDataResponse) {
+        // 핀 위치에서 위도와 경도 추출
+        Log.d("Pin", "$pin")
+        val locationStr = pin.location // 핀의 위치 문자열
+        val regex = """POINT \((-?\d+\.?\d*) (-?\d+\.?\d*)\)""".toRegex()
+        val matchResult = regex.find(locationStr)
+
+        if (matchResult != null) {
+            val (longitude, latitude) = matchResult.destructured
+            val title = pin.title ?: "제목 없음"
+            val description = pin.description ?: "설명 없음"
+            val isAds = pin.is_ads
+            val media_files = pin.media_files
+            Log.d("pindata", "$title, $description, $isAds")
+            Log.d("pindata", "Media Files: $media_files")
+
+            val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
+
+            // 광고 여부에 따라 색상 설정
+            val borderColor = if (isAds == true) {
+                Color.parseColor("#C8E6C9") // 광고용 색상
+            } else {
+                Color.parseColor("#FFAB91") // 일반 핀 색상
+            }
+
+            // 마커 생성
+            val markerIcon = createMarkerIcon(borderColor)
+            val marker = map?.addMarker(
+                MarkerOptions()
+                    .position(pinLocation)
+                    .title(title)
+                    .snippet(description)
+                    .icon(markerIcon)
+            )
+            marker?.tag = pin // 마커에 데이터 태그 추가 (PinDataResponse 객체)
+
+            // 카메라를 해당 핀 위치로 이동
+            map?.animateCamera(CameraUpdateFactory.newLatLng(pinLocation))
+            searchResultsList.visibility = View.GONE
+        }
+    }
+
 }
