@@ -60,6 +60,7 @@
             android:orientation="horizontal"
             android:padding="12dp"
             android:layout_marginBottom="8dp"
+            android:visibility="gone"
             android:gravity="center_vertical">
 
             <TextView
@@ -67,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Theme Settings"
+                android:visibility="gone"
                 android:textSize="16sp"
                 android:textColor="?attr/colorOnBackground"/>
 
@@ -75,6 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Light"
+                android:visibility="gone"
                 android:textColor="?attr/colorPrimary"/>
         </LinearLayout>
 
@@ -86,6 +89,7 @@
             android:background="?attr/selectableItemBackground"
             android:orientation="horizontal"
             android:padding="12dp"
+            android:visibility="gone"
             android:layout_marginBottom="24dp"
             android:gravity="center_vertical">
 
@@ -95,6 +99,7 @@
                 android:layout_weight="1"
                 android:text="Interests"
                 android:textSize="16sp"
+                android:visibility="gone"
                 android:textColor="?attr/colorOnBackground"/>
 
             <TextView
@@ -102,6 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Travel, Hiking"
+                android:visibility="gone"
                 android:textColor="?attr/colorPrimary"/>
         </LinearLayout>
 
@@ -122,6 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Account"
+            android:visibility="gone"
             android:textColor="?attr/colorError"
             android:background="@android:color/holo_red_dark"
             android:padding="12dp"/>

@@ -105,7 +105,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         currentLocation = LatLng(location.latitude, location.longitude)
                         currentLocation?.let {
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 14f))
-                            addSampleMarkers(it)
+//                            addSampleMarkers(it)
                         }
                     }
                 }
@@ -296,20 +296,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun addSampleMarkers(center: LatLng) {
-        googleMap.addMarker(MarkerOptions().position(center).title("현재 위치"))
-
-        val nearbyLocations = listOf(
-            LatLng(center.latitude + 0.01, center.longitude),
-            LatLng(center.latitude - 0.01, center.longitude),
-            LatLng(center.latitude, center.longitude + 0.01),
-            LatLng(center.latitude, center.longitude - 0.01)
-        )
-
-        nearbyLocations.forEachIndexed { index, latLng ->
-            googleMap.addMarker(MarkerOptions().position(latLng).title("샘플 핀 $index"))
-        }
-    }
+//    private fun addSampleMarkers(center: LatLng) {
+//        googleMap.addMarker(MarkerOptions().position(center).title("현재 위치"))
+//
+//        val nearbyLocations = listOf(
+//            LatLng(center.latitude + 0.01, center.longitude),
+//            LatLng(center.latitude - 0.01, center.longitude),
+//            LatLng(center.latitude, center.longitude + 0.01),
+//            LatLng(center.latitude, center.longitude - 0.01)
+//        )
+//
+//        nearbyLocations.forEachIndexed { index, latLng ->
+//            googleMap.addMarker(MarkerOptions().position(latLng).title("샘플 핀 $index"))
+//        }
+//    }
 
     private fun showUserPins() {
         googleMap.clear()

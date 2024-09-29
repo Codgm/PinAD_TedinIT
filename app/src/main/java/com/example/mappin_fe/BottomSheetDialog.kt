@@ -11,6 +11,7 @@ import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
 import com.example.mappin_fe.Data.PinDataResponse
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -60,8 +61,8 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         val range = infoJson.optInt("range", 0)
         val duration = infoJson.optInt("duration", 0)
 
-        view.findViewById<TextView>(R.id.tvRange).text = "Range: $range km"
-        view.findViewById<TextView>(R.id.tvDuration).text = "Duration: $duration hours"
+        view.findViewById<TextView>(R.id.tvRange).visibility = View.GONE
+        view.findViewById<TextView>(R.id.tvDuration).visibility = View.GONE
 
         setupPurchaseButton(view, pinData)
         setupTags(view, pinData)
@@ -108,13 +109,17 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
     private fun setupMoreDetailsButton(view: View, pinData: PinDataResponse, jsonObject: JSONObject) {
         val tvMoreDetails = view.findViewById<TextView>(R.id.tvMoreDetails)
         val ivMedia = view.findViewById<ImageView>(R.id.ivMedia)
-        val tvContent = view.findViewById<TextView>(R.id.contentLayout)
+        val contentLayout = view.findViewById<ConstraintLayout>(R.id.contentLayout)
+        val tvField1 = view.findViewById<TextView>(R.id.tvField1)
+        val tvField2 = view.findViewById<TextView>(R.id.tvField2)
+        val tvField3 = view.findViewById<TextView>(R.id.tvField3)
+
         val mediaUrl: String = when {
-            jsonObject.has("media") -> jsonObject.optString("media") // media 필드가 있을 때
+            jsonObject.has("media") -> jsonObject.optString("media")
             jsonObject.has("media_files") -> {
                 val mediaFiles = jsonObject.optJSONArray("media_files")
                 if (mediaFiles != null && mediaFiles.length() > 0) {
-                    mediaFiles.optString(0) // media_files 배열이 있을 때 첫 번째 항목을 가져옴
+                    mediaFiles.optString(0)
                 } else {
                     ""
                 }
@@ -123,56 +128,46 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         }
         Log.d("PinDetail", "Media URL: $mediaUrl")
 
-        val tvField1 = view.findViewById<TextView>(R.id.tvField1)
-        val tvField2 = view.findViewById<TextView>(R.id.tvField2)
-        val tvField3 = view.findViewById<TextView>(R.id.tvField3)
+        var isExpanded = false
 
         tvMoreDetails.setOnClickListener {
-            if (mediaUrl.isNotEmpty()) {
-                ivMedia.load(mediaUrl)
-                ivMedia.visibility = View.VISIBLE
-            } else {
-                ivMedia.visibility = View.GONE
-            }
+            isExpanded = !isExpanded
+            if (isExpanded) {
+                if (mediaUrl.isNotEmpty()) {
+                    ivMedia.load(mediaUrl)
+                    ivMedia.visibility = View.VISIBLE
+                } else {
+                    ivMedia.visibility = View.GONE
+                }
 
+                val infoJson = JSONObject(pinData.info.toString())
+                val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
+                val additionalInfoJson = JSONObject(additionalInfo)
+                Log.d("PinDetail", "Additional Info JSON: $additionalInfoJson")
 
-            val infoJson = JSONObject(pinData.info.toString())
-            val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
-            val additionalInfoJson = JSONObject(additionalInfo)
-            tvContent.text = additionalInfo
-            tvContent.visibility = View.VISIBLE
+                if (pinData.is_ads == true) {
+                    tvField1.text = "상품명 : ${additionalInfoJson.optString("field1", "N/A")}"
+                    tvField2.text = "판매 수량 : ${additionalInfoJson.optString("field2", "N/A")}"
+                    tvField3.text = "할인율 또는 할인가 : ${additionalInfoJson.optString("field3", "N/A")}"
 
-            if (pinData.is_ads == true) {
-                // is_ads가 true일 때 필드명을 바꿔서 표시
-                tvField1.text = "상품명 : ${additionalInfoJson.optString("field1", "N/A")}"
-                tvField2.text = "판매 수량 : ${additionalInfoJson.optString("field2", "N/A")}"
-                tvField3.text = "할인율 또는 할인가 : ${additionalInfoJson.optString("field3", "N/A")}"
+                    Log.d("PinDetail", "$tvField1, $tvField2, $tvField3")
 
-                // 필드들을 표시
-                tvField1.visibility = View.VISIBLE
-                tvField2.visibility = View.VISIBLE
-                tvField3.visibility = View.VISIBLE
-                tvContent.visibility = View.GONE
-            } else {
-                // is_ads가 false일 때 필드 하나만 표시
-                tvContent.text = "요청 사유 : ${additionalInfoJson.optString("field1", "N/A")}"
+                    tvField1.visibility = View.VISIBLE
+                    tvField2.visibility = View.VISIBLE
+                    tvField3.visibility = View.VISIBLE
+                } else {
+                    tvField1.text = "요청 사유 : ${additionalInfoJson.optString("field1", "N/A")}"
+                    tvField1.visibility = View.VISIBLE
+                    tvField2.visibility = View.GONE
+                    tvField3.visibility = View.GONE
+                }
 
-                // 필드들을 감추고 요청 사유만 표시
-                tvField1.visibility = View.GONE
-                tvField2.visibility = View.GONE
-                tvField3.visibility = View.GONE
-                tvContent.visibility = View.VISIBLE
-            }
-
-            // 토글 기능 추가
-            if (tvMoreDetails.text == "자세히 보기") {
+                contentLayout.visibility = View.VISIBLE
                 tvMoreDetails.text = "접기"
-                ivMedia.visibility = View.VISIBLE
-                tvContent.visibility = View.VISIBLE
             } else {
-                tvMoreDetails.text = "자세히 보기"
                 ivMedia.visibility = View.GONE
-                tvContent.visibility = View.GONE
+                contentLayout.visibility = View.GONE
+                tvMoreDetails.text = "자세히 보기"
             }
         }
     }

@@ -5,15 +5,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
 import com.example.mappin_fe.Login_Sign.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+
 //import com.google.firebase.database.DatabaseReference
 //import com.google.firebase.database.FirebaseDatabase
 
@@ -26,8 +33,6 @@ class SettingFragment : Fragment() {
     private lateinit var btnDeleteAccount: Button
     private lateinit var btnBack: ImageButton
 
-//    private lateinit var firebaseAuth: FirebaseAuth
-//    private lateinit var databaseReference: DatabaseReference
     private lateinit var currentUserUid: String
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -46,13 +51,10 @@ class SettingFragment : Fragment() {
         btnLogout = view.findViewById(R.id.btnLogout)
         btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount)
 
-        // Firebase 초기화
-//        firebaseAuth = FirebaseAuth.getInstance()
-//        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-//        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
 
         // SharedPreferences 초기화
         sharedPreferences = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        Log.d("sharedPreferences", "$sharedPreferences")
 
         // 초기 테마 설정
         updateTheme()
@@ -67,24 +69,20 @@ class SettingFragment : Fragment() {
             Toast.makeText(requireContext(), "Notifications: ${if (isChecked) "On" else "Off"}", Toast.LENGTH_SHORT).show()
         }
 
-        // 테마 변경 클릭 리스너
-        tvTheme.setOnClickListener {
-            showThemeSelectionDialog()
-        }
+//        // 테마 변경 클릭 리스너
+//        tvTheme.setOnClickListener {
+//            showThemeSelectionDialog()
+//        }
 
-        // 관심사 변경 클릭 리스너
-        tvInterestsSetting.setOnClickListener {
-            showInterestsInputDialog()
-        }
+//        // 관심사 변경 클릭 리스너
+//        tvInterestsSetting.setOnClickListener {
+//            showInterestsInputDialog()
+//        }
 
         // 로그아웃 버튼 클릭 리스너
-//        btnLogout.setOnClickListener {
-//            firebaseAuth.signOut()
-//            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-//            val intent = Intent(activity, LoginActivity::class.java)
-//            startActivity(intent)
-//            activity?.finish() // 현재 액티비티 종료
-//        }
+        btnLogout.setOnClickListener {
+            logout()
+        }
 
         // 회원 탈퇴 버튼 클릭 리스너
         btnDeleteAccount.setOnClickListener {
@@ -92,6 +90,19 @@ class SettingFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun logout() {
+        // Clear access token
+        RetrofitInstance.setAccessToken(null.toString())
+
+        // Clear any user-related data from SharedPreferences
+        sharedPreferences.edit().remove("user_token").apply()
+
+        Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+        val intent = Intent(activity, LoginActivity::class.java)
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun showThemeSelectionDialog() {
@@ -162,7 +173,7 @@ class SettingFragment : Fragment() {
             .setTitle("Confirm Account Deletion")
             .setMessage("Are you sure you want to delete your account? This action cannot be undone and you will lose all your pins, stories, and other data.")
             .setPositiveButton("Delete") { dialog, _ ->
-//                deleteUserAccount()
+                deleteUserAccount()
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -172,24 +183,21 @@ class SettingFragment : Fragment() {
             .show()
     }
 
-//    private fun deleteUserAccount() {
-//        // 데이터베이스에서 사용자 정보 삭제
-//        databaseReference.child(currentUserUid).removeValue().addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                // 사용자 계정 삭제
-//                firebaseAuth.currentUser?.delete()?.addOnCompleteListener { deleteTask ->
-//                    if (deleteTask.isSuccessful) {
-//                        Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
-//                        val intent = Intent(activity, LoginActivity::class.java)
-//                        startActivity(intent)
-//                        activity?.finish() // 현재 액티비티 종료
-//                    } else {
-//                        Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            } else {
-//                Toast.makeText(requireContext(), "Failed to Delete User Data", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
+    private fun deleteUserAccount() {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val response = RetrofitInstance.api.deleteUser()
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
+                    logout() // Logout after successful deletion
+                } else {
+                    Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: HttpException) {
+                Toast.makeText(requireContext(), "Error: ${e.message()}", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
