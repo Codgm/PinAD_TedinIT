@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
 import com.example.mappin_fe.Login_Sign.LoginActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +37,7 @@ class SettingFragment : Fragment() {
     private lateinit var btnBack: ImageButton
 
     private lateinit var currentUserUid: String
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -42,6 +46,13 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(requireContext().getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         // 뷰 초기화
         btnBack = view.findViewById(R.id.btnBack)
@@ -93,17 +104,26 @@ class SettingFragment : Fragment() {
     }
 
     private fun logout() {
-        // Clear access token
-        RetrofitInstance.setAccessToken(null.toString())
+        // Google 로그아웃 처리
+        googleSignInClient.signOut().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // 로그아웃 완료 후
+                RetrofitInstance.setAccessToken(null.toString())
 
-        // Clear any user-related data from SharedPreferences
-        sharedPreferences.edit().remove("user_token").apply()
+                // SharedPreferences에서 사용자 관련 데이터 제거
+                sharedPreferences.edit().remove("user_token").apply()
 
-        Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-        val intent = Intent(activity, LoginActivity::class.java)
-        startActivity(intent)
-        activity?.finish()
+                Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+                val intent = Intent(activity, LoginActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
+            } else {
+                // 로그아웃 실패 처리 (원하는 대로 처리 가능)
+                Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
 
     private fun showThemeSelectionDialog() {
         val currentTheme = sharedPreferences.getString("theme", "light")
