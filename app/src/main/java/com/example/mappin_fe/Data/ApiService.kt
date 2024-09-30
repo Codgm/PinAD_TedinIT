@@ -41,7 +41,7 @@ interface ApiService {
         @Part("category") category: RequestBody,
         @Part media_files: List<MultipartBody.Part>,
         @Part("info") info: RequestBody,
-        @Part("tags") tags: RequestBody,
+        @Part("tag_ids") tag_ids: List<RequestBody>,
         @Part("visibility") visibility: RequestBody,
         @Part("is_ads") is_ads: RequestBody,
     ): Response<PinDataResponse>
@@ -54,7 +54,7 @@ interface ApiService {
         @Query("radius") radius: Int
     ): Response<List<PinDataResponse>>
 
-    @DELETE("users/delete_user/")
-    suspend fun deleteUser(): Response<Void>
+    @DELETE("users/")
+    suspend fun deleteUser(): Response<Unit>
 
 }

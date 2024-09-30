@@ -149,11 +149,12 @@ class LoginActivity : AppCompatActivity() {
                         201 -> { // 로그인 성공
                             val loginResponse = response.body()
                             val accessToken = loginResponse?.access_token // 서버에서 발급한 access_token
+                            val refreshToken = loginResponse?.refresh_token
 
                             if (accessToken != null) {
                                 Log.d("AccessToken", "Access Token: $accessToken")
                                 // access_token을 이용한 추가 작업 처리
-                                RetrofitInstance.setAccessToken(accessToken)
+                                RetrofitInstance.setTokens(accessToken, refreshToken)
 
                                 // UserSettingActivity로 이동
                                 val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
@@ -168,10 +169,11 @@ class LoginActivity : AppCompatActivity() {
                         200 -> { // 이미 로그인된 상태
                             val loginResponse = response.body()
                             val accessToken = loginResponse?.access_token
+                            val refreshToken = loginResponse?.refresh_token
                             Log.d("LoginStatus", "User is already logged in.")
                             Log.d("AccessToken", "Access Token: $accessToken")
                             if (accessToken != null) {
-                                RetrofitInstance.setAccessToken(accessToken)
+                                RetrofitInstance.setTokens(accessToken, refreshToken)
                                 checkUserSettings(accessToken)
                             } else {
                                 Log.e("LoginError", "Access token is null when checking user settings")

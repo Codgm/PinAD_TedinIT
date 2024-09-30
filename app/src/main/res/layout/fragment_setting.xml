@@ -128,7 +128,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Account"
-            android:visibility="gone"
             android:textColor="?attr/colorError"
             android:background="@android:color/holo_red_dark"
             android:padding="12dp"/>

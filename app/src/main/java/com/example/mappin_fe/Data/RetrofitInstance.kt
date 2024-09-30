@@ -7,17 +7,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://77c6-175-198-127-14.ngrok-free.app"
+    private const val BASE_URL = "https://f57e-175-198-127-14.ngrok-free.app/"
     private var accessToken: String? = null
+    private var refreshToken: String? = null
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // 요청과 응답의 바디를 모두 로깅
     }
 
-    fun setAccessToken(token: String) {
-        accessToken = token
-        if (token.isNotEmpty()) {
-            android.util.Log.d("RetrofitInstance", "AccessToken set: $token")
+    fun setTokens(access: String?, refresh: String?) {
+        accessToken = access
+        refreshToken = refresh
+        if (accessToken?.isNotEmpty() == true && refreshToken?.isNotEmpty() == true) {
+            android.util.Log.d("RetrofitInstance", "Tokens updated - Access: $access, Refresh: $refresh")
         } else {
             android.util.Log.d("RetrofitInstance", "AccessToken cleared")
         }
@@ -72,5 +74,12 @@ object RetrofitInstance {
 
     val api: ApiService by lazy {
         retrofit.create(ApiService::class.java)
+    }
+
+    private fun refreshAccessToken(refreshToken: String): Pair<String, String>? {
+        // 여기에 실제 토큰 갱신 로직 구현
+        // 서버에 refresh_token을 보내고 새로운 access_token과 refresh_token을 받아옴
+        // 성공하면 Pair(newAccessToken, newRefreshToken)을 반환, 실패하면 null 반환
+        return null // 임시 반환값, 실제 구현 필요
     }
 }

@@ -81,6 +81,7 @@
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:backgroundTint="#03C75A"
+            android:visibility="gone"
             android:textColor="@android:color/white" />
 
         <Button
@@ -91,6 +92,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/kakao"
             android:backgroundTint="#FEE500"
+            android:visibility="gone"
             android:textColor="@android:color/black" />
 
     </LinearLayout>

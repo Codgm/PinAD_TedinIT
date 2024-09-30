@@ -123,7 +123,7 @@ class UserSettingsActivity : AppCompatActivity() {
         if (nickname.isNotEmpty()) {
             val userAccount = UserAccount(
                 nickname = nickname,
-//                tags = interests
+                tags = interests
             )
             Log.d("saveUserSettings", "userAccount 생성됨 = $userAccount")
 

@@ -24,8 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-//import com.google.firebase.database.DatabaseReference
-//import com.google.firebase.database.FirebaseDatabase
 
 class SettingFragment : Fragment() {
 
@@ -38,6 +36,7 @@ class SettingFragment : Fragment() {
 
     private lateinit var currentUserUid: String
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var auth : FirebaseAuth
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -47,12 +46,14 @@ class SettingFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(requireContext().getString(R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        auth = FirebaseAuth.getInstance()
 
         // 뷰 초기화
         btnBack = view.findViewById(R.id.btnBack)
@@ -104,11 +105,12 @@ class SettingFragment : Fragment() {
     }
 
     private fun logout() {
+        auth.signOut()
         // Google 로그아웃 처리
-        googleSignInClient.signOut().addOnCompleteListener { task ->
+        googleSignInClient.revokeAccess().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // 로그아웃 완료 후
-                RetrofitInstance.setAccessToken(null.toString())
+                RetrofitInstance.setTokens(null, null)
 
                 // SharedPreferences에서 사용자 관련 데이터 제거
                 sharedPreferences.edit().remove("user_token").apply()
@@ -208,8 +210,17 @@ class SettingFragment : Fragment() {
             try {
                 val response = RetrofitInstance.api.deleteUser()
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
-                    logout() // Logout after successful deletion
+                    if (response.code() == 204) {
+                        // 204 응답일 경우 로그인 화면으로 이동
+                        Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
+                        logout()
+                        // 필요시 사용자 데이터 정리 (아직 안짜짐)
+                        val intent = Intent(requireContext(), LoginActivity::class.java)
+                        startActivity(intent)
+                        activity?.finish()  // 현재 액티비티 종료
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
                 }

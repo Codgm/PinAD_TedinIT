@@ -29,6 +29,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okio.Buffer
 import org.json.JSONObject
 import retrofit2.http.Part
 import java.io.File
@@ -248,6 +249,14 @@ class PointSystemFragment : Fragment() {
         )
     }
 
+
+    fun requestBodyToString(requestBody: RequestBody): String {
+        val buffer = Buffer()
+        requestBody.writeTo(buffer)
+        return buffer.readUtf8()
+    }
+
+
     private fun sendPinDataToServer(pinData: PinDataResponse, onComplete: (Boolean) -> Unit) {
         lifecycleScope.launch {
             try {
@@ -257,7 +266,11 @@ class PointSystemFragment : Fragment() {
                 val longitudePart = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
                 val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
-                val tagsPart = Gson().toJson(pinData.tags).toRequestBody("application/json".toMediaTypeOrNull())
+                val tagsParts = pinData.tags.map { it.toRequestBody("text/plain".toMediaTypeOrNull()) }
+                // 로그로 출력
+                tagsParts.forEachIndexed { index, requestBody ->
+                    Log.d("TagPart", "Tag $index: ${requestBodyToString(requestBody)}")
+                }
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
                 val isAdsPart = (if (pinData.is_ads == true) 1 else 0).toString().toRequestBody("text/plain".toMediaTypeOrNull())
@@ -270,7 +283,7 @@ class PointSystemFragment : Fragment() {
                         category = categoryPart,
                         media_files = mediaFileParts,
                         info = infoPart,
-                        tags = tagsPart,
+                        tag_ids = tagsParts,
                         visibility = visibilityPart,
                         is_ads = isAdsPart
                     )
