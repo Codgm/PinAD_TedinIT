@@ -41,7 +41,7 @@ interface ApiService {
         @Part("category") category: RequestBody,
         @Part media_files: List<MultipartBody.Part>,
         @Part("info") info: RequestBody,
-        @Part("tag_ids") tag_ids: List<RequestBody>,
+        @Part("tag_ids") tag_ids: ArrayList<RequestBody>,
         @Part("visibility") visibility: RequestBody,
         @Part("is_ads") is_ads: RequestBody,
     ): Response<PinDataResponse>

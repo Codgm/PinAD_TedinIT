@@ -21,3 +21,4 @@ data class PinDataResponse(
     @SerializedName("created_at") val created_at: Date,
     @SerializedName("updated_at") val updated_at: Date
 )
+

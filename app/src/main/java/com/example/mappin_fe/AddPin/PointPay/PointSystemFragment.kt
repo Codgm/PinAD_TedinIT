@@ -266,11 +266,10 @@ class PointSystemFragment : Fragment() {
                 val longitudePart = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
                 val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
-                val tagsParts = pinData.tags.map { it.toRequestBody("text/plain".toMediaTypeOrNull()) }
-                // 로그로 출력
-                tagsParts.forEachIndexed { index, requestBody ->
-                    Log.d("TagPart", "Tag $index: ${requestBodyToString(requestBody)}")
-                }
+                val tagsParts = pinData.tags.map { tag ->
+                    tag.toRequestBody("text/plain".toMediaTypeOrNull())
+                }as ArrayList<RequestBody>
+                Log.d("tagspart", "$tagsParts")
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
                 val isAdsPart = (if (pinData.is_ads == true) 1 else 0).toString().toRequestBody("text/plain".toMediaTypeOrNull())

@@ -134,7 +134,7 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun setupCategories() {
-        val categories = listOf("광고", "할인 요청")
+        val categories = listOf("광고", "할인 요청", "리뷰")
         categories.forEach { category ->
             val chip = Chip(context)
             chip.text = category
@@ -163,12 +163,19 @@ class CategorySelectionFragment : Fragment() {
         }
 
         is_ads = category == "광고"
-        if (is_ads) {
-            showAdTemplate()
-            setupTags(getAdTags())
-        } else {
-            showDiscountRequestTemplate()
-            setupTags(getDiscountRequestTags())
+        when (category) {
+            "광고" -> {
+                showAdTemplate()
+                setupTags(getAdTags())
+            }
+            "할인 요청" -> {
+                showDiscountRequestTemplate()
+                setupTags(getDiscountRequestTags())
+            }
+            "리뷰" -> {
+                showReviewTemplate()
+                setupTags(getReviewTags())
+            }
         }
     }
 
@@ -189,13 +196,14 @@ class CategorySelectionFragment : Fragment() {
     }
 
 
-//    private fun showReviewTemplate(styleResId: Int) {
-//        addStyledField("장소명", styleResId)
-//        addStyledField("업소 이름", styleResId)
-//        addStyledField("업소 위치", styleResId)
-//        addRatingBar(styleResId)
-//        addStyledField("장점", styleResId, true)
-//        addStyledField("단점", styleResId, true)
+    private fun showReviewTemplate() {
+        templateTitle.text = "리뷰"
+        val styleResId = getStyleForType("리뷰")
+        addStyledField("제품명 / 서비스명", styleResId)
+        addStyledField("제품/서비스 위치", styleResId)
+        addRatingBar(styleResId)
+        addStyledField("장점", styleResId, true)
+        addStyledField("단점", styleResId, true)
 //        addStyledField("가장 기억에 남는 특징이나 경험", styleResId, true)
 //        addStyledField("추천 대상", styleResId, true)
 //        addStyledField("추가 커멘트", styleResId, true)
@@ -215,7 +223,7 @@ class CategorySelectionFragment : Fragment() {
 //        }
 //
 //        templateContent.addView(revisitGroup)
-//    }
+    }
 
 //    private fun showAttractionTemplate(styleResId: Int) {
 //        addStyledField("명소 이름", styleResId)
@@ -291,6 +299,10 @@ class CategorySelectionFragment : Fragment() {
         return listOf("뷰티", "전자기기", "가구", "식품", "생활용품", "베스트셀러", "도서", "스포츠/레저", "자동차용품", "의류")
     }
 
+    private fun getReviewTags(): List<String> {
+        return listOf("뷰티", "전자기기", "가구", "식품", "생활용품", "베스트셀러", "도서", "스포츠/레저", "자동차용품", "의류")
+    }
+
     private fun getSelectedTags(): List<String> {
         return (0 until tagChipGroup.childCount)
             .map { tagChipGroup.getChildAt(it) as Chip }
@@ -312,12 +324,12 @@ class CategorySelectionFragment : Fragment() {
         templateContent.addView(inputLayout)
     }
 
-//    private fun addRatingBar(styleResId: Int) {
-//        val ratingBar = RatingBar(ContextThemeWrapper(context, styleResId))
-//        ratingBar.numStars = 5
-//        ratingBar.stepSize = 0.5f
-//        templateContent.addView(ratingBar)
-//    }
+    private fun addRatingBar(styleResId: Int) {
+        val ratingBar = RatingBar(ContextThemeWrapper(context, styleResId))
+        ratingBar.numStars = 5
+        ratingBar.stepSize = 0.5f
+        templateContent.addView(ratingBar)
+    }
 
     private fun getStyleForType(type: String): Int {
         return when (type) {

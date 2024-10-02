@@ -12,13 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mappin_fe.Data.PinDataResponse
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.PinDetailBottomSheet
@@ -32,23 +32,17 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var searchBar: EditText
-    private lateinit var searchResultsList: ListView
-    private lateinit var searchResultsAdapter: ArrayAdapter<String>
+    private lateinit var searchResultsRecyclerView: RecyclerView
+    private lateinit var pinAdapter: PinAdapter
     private val searchHistory = mutableListOf<String>()
     private val searchResults = mutableListOf<PinDataResponse>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -64,15 +58,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
         searchBar = view.findViewById(R.id.search_bar)
-        searchResultsList = view.findViewById(R.id.search_results_list)
+        searchResultsRecyclerView = view.findViewById(R.id.search_results_recycler_view)
 
         // 검색 결과 리스트 어댑터 초기화
-        searchResultsAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            mutableListOf<String>() // 어댑터는 String 리스트로 초기화
-        )
-        searchResultsList.adapter = searchResultsAdapter
+        searchResultsRecyclerView.layoutManager = LinearLayoutManager(context)
+        pinAdapter = PinAdapter(searchResults) { pin ->
+            showPinOnMap(pin)
+        }
+        searchResultsRecyclerView.adapter = pinAdapter
 
         // 검색바 입력 이벤트 처리
         searchBar.setOnEditorActionListener { v, actionId, _ ->
@@ -80,18 +73,13 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 val query = v.text.toString().trim()
 
                 if (query.isNotEmpty()) {
-                    searchResultsList.visibility = View.VISIBLE
+                    searchResultsRecyclerView.visibility = View.VISIBLE
                     searchPins(query) // 서버로 검색 요청
                 }
                 true
             } else {
                 false
             }
-        }
-
-        searchResultsList.setOnItemClickListener { _, _, position, _ ->
-            val selectedResult = searchResults[position]
-            showPinOnMap(selectedResult) // 핀을 지도에 표시하는 함수 호출
         }
 
         // 지도 프래그먼트 동적으로 추가
@@ -185,6 +173,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
+    @SuppressLint("NotifyDataSetChanged")
     private fun searchPins(query: String) {
         val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자 위치의 위도
         val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자 위치의 경도
@@ -202,21 +191,48 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                     if (Data.isNullOrEmpty()) {
                         Log.d("SearchFragment", "No pins received")
                         Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
+                        searchResultsRecyclerView.visibility = View.GONE
                     } else {
                         // JSON 배열을 수동으로 파싱
                         val jsonArray = JSONArray(Data)
+                        searchResults.clear()
 
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
 
-                            if (jsonObject.has("media")) {
-                                val media = jsonObject.getString("media")
-                                jsonObject.put("media_files", JSONArray().put(media)) // media_files로 추가
+                            val tagsArray = jsonObject.optJSONArray("tags")
+                            val tagsList = mutableListOf<String>()
+                            tagsArray?.let {
+                                for (j in 0 until it.length()) {
+                                    val tagObject = it.getJSONObject(j)
+                                    val tagName = tagObject.getString("name")
+                                    tagsList.add(tagName)
+                                }
                             }
 
-                            val pinData = Gson().fromJson(jsonObject.toString(), PinDataResponse::class.java)
-                            searchResults.add(pinData)
-                            searchResultsAdapter.add(pinData.title ?: "제목 없음")
+                            val title = jsonObject.optString("title", "제목 없음")
+                            if (title.contains(
+                                    query,
+                                    ignoreCase = true
+                                ) || tagsList.any { it.contains(query, ignoreCase = true) }
+                            ) {
+                                if (jsonObject.has("media")) {
+                                    val media = jsonObject.getString("media")
+                                    jsonObject.put(
+                                        "media_files",
+                                        JSONArray().put(media)
+                                    ) // media_files로 추가
+                                }
+
+                                val pinData = Gson().fromJson(
+                                    jsonObject.toString(),
+                                    PinDataResponse::class.java
+                                )
+                                searchResults.add(pinData)
+                                pinAdapter.notifyDataSetChanged() // 어댑터에 데이터 변경 알림
+                                searchResultsRecyclerView.visibility = View.VISIBLE // 결과가 있으면 RecyclerView를 보이게 설정
+                                Log.d("SearchFragment", "Search results count: ${searchResults.size}")
+                            }
                         }
                     }
                 } else {
@@ -317,7 +333,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
             // 카메라를 해당 핀 위치로 이동
             map?.animateCamera(CameraUpdateFactory.newLatLng(pinLocation))
-            searchResultsList.visibility = View.GONE
+            searchResultsRecyclerView.visibility = View.GONE
         }
     }
 

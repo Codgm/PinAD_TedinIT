@@ -1,5 +1,6 @@
 package com.example.mappin_fe.Search
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,11 +27,14 @@ class PinAdapter(private val pinList: List<PinDataResponse>, private val onItemC
         val pin = pinList[position]
         holder.title.text = pin.title
         holder.description.text = pin.description
-
+        Log.d("PinAdapter", "Binding pin: ${pin.title}")
         holder.itemView.setOnClickListener {
             onItemClick(pin) // 클릭 시 핀 정보 전달
         }
     }
 
-    override fun getItemCount() = pinList.size
+    override fun getItemCount(): Int {
+        Log.d("PinAdapter", "Total items: ${pinList.size}")
+        return pinList.size
+    }
 }
