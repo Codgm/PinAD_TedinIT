@@ -18,7 +18,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import org.json.JSONObject
+import java.lang.reflect.Type
 import java.util.*
 
 class PinDetailBottomSheet : BottomSheetDialogFragment() {
@@ -42,14 +47,20 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 
         try {
             val pinDataJson = arguments?.getString("PIN_DATA_JSON") ?: return
+            Log.d("pinDataJson", "$pinDataJson")
             val jsonObject = JSONObject(pinDataJson)
-            val gson = Gson()
-            val pinData = gson.fromJson(pinDataJson, PinDataResponse::class.java)
+            val pinDataObject = jsonObject.optJSONObject("nameValuePairs") ?: jsonObject
+            Log.d("jsonObject", "$jsonObject")
+            val gson = GsonBuilder()
+                .registerTypeAdapter(List::class.java, TagsDeserializer())
+                .create()
+            val pinData = gson.fromJson(pinDataObject.toString(), PinDataResponse::class.java)
 
 
-            setupUI(view, pinData, jsonObject)
+            setupUI(view, pinData, pinDataObject)
         } catch (e: Exception) {
             // Handle error (e.g., show error message)
+            Log.e("PinDetailBottomSheet", "Error parsing data: ${e.message}", e)
         }
     }
 
@@ -57,15 +68,22 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         view.findViewById<TextView>(R.id.tvTitle).text = pinData.title
         view.findViewById<TextView>(R.id.tvDescription).text = "${pinData.description}"
 
-        val infoJson = JSONObject(pinData.info.toString())
+        val infoJson = try {
+            JSONObject(pinData.info.toString())
+        } catch (e: Exception) {
+            Log.e("PinDetailBottomSheet", "Error parsing info JSON: ${e.message}", e)
+            JSONObject()
+        }
         val range = infoJson.optInt("range", 0)
         val duration = infoJson.optInt("duration", 0)
 
         view.findViewById<TextView>(R.id.tvRange).visibility = View.GONE
-        view.findViewById<TextView>(R.id.tvDuration).visibility = View.GONE
-
+        view.findViewById<TextView>(R.id.tvDuration).apply {
+            text = "Duration: $duration hours"
+            visibility = if (duration > 0) View.VISIBLE else View.GONE
+        }
         setupPurchaseButton(view, pinData)
-        setupTags(view, pinData)
+//        setupTags(view, pinData)
         setupChronometer(view, pinData, duration)
         setupProgressBar(view)
         setupMoreDetailsButton(view, pinData, jsonObject)
@@ -76,14 +94,26 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         btnPurchase.visibility = if (pinData.is_ads == true) View.VISIBLE else View.GONE
     }
 
-    private fun setupTags(view: View, pinData: PinDataResponse) {
-        val chipGroup = view.findViewById<ChipGroup>(R.id.chipGroupTags)
-        pinData.tags.forEach { tag ->
-            val chip = Chip(context)
-            chip.text = tag
-            chipGroup.addView(chip)
+    private class TagsDeserializer : JsonDeserializer<List<Any>> {
+        override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): List<Any> {
+            if (json.isJsonObject) {
+                val tagsObject = json.asJsonObject
+                if (tagsObject.has("values") && tagsObject.get("values").isJsonArray) {
+                    return context.deserialize(tagsObject.get("values"), typeOfT)
+                }
+            }
+            return emptyList() // 또는 다른 기본값 반환
         }
     }
+
+//    private fun setupTags(view: View, pinData: PinDataResponse) {
+//        val chipGroup = view.findViewById<ChipGroup>(R.id.chipGroupTags)
+//        pinData.tags.forEach { tag ->
+//            val chip = Chip(context)
+//            chip.text = tag
+//            chipGroup.addView(chip)
+//        }
+//    }
 
     private fun setupChronometer(view: View, pinData: PinDataResponse, duration: Int) {
         val chronometer = view.findViewById<Chronometer>(R.id.chronometer)
@@ -140,9 +170,19 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                     ivMedia.visibility = View.GONE
                 }
 
-                val infoJson = JSONObject(pinData.info.toString())
-                val additionalInfo = infoJson.optString("additionalInfo", "No additional information")
-                val additionalInfoJson = JSONObject(additionalInfo)
+                val infoJson = try {
+                    JSONObject(pinData.info.toString())
+                } catch (e: Exception) {
+                    Log.e("PinDetailBottomSheet", "Error parsing info JSON: ${e.message}", e)
+                    JSONObject()
+                }
+                val additionalInfo = infoJson.optString("additionalInfo", "{}")
+                val additionalInfoJson = try {
+                    JSONObject(additionalInfo)
+                } catch (e: Exception) {
+                    Log.e("PinDetailBottomSheet", "Error parsing additionalInfo JSON: ${e.message}", e)
+                    JSONObject()
+                }
                 Log.d("PinDetail", "Additional Info JSON: $additionalInfoJson")
 
                 if (pinData.is_ads == true) {

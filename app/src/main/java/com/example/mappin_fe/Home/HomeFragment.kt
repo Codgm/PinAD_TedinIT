@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -56,16 +57,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: LatLng? = null
 
-
-    private val jsonData = """
-        [
-            {"id":1,"latitude":37.5665,"longitude":126.978,"title":"서울시청","description":"서울특별시의 시청입니다.","category":"광고"},
-            {"id":2,"latitude":37.570,"longitude":126.985,"title":"남산타워","description":"서울의 대표적인 관광명소입니다.","category":"광고"},
-            {"id":3,"latitude":37.5502,"longitude":126.982,"title":"동대문디자인플라자","description":"서울의 현대적인 건축물입니다.","mainCategory":"문화"},
-            {"id":4,"latitude":37.574,"longitude":127.008,"title":"경복궁","description":"조선 왕조의 주요 궁궐입니다.","mainCategory":"문화"},
-            {"id":5,"latitude":37.6103,"longitude":126.9811,"title":"홍대","description":"젊음의 거리, 다양한 문화와 예술이 있는 곳입니다.","category":"문화"}
-        ]
-        """
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,9 +111,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         setMapStyle(googleMap)
         // 마커 클릭 리스너 설정
         googleMap.setOnMarkerClickListener { marker ->
-            val pinData = marker.tag as? String
-            if (pinData != null) {
-                val bottomSheet = PinDetailBottomSheet.newInstance(pinData.toString())
+            val pinDataJson = marker.tag as? String
+            Log.d("MarkerClick", "Clicked marker data: $pinDataJson")
+            if (pinDataJson != null) {
+                val bottomSheet = PinDetailBottomSheet.newInstance(pinDataJson)
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             }
             true
@@ -231,7 +223,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                 .snippet(description)
                                 .icon(markerIcon)
                         )
-                        marker?.tag = jsonObject.toString()
+                        marker?.tag = Gson().toJson(jsonObject)
                     }
                 }
 
