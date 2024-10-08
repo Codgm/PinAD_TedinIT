@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.PinDataResponseDeserializer
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
@@ -41,6 +42,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -56,6 +58,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: LatLng? = null
+
+    // PinDataResponseDeserializer를 사용하는 Gson 인스턴스
+    private val gsonForPins = GsonBuilder()
+        .setLenient()
+        .registerTypeAdapter(PinDataResponse::class.java, PinDataResponseDeserializer())
+        .create()
+
+    val Pinsresponse = """[{"id":36,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Book Discount","description":"Note","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-07-11-05-409.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"memo Note\\\",\\\"field2\\\":\\\"500\\\",\\\"field3\\\":\\\"10%\\\"}\"}","tags":[{"name":"도서"}],"created_at":"2024-10-03T07:11:54.225696Z","updated_at":"2024-10-03T07:11:54.257033Z"},{"id":34,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"3% Discount","description":"Smart Phone","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-02-06-31-46-902.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"240\\\",\\\"field3\\\":\\\"3%\\\"}\"}","tags":[{"name":"전자기기"},{"name":"베스트셀러"}],"created_at":"2024-10-02T06:32:27.849653Z","updated_at":"2024-10-02T06:32:27.880935Z"},{"id":35,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Discount Event","description":"SmartPhone","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-06-19-40-857.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"250\\\",\\\"field3\\\":\\\"5%\\\"}\"}","tags":[{"name":"전자기기"},{"name":"베스트셀러"}],"created_at":"2024-10-03T06:20:21.709845Z","updated_at":"2024-10-03T06:20:21.768391Z"}]
+"""
 
 
     override fun onCreateView(
@@ -173,7 +184,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         lifecycleScope.launch {
             try {
                 Log.d("PinDataFetch", "Starting pin data fetch")
-                val pinDataListString = RetrofitInstance.api.getUserPins()
+                val pinDataListString = Pinsresponse //RetrofitInstance.api.getUserPins()
                 Log.d("PinDataFetch", "Fetched Pins: $pinDataListString")
 
                 if (pinDataListString.isEmpty()) {

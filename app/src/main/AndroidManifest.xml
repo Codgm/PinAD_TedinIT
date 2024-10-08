@@ -61,10 +61,13 @@
             android:name=".Login_Sign.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".Login_Sign.UserSettingsActivity" />
+            android:name=".Login_Sign.UserSettingsActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false">
+        </activity>
         <activity
             android:name=".AddPin.AddPinActivity"
             android:exported="false" />

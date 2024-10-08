@@ -238,7 +238,7 @@ class PointSystemFragment : Fragment() {
             user = nickname.toIntOrNull() ?: 0,
             title = title, // title 추가
             description = description, // description 추가
-            category = category,
+//            category = category,
             media_files = media_files.map { it.uri },
             info = infoJson.toString(),
             tags = selectedTags,
@@ -264,7 +264,7 @@ class PointSystemFragment : Fragment() {
                 val descriptionPart = pinData.description.toRequestBody("text/plain".toMediaTypeOrNull())
                 val latitudePart = pinData.latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val longitudePart = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-                val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
+//                val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
                 val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
                 val tagsParts = pinData.tags.map { tag ->
                     tag.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -279,7 +279,7 @@ class PointSystemFragment : Fragment() {
                         description = descriptionPart,
                         latitude = latitudePart,
                         longitude = longitudePart,
-                        category = categoryPart,
+//                        category = categoryPart,
                         media_files = mediaFileParts,
                         info = infoPart,
                         tag_ids = tagsParts,

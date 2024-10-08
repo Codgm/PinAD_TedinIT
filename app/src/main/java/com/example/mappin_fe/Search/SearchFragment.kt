@@ -19,8 +19,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mappin_fe.Data.FTag
+import com.example.mappin_fe.Data.FltPinData
 import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.PinDataResponseDeserializer
 import com.example.mappin_fe.Data.RetrofitInstance
+import com.example.mappin_fe.Data.Tag
+import com.example.mappin_fe.Data.TagSearchResponse
+import com.example.mappin_fe.Data.TagsDeserializer
 import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -35,8 +41,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
@@ -44,15 +55,27 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var searchResultsRecyclerView: RecyclerView
     private lateinit var pinAdapter: PinAdapter
     private val searchHistory = mutableListOf<String>()
-    private val searchResults = mutableListOf<PinDataResponse>()
+    private val searchResults = mutableListOf<FltPinData>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var userLocation: LatLng? = null
 
     private var map: GoogleMap? = null
     private var isMapReady = false
+    private lateinit var searchQuery: String
+    private var isTagSearch: Boolean = false
 
     val jsonString = """ [{"id":34,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"3% Discount","description":"Smart Phone","media":"http://7636-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-02-06-31-46-902.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"240\\\",\\\"field3\\\":\\\"3%\\\"}\"}","tags":[{"id":2,"name":"전자기기"},{"id":6,"name":"베스트셀러"}],"created_at":"2024-10-02T06:32:27.849653Z","updated_at":"2024-10-02T06:32:27.880935Z"}, {"id":35,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Discount Event","description":"SmartPhone","media":"http://7636-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-06-19-40-857.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"250\\\",\\\"field3\\\":\\\"5%\\\"}\"}","tags":[{"id":2,"name":"전자기기"},{"id":6,"name":"베스트셀러"}],"created_at":"2024-10-03T06:20:21.709845Z","updated_at":"2024-10-03T06:20:21.768391Z"}]
 """
+    private val tagdata = """
+        {"tags":[{"name": "전자기기", "post_count": 2},{"name": "전자귀기", "post_count": 0}]}""".trimIndent()
+
+    // TagsDeserializer를 사용하는 Gson 인스턴스
+    private val gsonForTags = GsonBuilder()
+        .setLenient()
+        .registerTypeAdapter(object : TypeToken<List<Tag>>() {}.type, TagsDeserializer())
+        .create()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,24 +83,38 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
+        searchQuery =""
+
         searchBar = view.findViewById(R.id.search_bar)
         searchResultsRecyclerView = view.findViewById(R.id.search_results_recycler_view)
 
         // 검색 결과 리스트 어댑터 초기화
+        pinAdapter = PinAdapter(
+            searchResults,
+            { pin -> showPinOnMap(pin) },
+            searchQuery,
+            isTagSearch,
+        )
         searchResultsRecyclerView.layoutManager = LinearLayoutManager(context)
-        pinAdapter = PinAdapter(searchResults) { pin ->
-            showPinOnMap(pin)
-        }
         searchResultsRecyclerView.adapter = pinAdapter
+//        pinAdapter = PinAdapter(searchResults) { pin ->
+//            showPinOnMap(pin)
+//        }
+//        searchResultsRecyclerView.adapter = pinAdapter
 
         // 검색바 입력 이벤트 처리
         searchBar.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val query = v.text.toString().trim()
+                searchQuery = v.text.toString().trim()
+                isTagSearch = searchQuery.startsWith("#")
 
-                if (query.isNotEmpty()) {
+                if (searchQuery.isNotEmpty()) {
                     searchResultsRecyclerView.visibility = View.VISIBLE
-                    searchPins(query) // 서버로 검색 요청
+                    if (isTagSearch) {
+                        searchTags(searchQuery) // 태그 검색 요청
+                    } else {
+                        searchPins(searchQuery) // 일반 핀 검색 요청
+                    }
                 }
                 true
             } else {
@@ -173,84 +210,159 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
+    private fun searchTags(tag: String) {
+        lifecycleScope.launch {
+            try {
+                val cleanTag = tag.substring(1)
+                val response = RetrofitInstance.api.searchTags(cleanTag)
+
+                if (response.isSuccessful()) {
+                    val jsonResponse = response.body()
+                    if (jsonResponse != null) {
+                        // JSON 문자열을 TagResponse 객체로 변환
+                        Log.d("TAG", "Parsed Tags: $jsonResponse")
+//                        val tagList: List<Tag> = gsonForTags.fromJson(jsonResponse, object : TypeToken<List<Tag>>() {}.type)
+                        // RecyclerView에 데이터를 표시하는 로직 추가
+//                        Log.d("TAG", "Parsed Tags: ${jsonResponse.tags}")
+                        displayTagSearchResults(jsonResponse.tags)  // List<Tag>로 넘겨줍니다.
+                    } else {
+                        Log.e("TAG", "Response body is null")
+                    }
+                } else {
+//                    Log.e("TAG", "Error response: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("SearchFragment", "Error during tag search", e)
+                Toast.makeText(requireContext(), "Error during tag search: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun displayTagSearchResults(tagSearchResponse: List<Tag>) {
+        // 태그 결과를 RecyclerView로 표시하는 로직
+        val tagAdapter = TagAdapter(tagSearchResponse, object : TagAdapter.OnItemClickListener {
+            override fun onItemClick(tag: Tag) {
+                // 클릭한 태그로 핀 검색
+                Log.d("tagName", "${tag.name}")
+                searchPins(tag.name, isTagSearch = true) // '#' 제거 후 검색
+            }
+        })
+        searchResultsRecyclerView.adapter = tagAdapter
+        searchResultsRecyclerView.visibility = View.VISIBLE
+    }
+
+
+
 
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
     @SuppressLint("NotifyDataSetChanged")
-    private fun searchPins(query: String) {
+    private fun searchPins(query: String, isTagSearch: Boolean = false) {
         val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자 위치의 위도
         val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자 위치의 경도
         val searchRadius = 10000 // 10km 반경
 
         lifecycleScope.launch {
             try {
-                // 핀 검색
+                //핀 검색
                 val response = RetrofitInstance.api.searchPins(query, userLatitude, userLongitude, searchRadius)
                 Log.d("response", "$response")
 
-                if (response.isSuccessful) {
-                    val Data = jsonString //response.body()?.toString()
-                    Log.d("PinData", "$Data")
-                    if (Data.isNullOrEmpty()) {
+                if (response.isSuccessful()) {
+                    val pinDataList: List<FltPinData>? = response.body()
+                    Log.d("PinData", "$pinDataList")
+                    if (pinDataList.isNullOrEmpty()) {
                         Log.d("SearchFragment", "No pins received")
                         Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
                         searchResultsRecyclerView.visibility = View.GONE
                     } else {
-                        // JSON 배열을 수동으로 파싱
-                        val jsonArray = JSONArray(Data)
-                        Log.d("SearchFragment", "Parsed JSON array: $jsonArray")
+//                        val jsonArray = JSONArray(pinDataList)
+//                        Log.d("SearchFragment", "Parsed JSON array: $jsonArray")
+//                        searchResults.clear()
+//
+//                        for (i in 0 until jsonArray.length()) {
+//                            val jsonObject = jsonArray.getJSONObject(i)
+//
+//                            // JSON에서 데이터를 추출
+//                            val id = jsonObject.getString("id")
+//                            val latitude = jsonObject.getDouble("latitude")
+//                            val longitude = jsonObject.getDouble("longitude")
+//                            val location = jsonObject.getString("location")
+//                            val user = jsonObject.getInt("user")
+//                            val description = jsonObject.getString("description")
+//                            val tagsArray = jsonObject.optJSONArray("tags")
+//                            val tagsList = mutableListOf<FTag>()
+//                            tagsArray?.let {
+//                                for (j in 0 until it.length()) {
+//                                    val tagObject = it.getJSONObject(j)
+//                                    val tagName = tagObject.optString("name", "")
+//                                    if (tagName.isNotEmpty()) {
+//                                        tagsList.add(FTag(tagName)) // FTag 객체 생성
+//                                    }
+//                                }
+//                            }
+//                            val mediaFiles = jsonObject.getString("media")
+//                            jsonObject.put("tags", JSONArray(tagsList))
+//
+//                            val title = jsonObject.optString("title", "제목 없음")
+//                            Log.d("SearchFragment", "Pin title: $title")
+
+//                            val matchesSearch = if (isTagSearch) {
+//                                tagsList.any { it.name.equals(query, ignoreCase = true) } // FTag 객체의 name 속성을 사용하여 비교
+//                            } else {
+//                                tagsList.any { it.name.equals(query, ignoreCase = true) } || title.contains(query, ignoreCase = true)
+//                            }
+//
+//                            if (matchesSearch) {
+//                                val pinData = FltPinData(
+//                                    id = id,
+//                                    latitude = latitude,
+//                                    longitude = longitude,
+//                                    location = location,
+//                                    user = user,
+//                                    title = title,
+//                                    description = description,
+//                                    media = mediaFiles, // 필요 시 media 처리
+//                                    info = jsonObject.opt("info"),
+//                                    tags = tagsList,
+//                                    visibility = jsonObject.optString("visibility", "public"),
+//                                    is_ads = jsonObject.optBoolean("is_ads", false),
+//                                    created_at = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).parse(jsonObject.getString("created_at")),
+//                                    updated_at = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).parse(jsonObject.getString("updated_at"))
+//                                )
+//                                searchResults.add(pinData)
+//                            }
                         searchResults.clear()
 
-                        for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            Log.d("SearchFragment", "Processing JSON object at index $i: $jsonObject")
-
-                            val tagsArray = jsonObject.optJSONArray("tags")
-                            val tagsList = mutableListOf<String>()
-                            tagsArray?.let {
-                                Log.d("SearchFragment", "Found tags array: $tagsArray")
-                                for (j in 0 until it.length()) {
-                                    val tagObject = it.getJSONObject(j)
-                                    val tagName = tagObject.getString("name")
-                                    Log.d("SearchFragment", "Found tag: $tagName")
-                                    tagsList.add(tagName)
-                                }
+                        // 핀 데이터 필터링
+                        for (pin in pinDataList) {
+                            val matchesSearch = if (isTagSearch) {
+                                pin.tags.any { it.name.equals(query, ignoreCase = true) } // FTag 객체의 name 속성을 사용하여 비교
+                            } else {
+                                pin.tags.any { it.name.equals(query, ignoreCase = true) } || pin.title.contains(query, ignoreCase = true)
                             }
 
-                            val title = jsonObject.optString("title", "제목 없음")
-                            Log.d("SearchFragment", "Pin title: $title")
-                            if (title.contains(
-                                    query,
-                                    ignoreCase = true
-                                ) || tagsList.any { it.contains(query, ignoreCase = true) }
-                            ) {
-                                if (jsonObject.has("media")) {
-                                    val media = jsonObject.getString("media")
-                                    Log.d("SearchFragment", "Found media: $media")
-                                    jsonObject.put(
-                                        "media_files",
-                                        JSONArray().put(media)
-                                    ) // media_files로 추가
-                                }
-
-                                jsonObject.remove("tags")
-
-                                val pinData = Gson().fromJson(
-                                    jsonObject.toString(),
-                                    PinDataResponse::class.java
-                                )
-                                Log.d("SearchFragment", "Parsed PinDataResponse: $pinData")
-                                searchResults.add(pinData)
-                                Log.d("SearchFragment", "Added pin data to searchResults, total count: ${searchResults.size}")
-                                pinAdapter.notifyDataSetChanged() // 어댑터에 데이터 변경 알림
-                                searchResultsRecyclerView.visibility = View.VISIBLE // 결과가 있으면 RecyclerView를 보이게 설정
-                                Log.d("SearchFragment", "Search results count: ${searchResults.size}")
+                            if (matchesSearch) {
+                                searchResults.add(pin)
                             }
                         }
+
+                        pinAdapter = PinAdapter(
+                            searchResults,
+                            { pin -> showPinOnMap(pin) },
+                            searchQuery,
+                            isTagSearch,
+                        )
+                        searchResultsRecyclerView.adapter = pinAdapter
+                        pinAdapter.notifyDataSetChanged()
+                        searchResultsRecyclerView.visibility = View.VISIBLE
+                        Log.d("SearchFragment", "Search results count: ${searchResults.size}")
                     }
-                } else {
-                    Log.e("SearchFragment", "Failed to fetch search results: ${response.errorBody()?.string()}")
-                    Toast.makeText(requireContext(), "Error fetching pins: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Log.d("SearchFragment", "No pins received")
+                    Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
+                    searchResultsRecyclerView.visibility = View.GONE
                 }
             } catch (e: Exception) {
                 Log.e("SearchFragment", "Error during search", e)
@@ -308,7 +420,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
 
 
-    private fun showPinOnMap(pin: PinDataResponse) {
+    private fun showPinOnMap(pin: FltPinData) {
         // 핀 위치에서 위도와 경도 추출
         Log.d("Pin", "$pin")
         val locationStr = pin.location // 핀의 위치 문자열
@@ -320,7 +432,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             val title = pin.title ?: "제목 없음"
             val description = pin.description ?: "설명 없음"
             val isAds = pin.is_ads
-            val media_files = pin.media_files
+            val media_files = pin.media
             Log.d("pindata", "$title, $description, $isAds")
             Log.d("pindata", "Media Files: $media_files")
 

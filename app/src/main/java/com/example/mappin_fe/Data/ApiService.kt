@@ -38,7 +38,7 @@ interface ApiService {
         @Part("description") description: RequestBody,
         @Part("latitude") latitude: RequestBody,
         @Part("longitude") longitude: RequestBody,
-        @Part("category") category: RequestBody,
+//        @Part("category") category: RequestBody,
         @Part media_files: List<MultipartBody.Part>,
         @Part("info") info: RequestBody,
         @Part("tag_ids") tag_ids: ArrayList<RequestBody>,
@@ -52,7 +52,13 @@ interface ApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("radius") radius: Int
-    ): Response<List<PinDataResponse>>
+    ): Response<List<FltPinData>>
+
+    @GET("pins/search_tags/")
+    suspend fun searchTags(
+        @Query("keyword") keyword: String?,
+    ): Response<TagSearchResponse>
+
 
     @DELETE("users/")
     suspend fun deleteUser(): Response<Unit>
