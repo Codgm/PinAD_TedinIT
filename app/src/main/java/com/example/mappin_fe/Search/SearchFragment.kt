@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mappin_fe.Data.FTag
 import com.example.mappin_fe.Data.FltPinData
 import com.example.mappin_fe.Data.PinDataResponse
-import com.example.mappin_fe.Data.PinDataResponseDeserializer
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.Tag
 import com.example.mappin_fe.Data.TagSearchResponse
@@ -146,7 +145,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         setMapStyle(map!!)
 
         map?.setOnMarkerClickListener { marker ->
-            val pinData = marker.tag as? PinDataResponse
+            val pinData = marker.tag as? FltPinData
             Log.d("pinData", "$pinData")
             if (pinData != null) {
                 val bottomSheet = PinDetailBottomSheet.newInstance(Gson().toJson(pinData))
@@ -454,7 +453,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                     .snippet(description)
                     .icon(markerIcon)
             )
-            marker?.tag = pin // 마커에 데이터 태그 추가 (PinDataResponse 객체)
+            val pinJson = Gson().toJson(pin)
+            marker?.tag = pinJson// 마커에 데이터 태그 추가 (PinDataResponse 객체)
 
             // 카메라를 해당 핀 위치로 이동
             map?.animateCamera(CameraUpdateFactory.newLatLng(pinLocation))

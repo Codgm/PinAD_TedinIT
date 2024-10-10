@@ -19,8 +19,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.mappin_fe.Data.FltPinData
 import com.example.mappin_fe.Data.PinDataResponse
-import com.example.mappin_fe.Data.PinDataResponseDeserializer
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.PinDetailBottomSheet
 import com.example.mappin_fe.R
@@ -58,12 +58,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: LatLng? = null
-
-    // PinDataResponseDeserializer를 사용하는 Gson 인스턴스
-    private val gsonForPins = GsonBuilder()
-        .setLenient()
-        .registerTypeAdapter(PinDataResponse::class.java, PinDataResponseDeserializer())
-        .create()
 
     val Pinsresponse = """[{"id":36,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Book Discount","description":"Note","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-07-11-05-409.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"memo Note\\\",\\\"field2\\\":\\\"500\\\",\\\"field3\\\":\\\"10%\\\"}\"}","tags":[{"name":"도서"}],"created_at":"2024-10-03T07:11:54.225696Z","updated_at":"2024-10-03T07:11:54.257033Z"},{"id":34,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"3% Discount","description":"Smart Phone","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-02-06-31-46-902.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"240\\\",\\\"field3\\\":\\\"3%\\\"}\"}","tags":[{"name":"전자기기"},{"name":"베스트셀러"}],"created_at":"2024-10-02T06:32:27.849653Z","updated_at":"2024-10-02T06:32:27.880935Z"},{"id":35,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Discount Event","description":"SmartPhone","media":"http://896a-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-06-19-40-857.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"250\\\",\\\"field3\\\":\\\"5%\\\"}\"}","tags":[{"name":"전자기기"},{"name":"베스트셀러"}],"created_at":"2024-10-03T06:20:21.709845Z","updated_at":"2024-10-03T06:20:21.768391Z"}]
 """
@@ -125,8 +119,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val pinDataJson = marker.tag as? String
             Log.d("MarkerClick", "Clicked marker data: $pinDataJson")
             if (pinDataJson != null) {
+                Log.d("BottomSheet", "Attempting to show bottom sheet")
                 val bottomSheet = PinDetailBottomSheet.newInstance(pinDataJson)
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+                Log.d("BottomSheet", "Bottom sheet show() called")
+            } else {
+                Log.e("MarkerClick", "Marker tag is null or not a String")
             }
             true
         }
@@ -183,74 +181,82 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun loadAndShowPin() {
         lifecycleScope.launch {
             try {
-                Log.d("PinDataFetch", "Starting pin data fetch")
-                val pinDataListString = Pinsresponse //RetrofitInstance.api.getUserPins()
-                Log.d("PinDataFetch", "Fetched Pins: $pinDataListString")
+                // 핀 데이터 가져오기
+                val response = RetrofitInstance.api.getUserPins()
+                Log.d("PinDataFetch", "$response")
 
-                if (pinDataListString.isEmpty()) {
+                if (response.isSuccessful) {
+                    val pinDataList: List<FltPinData>? = response.body()
+                    Log.d("PinData", "$pinDataList")
+
+                    if (pinDataList.isNullOrEmpty()) {
+                        Log.d("PinDataFetch", "No pins received")
+                        Toast.makeText(requireContext(), "No pins available", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+
+                    val builder = LatLngBounds.Builder()
+                    var hasPins = false
+
+                    // 핀 데이터 처리
+                    for (pin in pinDataList) {
+                        // 위치 문자열에서 위도와 경도 추출
+                        val locationStr = pin.location
+                        val regex = """POINT \((-?\d+\.?\d*) (-?\d+\.?\d*)\)""".toRegex()
+                        val matchResult = regex.find(locationStr)
+
+                        if (matchResult != null) {
+                            val (longitude, latitude) = matchResult.destructured
+                            val title = pin.title ?: "제목 없음"
+                            val description = pin.description ?: "설명 없음"
+                            val isAds = pin.is_ads
+                            val mediaFiles = pin.media
+                            Log.d("PinDataFetch", "$title, $description, $isAds")
+                            Log.d("PinDataFetch", "Media Files: $mediaFiles")
+
+                            val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
+                            builder.include(pinLocation)
+                            hasPins = true
+
+                            // 광고 여부에 따른 마커 색상 설정
+                            val borderColor = if (isAds == true) {
+                                Color.parseColor("#C8E6C9") // 광고용 색상
+                            } else {
+                                Color.parseColor("#FFAB91") // 일반 핀 색상
+                            }
+
+                            // 마커 생성
+                            val markerIcon = createMarkerIcon(borderColor)
+                            val marker = googleMap.addMarker(
+                                MarkerOptions()
+                                    .position(pinLocation)
+                                    .title(title)
+                                    .snippet(description)
+                                    .icon(markerIcon)
+                            )
+                            val pinJson = Gson().toJson(pin)
+                            marker?.tag = pinJson // 마커에 핀 데이터를 태그로 추가
+                        }
+                    }
+
+                    // 모든 핀을 포함하는 영역으로 카메라 이동
+                    if (hasPins) {
+                        val bounds = builder.build()
+                        val padding = 100 // 화면 가장자리와의 여백
+                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                        googleMap.animateCamera(cameraUpdate)
+                    }
+                } else {
                     Log.d("PinDataFetch", "No pins received")
                     Toast.makeText(requireContext(), "No pins available", Toast.LENGTH_SHORT).show()
-                    return@launch
-                }
-
-                val jsonArray = JSONArray(pinDataListString)
-                val builder = LatLngBounds.Builder()
-                var hasPins = false
-
-                for (i in 0 until jsonArray.length()) {
-                    val jsonString = jsonArray.getString(i)
-                    val jsonObject = JSONObject(jsonString)
-
-                    // location 문자열에서 위도와 경도 추출
-                    val locationStr = jsonObject.getString("location")
-                    val regex = """POINT \((-?\d+\.?\d*) (-?\d+\.?\d*)\)""".toRegex()
-                    val matchResult = regex.find(locationStr)
-
-                    if (matchResult != null) {
-                        val (longitude, latitude) = matchResult.destructured
-                        val title = jsonObject.optString("title", "제목 없음")
-                        val description = jsonObject.optString("description", "설명 없음")
-                        val isAds = jsonObject.optBoolean("is_ads", true)
-                        val media_files = jsonObject.getString("media")
-                        Log.d("PinDataFetch", "Media Files: $media_files")
-
-                        val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
-                        builder.include(pinLocation)
-                        hasPins = true
-
-                        // 광고 여부에 따라 색상 설정
-                        val borderColor = if (isAds) {
-                            Color.parseColor("#C8E6C9") // 광고용 색상
-                        } else {
-                            Color.parseColor("#FFAB91") // 일반 핀 색상
-                        }
-
-                        // 마커 생성
-                        val markerIcon = createMarkerIcon(borderColor)
-                        val marker = googleMap.addMarker(
-                            MarkerOptions()
-                                .position(pinLocation)
-                                .title(title)
-                                .snippet(description)
-                                .icon(markerIcon)
-                        )
-                        marker?.tag = Gson().toJson(jsonObject)
-                    }
-                }
-
-                // 모든 핀을 포함하는 영역으로 카메라 이동
-                if (hasPins) {
-                    val bounds = builder.build()
-                    val padding = 100 // 화면 가장자리와의 여백
-                    val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                    googleMap.animateCamera(cameraUpdate)
                 }
             } catch (e: Exception) {
-                Log.e("LoadPinData", "Error: ${e.message}", e)
+                Log.e("PinDataFetch", "Error: ${e.message}", e)
                 Toast.makeText(requireContext(), "Error loading pins: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
 
     private fun setMapStyle(map: GoogleMap) {

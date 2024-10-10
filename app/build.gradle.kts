@@ -81,6 +81,7 @@ dependencies {
     // Gson 변환기
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

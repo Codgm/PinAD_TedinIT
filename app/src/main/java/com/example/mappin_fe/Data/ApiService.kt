@@ -29,7 +29,10 @@ interface ApiService {
     ): Response<Void>
 
     @GET("pins/") // 핀 데이터 API 엔드포인트
-    suspend fun getUserPins(): List<PinDataResponse>
+    suspend fun getUserPins(): Response<List<FltPinData>>
+
+    @GET("pins/")
+    suspend fun getPins(): Response<List<FltPinData>>
 
     @Multipart
     @POST("pins/")

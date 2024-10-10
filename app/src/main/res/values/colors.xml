@@ -19,6 +19,10 @@
     <color name="colorOnSurfaceLight">#4A148C</color> <!-- 어두운 보라색 텍스트 -->
     <color name="errorLight">#FF0000</color> <!-- 붉은색 -->
     <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="tag_background">#F0F0F0</color>
+    <color name="tag_selected_background">#E0E0E0</color>
+    <color name="tag_text_color">#333333</color>
+    <color name="tag_selected_text_color">#000000</color>
 
     <!-- 현재 포인트 색상 -->
     <color name="points_color">#B200FF</color>
