@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://dbb9-175-198-127-14.ngrok-free.app/"
+    private const val BASE_URL = "https://64fd-175-198-127-14.ngrok-free.app/"
     private var accessToken: String? = null
     private var refreshToken: String? = null
 
@@ -64,6 +64,10 @@ object RetrofitInstance {
             .build()
     }
 
+    fun getAccessToken(): String? {
+        return accessToken
+    }
+
     private val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -82,4 +86,5 @@ object RetrofitInstance {
         // 성공하면 Pair(newAccessToken, newRefreshToken)을 반환, 실패하면 null 반환
         return null // 임시 반환값, 실제 구현 필요
     }
+
 }

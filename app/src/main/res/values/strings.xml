@@ -42,4 +42,5 @@
         <item>4 hours (100 Points)</item>
         <item>8 hours (200 Points)</item>
     </string-array>
+    <string name="qr_code">QR 코드</string>
 </resources>

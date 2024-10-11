@@ -2,6 +2,7 @@ package com.example.mappin_fe.Data
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -65,5 +66,13 @@ interface ApiService {
 
     @DELETE("users/")
     suspend fun deleteUser(): Response<Unit>
+
+    @POST("/coupons/issue/")
+    fun issueCoupon(@Body couponRequest: Map<String, String>): Call<ResponseBody>
+
+    @GET("/coupons/show/")
+    suspend fun showCoupons(
+        @Header("Authorization") token: String
+    ): Response<CouponResponse>
 
 }

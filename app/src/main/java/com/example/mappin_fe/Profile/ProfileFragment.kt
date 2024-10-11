@@ -1,6 +1,9 @@
 package com.example.mappin_fe.Profile
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +11,19 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.mappin_fe.Data.CouponResponse
+import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
+import com.navercorp.nid.oauth.NidOAuthPreferencesManager.accessToken
+import kotlinx.coroutines.launch
+import retrofit2.Response
+
 //import com.google.firebase.auth.FirebaseAuth
 //import com.google.firebase.database.*
 
@@ -24,8 +37,10 @@ class ProfileFragment : Fragment() {
     private lateinit var btnChargePoints: Button
     private lateinit var btnSettings: Button
     private lateinit var tvInterests: TextView
+    private lateinit var btnCouponBox: Button
 
-//    private lateinit var firebaseAuth: FirebaseAuth
+
+    //    private lateinit var firebaseAuth: FirebaseAuth
 //    private lateinit var databaseReference: DatabaseReference
     private lateinit var currentUserUid: String
 
@@ -44,6 +59,12 @@ class ProfileFragment : Fragment() {
         btnChargePoints = view.findViewById(R.id.btnChargePoints)
         btnSettings = view.findViewById(R.id.btnSettings)
         tvInterests = view.findViewById(R.id.tvInterests)
+        btnCouponBox = view.findViewById(R.id.btnCouponBox)
+
+        btnCouponBox.setOnClickListener {
+            showCouponDialog()
+        }
+
 
         // Firebase 초기화
 //        firebaseAuth = FirebaseAuth.getInstance()
@@ -68,6 +89,13 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun showCouponDialog() {
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_body_container, CouponDialogFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun loadUserProfile() {

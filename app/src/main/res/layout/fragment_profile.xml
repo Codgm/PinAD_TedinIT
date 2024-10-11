@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorBackground"
@@ -117,6 +118,16 @@
                 android:background="?attr/colorPrimary"
                 android:textColor="?attr/colorOnPrimary"/>
         </LinearLayout>
+
+        <!-- 보유 쿠폰 카드 -->
+        <Button
+            android:id="@+id/btnCouponBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="내 쿠폰함"
+            android:layout_marginTop="16dp"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorOnPrimary" />
 
         <!-- 설정 버튼 -->
         <Button

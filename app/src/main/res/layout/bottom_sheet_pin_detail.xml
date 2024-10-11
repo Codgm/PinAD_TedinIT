@@ -31,13 +31,13 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@id/btnPurchase"
+            app:layout_constraintEnd_toStartOf="@id/btnIssueCoupon"
             app:layout_constraintStart_toEndOf="@id/chronometer"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 구매 버튼 -->
         <Button
-            android:id="@+id/btnPurchase"
+            android:id="@+id/btnIssueCoupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

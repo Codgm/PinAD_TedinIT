@@ -11,9 +11,12 @@ import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
 import com.example.mappin_fe.Data.PinDataResponse
+import com.example.mappin_fe.Data.RetrofitInstance
+import com.example.mappin_fe.Profile.ProfileFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -22,7 +25,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import okhttp3.ResponseBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.reflect.Type
 import java.util.*
 
@@ -82,16 +89,17 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             text = "Duration: $duration hours"
             visibility = if (duration > 0) View.VISIBLE else View.GONE
         }
-        setupPurchaseButton(view, pinData)
+
+        val btnIssueCoupon = view.findViewById<Button>(R.id.btnIssueCoupon)
+        btnIssueCoupon.visibility = if (pinData.is_ads == true) View.VISIBLE else View.GONE
+        btnIssueCoupon.setOnClickListener {
+            issueCoupon("8020e1cd")  // 예시 쿠폰 코드
+        }
+
 //        setupTags(view, pinData)
         setupChronometer(view, pinData, duration)
         setupProgressBar(view)
         setupMoreDetailsButton(view, pinData, jsonObject)
-    }
-
-    private fun setupPurchaseButton(view: View, pinData: PinDataResponse) {
-        val btnPurchase = view.findViewById<Button>(R.id.btnPurchase)
-        btnPurchase.visibility = if (pinData.is_ads == true) View.VISIBLE else View.GONE
     }
 
     private class TagsDeserializer : JsonDeserializer<List<Any>> {
@@ -134,6 +142,40 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         progressBar.max = maxParticipants
         progressBar.progress = currentParticipants
         view.findViewById<TextView>(R.id.tvParticipantInfo).text = "Current participants: $currentParticipants / $maxParticipants"
+    }
+
+    private fun issueCoupon(couponCode: String) {
+        val couponRequest = mapOf("coupon_code" to couponCode)
+
+        val call = RetrofitInstance.api.issueCoupon(couponRequest)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.d("CouponIssue", "Coupon issued successfully")
+                    // 성공 메시지 표시
+                    Toast.makeText(context, "쿠폰 발급 성공", Toast.LENGTH_SHORT).show()
+                    navigateToProfileFragment()
+                } else {
+                    Log.e("CouponIssue", "Error issuing coupon: ${response.errorBody()?.string()}")
+                    // 오류 메시지 표시
+                    Toast.makeText(context, "쿠폰 발급 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("CouponIssue", "Failure: ${t.message}", t)
+                // 네트워크 오류 메시지 표시
+                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun navigateToProfileFragment() {
+        val profileFragment = ProfileFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_body_container, profileFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupMoreDetailsButton(view: View, pinData: PinDataResponse, jsonObject: JSONObject) {

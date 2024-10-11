@@ -127,7 +127,39 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- Page 4: Interests -->
+        <!-- 프로필 사진 업로드 레이아웃 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="프로필 사진 업로드"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <ImageView
+                android:id="@+id/imageViewProfilePhoto"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray" />
+
+            <Button
+                android:id="@+id/btnUploadProfilePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사진 선택"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+        <!-- Page 5: 관심 쇼핑 품목 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -137,7 +169,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="관심사를 선택해주세요"
+                android:text="관심있는 쇼핑 품목을 선택해주세요"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -184,21 +216,21 @@
                 android:layout_marginTop="16dp">
 
                 <EditText
-                    android:id="@+id/etAddInterest"
+                    android:id="@+id/etAddShoppingInterest"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 관심사 추가"/>
+                    android:hint="새로운 쇼핑 품목 추가"/>
 
                 <Button
-                    android:id="@+id/btnAddInterest"
+                    android:id="@+id/btnAddShoppingInterest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="추가"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Page 5: Shopping Regions -->
+        <!-- Page 6: Shopping Regions -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -247,6 +279,26 @@
                     android:text="인천"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/etAddShoppingArea"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="새로운 지역 추가"/>
+
+                <Button
+                    android:id="@+id/btnAddShoppingArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="추가"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Page 6: Preferred Brands -->
@@ -298,6 +350,26 @@
                     android:text="애플"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/etAddBrand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="새로운 브랜드 추가"/>
+
+                <Button
+                    android:id="@+id/btnAddBrand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="추가"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- 쇼핑 중요 요소 선택 -->
@@ -345,6 +417,26 @@
                     android:text="브랜드"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/etAddPriority"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="새로운 중요요소 추가"/>
+
+                <Button
+                    android:id="@+id/btnAddPriority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="추가"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -394,6 +486,26 @@
                     android:text="요리"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/etAddHobby"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="새로운 관심사 및 취미 추가"/>
+
+                <Button
+                    android:id="@+id/btnAddHobby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="추가"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -590,6 +702,14 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <ImageView
+                android:id="@+id/imageViewInterestProduct"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray" />
+
             <!-- 관심 제품 이미지 업로드 버튼 -->
             <Button
                 android:id="@+id/btnUploadInterestImage"
@@ -597,6 +717,7 @@
                 android:layout_height="wrap_content"
                 android:text="관심 제품 이미지 업로드"
                 app:layout_constraintTop_toBottomOf="@+id/etCouponRecipient"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -605,6 +726,14 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <ImageView
+                android:id="@+id/imageViewRelatedProduct"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray" />
+
             <!-- 관련 제품 이미지 업로드 버튼 -->
             <Button
                 android:id="@+id/btnUploadRelatedImage"
@@ -612,8 +741,8 @@
                 android:layout_height="wrap_content"
                 android:text="관련 제품 이미지 업로드"
                 app:layout_constraintStart_toEndOf="@+id/btnUploadInterestImage"
-                app:layout_constraintTop_toBottomOf="@+id/etCouponRecipient"
-                android:layout_marginStart="16dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/etCouponRecipient" />
+
         </LinearLayout>
     </ViewFlipper>
 

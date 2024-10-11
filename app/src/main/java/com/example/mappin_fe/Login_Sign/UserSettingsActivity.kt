@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
@@ -23,6 +24,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.MainActivity
@@ -30,22 +32,36 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class UserSettingsActivity : AppCompatActivity() {
     private var accessToken: String? = null
 
 //    private lateinit var etNickname: EditText
-//    private lateinit var chipGroupInterests: ChipGroup
+    private lateinit var chipGroupInterests: ChipGroup
     private lateinit var etAddInterest: EditText
 //    private lateinit var btnAddInterest: Button
     private lateinit var viewFlipper: ViewFlipper
     private lateinit var btnNext: Button
     private lateinit var btnPrevious: Button
+    private lateinit var btnUploadProfilePhoto: Button
+    private lateinit var btnUploadProductImage: Button
+    private lateinit var btnUploadRelatedImage: Button
+    private lateinit var ivProfilePhoto: ImageView
+    private var profilePhotoUri: Uri? = null
     private val userResponses = mutableMapOf<String, Any>()
+    private lateinit var imageViewProfilePhoto: ImageView
+    private lateinit var imageViewRelatedImage: ImageView
+    private lateinit var imageViewProductImage: ImageView
+
 
     companion object {
         private const val REQUEST_CODE_PRODUCT_IMAGE = 1001
         private const val REQUEST_CODE_RELATED_IMAGE = 1002
+        private const val REQUEST_CODE_PROFILE_PHOTO = 1003
     }
 
     // Define color resources for chips
@@ -64,8 +80,24 @@ class UserSettingsActivity : AppCompatActivity() {
         viewFlipper = findViewById(R.id.viewFlipper)
         btnNext = findViewById(R.id.btnNext)
         btnPrevious = findViewById(R.id.btnPrevious)
+        btnUploadProfilePhoto = findViewById(R.id.btnUploadProfilePhoto)
+        btnUploadProductImage = findViewById(R.id.btnUploadInterestImage)
+        btnUploadRelatedImage = findViewById(R.id.btnUploadRelatedImage)
+        imageViewProfilePhoto = findViewById(R.id.imageViewProfilePhoto) // 레이아웃에서 해당 ID로 ImageView를 찾기
+        imageViewProductImage = findViewById(R.id.imageViewInterestProduct)
+        imageViewRelatedImage = findViewById(R.id.imageViewRelatedProduct)
 
         initializeViews()
+
+        btnUploadProfilePhoto.setOnClickListener {
+            uploadProfilePhoto()
+        }
+        btnUploadProductImage.setOnClickListener {
+            uploadProductImage()
+        }
+        btnUploadRelatedImage.setOnClickListener {
+            uploadRelatedImage()
+        }
 
         btnNext.setOnClickListener {
             if (viewFlipper.displayedChild < viewFlipper.childCount - 1) {
@@ -73,7 +105,7 @@ class UserSettingsActivity : AppCompatActivity() {
                 viewFlipper.showNext()
                 updateButtonVisibility()
             } else {
-//                saveUserSettings()
+                saveUserSettings()
             }
         }
 
@@ -119,7 +151,7 @@ class UserSettingsActivity : AppCompatActivity() {
             userResponses["gender"] = gender
         }
 
-        // 2. 연령대 선택
+        // 3. 연령대 선택
         val ageRadioGroup = findViewById<RadioGroup>(R.id.radioGroupAge)
         ageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val age = when (checkedId) {
@@ -135,6 +167,17 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // 3. 관심 쇼핑 품목
         val shoppingInterestsChipGroup = findViewById<ChipGroup>(R.id.chipGroupShoppingInterests)
+        val etAddShoppingInterest = findViewById<EditText>(R.id.etAddShoppingInterest)
+        val btnAddShoppingInterest = findViewById<Button>(R.id.btnAddShoppingInterest)
+
+        btnAddShoppingInterest.setOnClickListener {
+            val newInterest = etAddShoppingInterest.text.toString()
+            if (newInterest.isNotEmpty()) {
+                addChipToGroup(shoppingInterestsChipGroup, newInterest)
+                etAddShoppingInterest.text.clear() // Clear the input field after adding
+            }
+        }
+
         shoppingInterestsChipGroup.setOnCheckedChangeListener { group, _ ->
             val interests = group.checkedChipIds.map { id ->
                 (group.findViewById<Chip>(id)).text.toString()
@@ -144,6 +187,17 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // 4. 주로 쇼핑하는 지역
         val shoppingAreasChipGroup = findViewById<ChipGroup>(R.id.chipGroupShoppingAreas)
+        val etAddShoppingArea = findViewById<EditText>(R.id.etAddShoppingArea)
+        val btnAddShoppingArea = findViewById<Button>(R.id.btnAddShoppingArea)
+
+        btnAddShoppingArea.setOnClickListener {
+            val newArea = etAddShoppingArea.text.toString()
+            if (newArea.isNotEmpty()) {
+                addChipToGroup(shoppingAreasChipGroup, newArea)
+                etAddShoppingArea.text.clear()
+            }
+        }
+
         shoppingAreasChipGroup.setOnCheckedChangeListener { group, _ ->
             val areas = group.checkedChipIds.map { id ->
                 (group.findViewById<Chip>(id)).text.toString()
@@ -153,6 +207,17 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // 5. 선호하는 브랜드
         val brandPreferencesChipGroup = findViewById<ChipGroup>(R.id.chipGroupPreferredBrands)
+        val etAddBrand = findViewById<EditText>(R.id.etAddBrand)
+        val btnAddBrand = findViewById<Button>(R.id.btnAddBrand)
+
+        btnAddBrand.setOnClickListener {
+            val newBrand = etAddBrand.text.toString()
+            if (newBrand.isNotEmpty()) {
+                addChipToGroup(brandPreferencesChipGroup, newBrand)
+                etAddBrand.text.clear()
+            }
+        }
+
         brandPreferencesChipGroup.setOnCheckedChangeListener { group, _ ->
             val brands = group.checkedChipIds.map { id ->
                 (group.findViewById<Chip>(id)).text.toString()
@@ -162,6 +227,17 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // 6. 쇼핑 시 중요 요소
         val shoppingPrioritiesChipGroup = findViewById<ChipGroup>(R.id.chipGroupImportance)
+        val etAddPriority = findViewById<EditText>(R.id.etAddPriority)
+        val btnAddPriority = findViewById<Button>(R.id.btnAddPriority)
+
+        btnAddPriority.setOnClickListener {
+            val newPriority = etAddPriority.text.toString()
+            if (newPriority.isNotEmpty()) {
+                addChipToGroup(shoppingPrioritiesChipGroup, newPriority)
+                etAddPriority.text.clear()
+            }
+        }
+
         shoppingPrioritiesChipGroup.setOnCheckedChangeListener { group, _ ->
             val priorities = group.checkedChipIds.map { id ->
                 (group.findViewById<Chip>(id)).text.toString()
@@ -171,6 +247,17 @@ class UserSettingsActivity : AppCompatActivity() {
 
         // 7. 관심사 및 취미
         val hobbiesInterestsChipGroup = findViewById<ChipGroup>(R.id.chipGroupHobbiesInterests)
+        val etAddHobby = findViewById<EditText>(R.id.etAddHobby)
+        val btnAddHobby = findViewById<Button>(R.id.btnAddHobby)
+
+        btnAddHobby.setOnClickListener {
+            val newHobby = etAddHobby.text.toString()
+            if (newHobby.isNotEmpty()) {
+                addChipToGroup(hobbiesInterestsChipGroup, newHobby)
+                etAddHobby.text.clear()
+            }
+        }
+
         hobbiesInterestsChipGroup.setOnCheckedChangeListener { group, _ ->
             val hobbies = group.checkedChipIds.map { id ->
                 (group.findViewById<Chip>(id)).text.toString()
@@ -232,22 +319,18 @@ class UserSettingsActivity : AppCompatActivity() {
         }
 
         // 12. 관심 제품 이미지 업로드
-        val btnUploadProductImage = findViewById<Button>(R.id.btnUploadInterestImage)
-        btnUploadProductImage.setOnClickListener {
-            // TODO: Implement image upload functionality
-            // 이미지 선택 후 업로드 로직을 구현해야 합니다.
-            // 업로드된 이미지의 URL 또는 식별자를 userResponses에 저장합니다.
-            uploadImage(isRelatedImage = false)
-        }
-
-        // 13. 관련 제품 이미지 업로드
-        val btnUploadRelatedImage = findViewById<Button>(R.id.btnUploadRelatedImage)
-        btnUploadRelatedImage.setOnClickListener {
-            // TODO: Implement image upload functionality
-            // 이미지 선택 후 업로드 로직을 구현해야 합니다.
-            // 업로드된 이미지의 URL 또는 식별자를 userResponses에 저장합니다.
-            uploadImage(isRelatedImage = true)
-        }
+//        val btnUploadProductImage = findViewById<Button>(R.id.btnUploadInterestImage)
+//        btnUploadProductImage.setOnClickListener {
+//            // 관심 제품 이미지를 업로드합니다.
+//            uploadImage(REQUEST_CODE_PRODUCT_IMAGE)
+//        }
+//
+//        // 13. 관련 제품 이미지 업로드
+//        val btnUploadRelatedImage = findViewById<Button>(R.id.btnUploadRelatedImage)
+//        btnUploadRelatedImage.setOnClickListener {
+//            // 관련 제품 이미지를 업로드합니다.
+//            uploadImage(REQUEST_CODE_RELATED_IMAGE)
+//        }
     }
 
     private fun saveCurrentPageResponse() {
@@ -285,6 +368,9 @@ class UserSettingsActivity : AppCompatActivity() {
                 }
             }
             3 -> {
+                // 프로필 사진 저장 (이미 uploadImageToServer에서 처리됨)
+            }
+            4 -> {
                 // 관심 쇼핑 영역 저장
                 val selectedInterests = findViewById<ChipGroup>(R.id.chipGroupShoppingInterests).checkedChipIds.map { id ->
                     findViewById<Chip>(id).text.toString()
@@ -293,7 +379,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["shoppingInterests"] = selectedInterests
                 }
             }
-            4 -> {
+            5 -> {
                 // 쇼핑 지역 저장
                 val selectedAreas = findViewById<ChipGroup>(R.id.chipGroupShoppingAreas).checkedChipIds.map { id ->
                     findViewById<Chip>(id).text.toString()
@@ -302,7 +388,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["shoppingAreas"] = selectedAreas
                 }
             }
-            5 -> {
+            6 -> {
                 // 선호 브랜드 저장
                 val selectedBrands = findViewById<ChipGroup>(R.id.chipGroupPreferredBrands).checkedChipIds.map { id ->
                     findViewById<Chip>(id).text.toString()
@@ -311,7 +397,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["brandPreferences"] = selectedBrands
                 }
             }
-            6 -> {
+            7 -> {
                 // 쇼핑 우선순위 저장
                 val selectedPriorities = findViewById<ChipGroup>(R.id.chipGroupImportance).checkedChipIds.map { id ->
                     findViewById<Chip>(id).text.toString()
@@ -320,7 +406,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["shoppingPriorities"] = selectedPriorities
                 }
             }
-            7 -> {
+            8 -> {
                 // 취미와 관심사 저장
                 val selectedHobbies = findViewById<ChipGroup>(R.id.chipGroupHobbiesInterests).checkedChipIds.map { id ->
                     findViewById<Chip>(id).text.toString()
@@ -329,7 +415,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["hobbiesInterests"] = selectedHobbies
                 }
             }
-            8 -> {
+            9 -> {
                 // 선호하는 쇼핑 시간대 저장
                 val selectedTimeId = findViewById<RadioGroup>(R.id.radioGroupShoppingTime).checkedRadioButtonId
                 val preferredShoppingTime = if (selectedTimeId != -1) {
@@ -341,7 +427,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["preferredShoppingTime"] = it
                 }
             }
-            9 -> {
+            10 -> {
                 // 알림 반경 및 제한 저장
                 val notificationRadiusId = findViewById<RadioGroup>(R.id.radioGroupNotificationRadius).checkedRadioButtonId
                 val notificationRadius = if (notificationRadiusId != -1) {
@@ -353,7 +439,7 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["notificationRadius"] = it
                 }
             }
-            10 -> {
+            11 -> {
                 // 하루 최대 푸시 알림 개수 저장
                 val maxPushNotificationsId = findViewById<RadioGroup>(R.id.radioGroupMaxNotifications).checkedRadioButtonId
                 val maxPushNotifications = if (maxPushNotificationsId != -1) {
@@ -365,28 +451,39 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["maxPushNotifications"] = it
                 }
             }
-            11 -> {
+            12 -> {
                 // 쿠폰/선물 입력 저장
                 val couponGift = findViewById<EditText>(R.id.etCouponGift).text.toString().trim()
                 if (couponGift.isNotEmpty()) {
                     userResponses["couponGift"] = couponGift
                 }
             }
-            12 -> {
-                // 관심 제품 이미지 업로드 저장
-                val interestProductImageUri = findViewById<Button>(R.id.btnUploadInterestImage) // 이미지 URI 저장
-                interestProductImageUri?.let {
-                    userResponses["interestProductImage"] = it.toString()
-                }
-            }
             13 -> {
-                // 관련 제품 이미지 업로드 저장
-                val relatedProductImageUri = findViewById<Button>(R.id.btnUploadRelatedImage) // 이미지 URI 저장
-                relatedProductImageUri?.let {
-                    userResponses["relatedProductImage"] = it.toString()
-                }
+//                // 관심 제품 이미지 업로드 저장
+//                val interestProductImageUri = findViewById<Button>(R.id.btnUploadInterestImage) // 이미지 URI 저장
+//                interestProductImageUri?.let {
+//                    userResponses["interestProductImage"] = it.toString()
+//                }
+            }
+            14 -> {
+//                // 관련 제품 이미지 업로드 저장
+//                val relatedProductImageUri = findViewById<Button>(R.id.btnUploadRelatedImage) // 이미지 URI 저장
+//                relatedProductImageUri?.let {
+//                    userResponses["relatedProductImage"] = it.toString()
+//                }
             }
         }
+        Log.d("UserResponsesData", "Current userResponses: $userResponses")
+    }
+
+    private fun addChipToGroup(chipGroup: ChipGroup, label: String) {
+        val chip = Chip(this)
+        chip.text = label
+        chip.isCloseIconVisible = true
+        chip.setOnCloseIconClickListener {
+            chipGroup.removeView(chip)
+        }
+        chipGroup.addView(chip)
     }
 
 
@@ -396,10 +493,25 @@ class UserSettingsActivity : AppCompatActivity() {
     }
 
     // 이미지 선택 및 업로드 함수
-    private fun uploadImage(isRelatedImage: Boolean) {
+    private fun uploadImage(requestCode: Int) {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, if (isRelatedImage) REQUEST_CODE_RELATED_IMAGE else REQUEST_CODE_PRODUCT_IMAGE)
+        startActivityForResult(intent, requestCode)
     }
+
+    // 호출
+    private fun uploadProfilePhoto() {
+        uploadImage(REQUEST_CODE_PROFILE_PHOTO)
+    }
+
+    private fun uploadRelatedImage() {
+        uploadImage(REQUEST_CODE_RELATED_IMAGE)
+    }
+
+    private fun uploadProductImage() {
+        uploadImage(REQUEST_CODE_PRODUCT_IMAGE)
+    }
+
+
 
     // 이미지 선택 결과 처리
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -413,24 +525,54 @@ class UserSettingsActivity : AppCompatActivity() {
         }
     }
 
-    // 서버에 이미지 업로드
     private fun uploadImageToServer(imageUri: Uri, requestCode: Int) {
-        // 서버에 이미지 업로드하는 로직을 여기에 구현합니다.
-        // 예: Retrofit을 사용하여 파일을 서버에 업로드합니다.
+        // 이미지 업로드 로직 구현
 
         // 업로드 후 URL을 저장
         val uploadedImageUrl = "uploaded_image_url_here" // 실제 업로드 후 URL로 교체
 
-        // 업로드한 이미지에 따라 userResponses에 저장
+        val realImagePath = getRealPathFromURI(imageUri)
+
         when (requestCode) {
-            REQUEST_CODE_PRODUCT_IMAGE -> {
-                userResponses["productImage"] = uploadedImageUrl
+            REQUEST_CODE_PROFILE_PHOTO -> {
+                userResponses["profilePhoto"] = uploadedImageUrl // 업로드한 이미지의 URL
+                // 실제 경로도 저장 (선택 사항)
+                userResponses["profilePhotoRealPath"] = realImagePath ?: "unknown"
+                imageViewProfilePhoto.setImageURI(imageUri) // 미리보기
+                Log.d("UploadImage", "Profile photo uploaded: $uploadedImageUrl")
+                Log.d("UploadImage", "Profile photo real path: $realImagePath")
             }
+
             REQUEST_CODE_RELATED_IMAGE -> {
                 userResponses["relatedImage"] = uploadedImageUrl
+                userResponses["relatedImageRealPath"] = realImagePath ?: "unknown"
+                imageViewRelatedImage.setImageURI(imageUri) // 미리보기
+                Log.d("UploadImage", "Related image uploaded: $uploadedImageUrl")
+                Log.d("UploadImage", "Related image real path: $realImagePath")
+            }
+
+            REQUEST_CODE_PRODUCT_IMAGE -> {
+                userResponses["productImage"] = uploadedImageUrl
+                userResponses["productImageRealPath"] = realImagePath ?: "unknown"
+                imageViewProductImage.setImageURI(imageUri) // 미리보기
+                Log.d("UploadImage", "Product image uploaded: $uploadedImageUrl")
+                Log.d("UploadImage", "Product image real path: $realImagePath")
             }
         }
     }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        var path: String? = null
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+                path = it.getString(columnIndex)
+            }
+        }
+        return path
+    }
+
 
 
 //    private fun initializeChips() {
@@ -447,29 +589,6 @@ class UserSettingsActivity : AppCompatActivity() {
 //        }
 //    }
 //
-//    private fun addNewInterest() {
-//        val newInterest = etAddInterest.text.toString().trim()
-//        if (newInterest.isNotEmpty()) {
-//            val newChip = Chip(this).apply {
-//                text = newInterest
-//                isCloseIconVisible = true
-//                setChipBackgroundColorResource(selectedColor) // 선택된 색상으로 변경
-//                isClickable = true
-//                isCheckable = false
-//                tag = true // 선택된 상태로 태그 설정
-//                setOnCloseIconClickListener {
-//                    chipGroupInterests.removeView(this)
-//                }
-//                setOnClickListener {
-//                    toggleChipSelection(this)
-//                }
-//            }
-//            chipGroupInterests.addView(newChip)
-//            etAddInterest.text.clear()
-//        } else {
-//            Toast.makeText(this, "Please enter an interest", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     private fun toggleChipSelection(chip: Chip) {
         val isChecked = chip.tag as? Boolean ?: false
@@ -483,68 +602,67 @@ class UserSettingsActivity : AppCompatActivity() {
             chip.tag = true
         }
     }
+    private fun saveUserSettings() {
+        val token = accessToken ?: run {
+            Toast.makeText(this, "Access token is missing", Toast.LENGTH_SHORT).show()
+            return
+        }
+        lifecycleScope.launch {
+            try {
+                val userAccount = createUserAccountFromResponses()
+                Log.d("userAccount", "$userAccount")
+                val response = RetrofitInstance.api.updateUserSettings("Bearer $token", userAccount)
 
-//    private fun saveUserSettings() {
-//        val accessToken = accessToken
-//        val nickname = etNickname.text.toString().trim()
-//        val interests = getSelectedInterests()
-//
-//        Log.d("saveUserSettings", "nickname = $nickname, interests = $interests")
-//
-//        if (nickname.isNotEmpty()) {
-//            val userAccount = UserAccount(
-//                nickname = nickname,
-//                tags = interests
-//            )
-//            Log.d("saveUserSettings", "userAccount 생성됨 = $userAccount")
-//
-//            // 서버에 사용자 설정 저장
-//            CoroutineScope(Dispatchers.Main).launch {
-//                Log.d("saveUserSettings", "서버 요청 시작")
-//                try {
-//                    val response = withContext(Dispatchers.IO) {
-//                        RetrofitInstance.api.updateUserSettings("Bearer $accessToken", userAccount)
-//                    }
-//                    withContext(Dispatchers.Main) {
-//                        if (response.isSuccessful) {
-//                            // Save the completed settings status to SharedPreferences
-//                            val sharedPreferences = getSharedPreferences("UserSettings", MODE_PRIVATE)
-//                            sharedPreferences.edit().apply {
-//                                putBoolean("isSettingsCompleted", true)
-//                                apply()
-//                            }
-//
-//                            Toast.makeText(this@UserSettingsActivity, "Settings Updated Successfully", Toast.LENGTH_SHORT).show()
-//
-//                            // Navigate to MainActivity
-//                            val intent = Intent(this@UserSettingsActivity, MainActivity::class.java)
-//                            startActivity(intent)
-//                            finish() // Close the UserSettingsActivity
-//                        } else {
-//                            Toast.makeText(this@UserSettingsActivity, "Failed to Update Settings: ${response.message()}", Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    withContext(Dispatchers.Main) {
-//                        Toast.makeText(this@UserSettingsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        } else {
-//            Toast.makeText(this, "Please enter a nickname and ensure you're logged in", Toast.LENGTH_SHORT).show()
-//        }
-//    }
+                if (response.isSuccessful) {
+                    saveSettingsCompletionStatus()
+                    navigateToMainActivity()
+                } else {
+                    Toast.makeText(
+                        this@UserSettingsActivity,
+                        "Failed to update settings: ${response.message()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@UserSettingsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    private fun createUserAccountFromResponses(): UserAccount {
+        Log.d("UserAccountData", "Creating UserAccount from responses")
+        userResponses.forEach { (key, value) ->
+            Log.d("UserAccountData", "Key: $key, Value: $value")
+        }
 
+        return UserAccount(
+            nickname = userResponses["nickname"] as? String,
+            gender = userResponses["gender"] as? String,
+            age = userResponses["age"] as? String,
+            profilePhoto = userResponses["profilePhoto"] as? String,
+            shoppingInterests = userResponses["shoppingInterests"] as? List<String>,
+            shoppingAreas = userResponses["shoppingAreas"] as? List<String>,
+            brandPreferences = userResponses["brandPreferences"] as? List<String>,
+            shoppingPriorities = userResponses["shoppingPriorities"] as? List<String>,
+            hobbiesInterests = userResponses["hobbiesInterests"] as? List<String>,
+            preferredShoppingTime = userResponses["preferredShoppingTime"] as? String,
+            notificationRadius = userResponses["notificationRadius"] as? String,
+            maxPushNotifications = userResponses["maxPushNotifications"] as? String,
+            couponGift = userResponses["couponGift"] as? String,
+            productImage = userResponses["productImage"] as? String,
+            relatedImage = userResponses["relatedImage"] as? String
+        )
+    }
 
-//    private fun getSelectedInterests(): List<String> {
-//        val interests = mutableListOf<String>()
-//        for (i in 0 until chipGroupInterests.childCount) {
-//            val chip = chipGroupInterests.getChildAt(i) as Chip
-//            if (chip.isChecked || chip.tag as? Boolean == true) {
-//                interests.add(chip.text.toString())
-//            }
-//        }
-//        return interests
-//    }
+    private fun saveSettingsCompletionStatus() {
+        getSharedPreferences("UserSettings", MODE_PRIVATE).edit().apply {
+            putBoolean("isSettingsCompleted", true)
+            apply()
+        }
+    }
+
+    private fun navigateToMainActivity() {
+        startActivity(Intent(this@UserSettingsActivity, MainActivity::class.java))
+        finish()
+    }
 }
