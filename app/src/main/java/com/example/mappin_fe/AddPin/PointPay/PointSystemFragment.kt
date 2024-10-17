@@ -268,7 +268,7 @@ class PointSystemFragment : Fragment() {
                 val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
                 val tagsParts = pinData.tags.map { tag ->
                     tag.toRequestBody("text/plain".toMediaTypeOrNull())
-                }as ArrayList<RequestBody>
+                }.toCollection(ArrayList())
                 Log.d("tagspart", "$tagsParts")
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()

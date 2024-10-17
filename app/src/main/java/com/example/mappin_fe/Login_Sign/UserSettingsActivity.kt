@@ -9,33 +9,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Spinner
 import android.widget.Toast
 import android.widget.ViewFlipper
 import com.example.mappin_fe.R
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 
 class UserSettingsActivity : AppCompatActivity() {
     private var accessToken: String? = null
@@ -48,14 +37,14 @@ class UserSettingsActivity : AppCompatActivity() {
     private lateinit var btnNext: Button
     private lateinit var btnPrevious: Button
     private lateinit var btnUploadProfilePhoto: Button
-    private lateinit var btnUploadProductImage: Button
-    private lateinit var btnUploadRelatedImage: Button
+//    private lateinit var btnUploadProductImage: Button
+//    private lateinit var btnUploadRelatedImage: Button
     private lateinit var ivProfilePhoto: ImageView
     private var profilePhotoUri: Uri? = null
     private val userResponses = mutableMapOf<String, Any>()
     private lateinit var imageViewProfilePhoto: ImageView
-    private lateinit var imageViewRelatedImage: ImageView
-    private lateinit var imageViewProductImage: ImageView
+//    private lateinit var imageViewRelatedImage: ImageView
+//    private lateinit var imageViewProductImage: ImageView
 
 
     companion object {
@@ -81,23 +70,23 @@ class UserSettingsActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.btnNext)
         btnPrevious = findViewById(R.id.btnPrevious)
         btnUploadProfilePhoto = findViewById(R.id.btnUploadProfilePhoto)
-        btnUploadProductImage = findViewById(R.id.btnUploadInterestImage)
-        btnUploadRelatedImage = findViewById(R.id.btnUploadRelatedImage)
+//        btnUploadProductImage = findViewById(R.id.btnUploadInterestImage)
+//        btnUploadRelatedImage = findViewById(R.id.btnUploadRelatedImage)
         imageViewProfilePhoto = findViewById(R.id.imageViewProfilePhoto) // 레이아웃에서 해당 ID로 ImageView를 찾기
-        imageViewProductImage = findViewById(R.id.imageViewInterestProduct)
-        imageViewRelatedImage = findViewById(R.id.imageViewRelatedProduct)
+//        imageViewProductImage = findViewById(R.id.imageViewInterestProduct)
+//        imageViewRelatedImage = findViewById(R.id.imageViewRelatedProduct)
 
         initializeViews()
 
         btnUploadProfilePhoto.setOnClickListener {
             uploadProfilePhoto()
         }
-        btnUploadProductImage.setOnClickListener {
-            uploadProductImage()
-        }
-        btnUploadRelatedImage.setOnClickListener {
-            uploadRelatedImage()
-        }
+//        btnUploadProductImage.setOnClickListener {
+//            uploadProductImage()
+//        }
+//        btnUploadRelatedImage.setOnClickListener {
+//            uploadRelatedImage()
+//        }
 
         btnNext.setOnClickListener {
             if (viewFlipper.displayedChild < viewFlipper.childCount - 1) {
@@ -155,11 +144,11 @@ class UserSettingsActivity : AppCompatActivity() {
         val ageRadioGroup = findViewById<RadioGroup>(R.id.radioGroupAge)
         ageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val age = when (checkedId) {
-                R.id.radio10s -> "10대"
-                R.id.radio20s -> "20대"
-                R.id.radio30s -> "30대"
-                R.id.radio40s -> "40대"
-                R.id.radio50sPlus -> "50대 이상"
+                R.id.radio10s -> "10"
+                R.id.radio20s -> "20"
+                R.id.radio30s -> "30"
+                R.id.radio40s -> "40"
+                R.id.radio50sPlus -> "50"
                 else -> ""
             }
             userResponses["age"] = age
@@ -283,12 +272,12 @@ class UserSettingsActivity : AppCompatActivity() {
         val radioGroupNotificationRadius = findViewById<RadioGroup>(R.id.radioGroupNotificationRadius)
         radioGroupNotificationRadius.setOnCheckedChangeListener { _, checkedId ->
             val selectedOption = when (checkedId) {
-                R.id.radioButton100m -> "100m"
-                R.id.radioButton200m -> "200m"
-                R.id.radioButton500m -> "500m"
-                R.id.radioButton1km -> "1km"
-                R.id.radioButton2km -> "2km"
-                R.id.radioButtonUnlimited -> "무제한"
+                R.id.radioButton100m -> 100
+                R.id.radioButton200m -> 200
+                R.id.radioButton500m -> 500
+                R.id.radioButton1km -> 1000
+                R.id.radioButton2km -> 2000
+                R.id.radioButtonUnlimited -> 0
                 else -> ""
             }
             // 선택한 값을 userResponses에 저장
@@ -299,24 +288,24 @@ class UserSettingsActivity : AppCompatActivity() {
         val radioGroupMaxNotifications = findViewById<RadioGroup>(R.id.radioGroupMaxNotifications)
         radioGroupMaxNotifications.setOnCheckedChangeListener { _, checkedId ->
             val selectedOption = when (checkedId) {
-                R.id.radioButton1 -> "1개"
-                R.id.radioButton3 -> "3개"
-                R.id.radioButton5 -> "5개"
-                R.id.radioButton10 -> "10개"
-                R.id.radioButtonAny -> "제한 없음"
+                R.id.radioButton1 -> 1
+                R.id.radioButton3 -> 3
+                R.id.radioButton5 -> 5
+                R.id.radioButton10 -> 10
+                R.id.radioButtonAny -> 0
                 else -> ""
             }
             // 선택한 값을 userResponses에 저장
             userResponses["maxPushNotifications"] = selectedOption
         }
 
-        // 11. 쿠폰 선물 대상
-        val etCouponGift = findViewById<EditText>(R.id.etCouponGift)
-        etCouponGift.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                userResponses["couponGift"] = etCouponGift.text.toString()
-            }
-        }
+//        // 11. 쿠폰 선물 대상
+//        val etCouponGift = findViewById<EditText>(R.id.etCouponGift)
+//        etCouponGift.setOnFocusChangeListener { _, hasFocus ->
+//            if (!hasFocus) {
+//                userResponses["couponGift"] = etCouponGift.text.toString()
+//            }
+//        }
 
         // 12. 관심 제품 이미지 업로드
 //        val btnUploadProductImage = findViewById<Button>(R.id.btnUploadInterestImage)
@@ -451,13 +440,13 @@ class UserSettingsActivity : AppCompatActivity() {
                     userResponses["maxPushNotifications"] = it
                 }
             }
-            12 -> {
-                // 쿠폰/선물 입력 저장
-                val couponGift = findViewById<EditText>(R.id.etCouponGift).text.toString().trim()
-                if (couponGift.isNotEmpty()) {
-                    userResponses["couponGift"] = couponGift
-                }
-            }
+//            12 -> {
+//                // 쿠폰/선물 입력 저장
+//                val couponGift = findViewById<EditText>(R.id.etCouponGift).text.toString().trim()
+//                if (couponGift.isNotEmpty()) {
+//                    userResponses["couponGift"] = couponGift
+//                }
+//            }
             13 -> {
 //                // 관심 제품 이미지 업로드 저장
 //                val interestProductImageUri = findViewById<Button>(R.id.btnUploadInterestImage) // 이미지 URI 저장
@@ -529,35 +518,33 @@ class UserSettingsActivity : AppCompatActivity() {
         // 이미지 업로드 로직 구현
 
         // 업로드 후 URL을 저장
-        val uploadedImageUrl = "uploaded_image_url_here" // 실제 업로드 후 URL로 교체
+//        val uploadedImageUrl = "uploaded_image_url_here" // 실제 업로드 후 URL로 교체
 
         val realImagePath = getRealPathFromURI(imageUri)
 
         when (requestCode) {
-            REQUEST_CODE_PROFILE_PHOTO -> {
-                userResponses["profilePhoto"] = uploadedImageUrl // 업로드한 이미지의 URL
+            REQUEST_CODE_PROFILE_PHOTO -> { // 업로드한 이미지의 URL
                 // 실제 경로도 저장 (선택 사항)
-                userResponses["profilePhotoRealPath"] = realImagePath ?: "unknown"
+                userResponses["profilePhoto"] = realImagePath ?: "unknown"
                 imageViewProfilePhoto.setImageURI(imageUri) // 미리보기
-                Log.d("UploadImage", "Profile photo uploaded: $uploadedImageUrl")
                 Log.d("UploadImage", "Profile photo real path: $realImagePath")
             }
 
-            REQUEST_CODE_RELATED_IMAGE -> {
-                userResponses["relatedImage"] = uploadedImageUrl
-                userResponses["relatedImageRealPath"] = realImagePath ?: "unknown"
-                imageViewRelatedImage.setImageURI(imageUri) // 미리보기
-                Log.d("UploadImage", "Related image uploaded: $uploadedImageUrl")
-                Log.d("UploadImage", "Related image real path: $realImagePath")
-            }
-
-            REQUEST_CODE_PRODUCT_IMAGE -> {
-                userResponses["productImage"] = uploadedImageUrl
-                userResponses["productImageRealPath"] = realImagePath ?: "unknown"
-                imageViewProductImage.setImageURI(imageUri) // 미리보기
-                Log.d("UploadImage", "Product image uploaded: $uploadedImageUrl")
-                Log.d("UploadImage", "Product image real path: $realImagePath")
-            }
+//            REQUEST_CODE_RELATED_IMAGE -> {
+//                userResponses["relatedImage"] = uploadedImageUrl
+//                userResponses["relatedImageRealPath"] = realImagePath ?: "unknown"
+//                imageViewRelatedImage.setImageURI(imageUri) // 미리보기
+//                Log.d("UploadImage", "Related image uploaded: $uploadedImageUrl")
+//                Log.d("UploadImage", "Related image real path: $realImagePath")
+//            }
+//
+//            REQUEST_CODE_PRODUCT_IMAGE -> {
+//                userResponses["productImage"] = uploadedImageUrl
+//                userResponses["productImageRealPath"] = realImagePath ?: "unknown"
+//                imageViewProductImage.setImageURI(imageUri) // 미리보기
+//                Log.d("UploadImage", "Product image uploaded: $uploadedImageUrl")
+//                Log.d("UploadImage", "Product image real path: $realImagePath")
+//            }
         }
     }
 
@@ -590,18 +577,18 @@ class UserSettingsActivity : AppCompatActivity() {
 //    }
 //
 
-    private fun toggleChipSelection(chip: Chip) {
-        val isChecked = chip.tag as? Boolean ?: false
-        if (isChecked) {
-            // Deselect the chip
-            chip.setChipBackgroundColorResource(defaultColor) // Default color for deselected
-            chip.tag = false
-        } else {
-            // Select the chip
-            chip.setChipBackgroundColorResource(selectedColor) // Color for selected
-            chip.tag = true
-        }
-    }
+//    private fun toggleChipSelection(chip: Chip) {
+//        val isChecked = chip.tag as? Boolean ?: false
+//        if (isChecked) {
+//            // Deselect the chip
+//            chip.setChipBackgroundColorResource(defaultColor) // Default color for deselected
+//            chip.tag = false
+//        } else {
+//            // Select the chip
+//            chip.setChipBackgroundColorResource(selectedColor) // Color for selected
+//            chip.tag = true
+//        }
+//    }
     private fun saveUserSettings() {
         val token = accessToken ?: run {
             Toast.makeText(this, "Access token is missing", Toast.LENGTH_SHORT).show()
@@ -638,19 +625,19 @@ class UserSettingsActivity : AppCompatActivity() {
         return UserAccount(
             nickname = userResponses["nickname"] as? String,
             gender = userResponses["gender"] as? String,
-            age = userResponses["age"] as? String,
+            age = userResponses["age"] as? Int,
             profilePhoto = userResponses["profilePhoto"] as? String,
-            shoppingInterests = userResponses["shoppingInterests"] as? List<String>,
-            shoppingAreas = userResponses["shoppingAreas"] as? List<String>,
-            brandPreferences = userResponses["brandPreferences"] as? List<String>,
-            shoppingPriorities = userResponses["shoppingPriorities"] as? List<String>,
-            hobbiesInterests = userResponses["hobbiesInterests"] as? List<String>,
-            preferredShoppingTime = userResponses["preferredShoppingTime"] as? String,
-            notificationRadius = userResponses["notificationRadius"] as? String,
-            maxPushNotifications = userResponses["maxPushNotifications"] as? String,
-            couponGift = userResponses["couponGift"] as? String,
-            productImage = userResponses["productImage"] as? String,
-            relatedImage = userResponses["relatedImage"] as? String
+            tags = userResponses["shoppingInterests"] as? List<String>,
+            shopping_area = userResponses["shoppingAreas"] as? List<String>,
+            brand_preference = userResponses["brandPreferences"] as? List<String>,
+            priority = userResponses["shoppingPriorities"] as? List<String>,
+            hobby = userResponses["hobbiesInterests"] as? List<String>,
+            shopping_time = userResponses["preferredShoppingTime"] as? String,
+            notification_radius = userResponses["notificationRadius"] as? Int,
+            notification_number = userResponses["maxPushNotifications"] as? Int,
+//            couponGift = userResponses["couponGift"] as? String,
+//            productImage = userResponses["productImage"] as? String,
+//            relatedImage = userResponses["relatedImage"] as? String
         )
     }
 

@@ -1,6 +1,9 @@
 package com.example.mappin_fe.Login_Sign
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -17,11 +20,15 @@ import com.example.mappin_fe.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
@@ -95,6 +102,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+
         btnGoogleSignIn.setOnClickListener {
             signInWithGoogle()
         }
@@ -133,15 +141,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    // 로그인 시도 전 확인
     private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        googleSignInLauncher.launch(signInIntent)
+        try {
+            Log.d("GoogleSignIn", "Starting Google Sign In")
+            val signInIntent = googleSignInClient.signInIntent
+            Log.d("GoogleSignIn", "Created sign in intent")
+            googleSignInLauncher.launch(signInIntent)
+            Log.d("GoogleSignIn", "Launched sign in intent")
+        } catch (e: Exception) {
+            Log.e("GoogleSignIn", "Error in signInWithGoogle", e)
+        }
     }
 
     private fun sendIdTokenToServer(idToken: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val loginRequest = LoginRequest(id_token = idToken) // 서버에 보낼 요청
+                // FCM 토큰 가져오기
+                val fcmToken = FirebaseMessaging.getInstance().token.await()
+                Log.d("fcmToken", "$fcmToken")
+                val loginRequest = LoginRequest(id_token = idToken, fcm_token = fcmToken)
                 val response = RetrofitInstance.api.loginUser(loginRequest)
 
                 withContext(Dispatchers.Main) {

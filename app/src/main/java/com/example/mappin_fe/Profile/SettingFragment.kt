@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
@@ -22,12 +23,16 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.HttpException
+import retrofit2.Response
 
 
 class SettingFragment : Fragment() {
 
-    private lateinit var switchNotification: Switch
+    private lateinit var switchNotification: SwitchCompat
     private lateinit var tvTheme: TextView
     private lateinit var tvInterestsSetting: TextView
     private lateinit var btnLogout: Button
@@ -45,6 +50,8 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
+
+//        loadNotificationSettings()
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -78,7 +85,11 @@ class SettingFragment : Fragment() {
 
         // 알림 설정 스위치 리스너
         switchNotification.setOnCheckedChangeListener { _, isChecked ->
-            Toast.makeText(requireContext(), "Notifications: ${if (isChecked) "On" else "Off"}", Toast.LENGTH_SHORT).show()
+//            if (isChecked) {
+//                enablePushNotifications()
+//            } else {
+//                disablePushNotifications()
+//            }
         }
 
 //        // 테마 변경 클릭 리스너
@@ -103,6 +114,59 @@ class SettingFragment : Fragment() {
 
         return view
     }
+
+//    private fun loadNotificationSettings() {
+//        // 서버에서 푸시 알림 설정을 불러와 switch 상태 설정
+//        val accessToken = RetrofitInstance.getAccessToken()// 로그인 시 받은 accessToken
+//            apiService.getNotificationSettings("Bearer $accessToken").enqueue(object : Callback<NotificationSettingsResponse> {
+//                override fun onResponse(call: Call<NotificationSettingsResponse>, response: Response<NotificationSettingsResponse>) {
+//                    if (response.isSuccessful) {
+//                        val notificationEnabled = response.body()?.isEnabled ?: false
+//                        switchNotification.isChecked = notificationEnabled
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<NotificationSettingsResponse>, t: Throwable) {
+//                    Log.e("Settings", "Failed to load notification settings", t)
+//                }
+//            })
+//    }
+//
+//    private fun enablePushNotifications() {
+//        val accessToken = RetrofitInstance.getAccessToken()
+//            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    val fcmToken = task.result
+//                    apiService.enablePushNotifications("Bearer $accessToken", fcmToken).enqueue(object : Callback<ResponseBody> {
+//                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//                            if (response.isSuccessful) {
+//                                Log.d("Settings", "Push notifications enabled")
+//                            }
+//                        }
+//
+//                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                            Log.e("Settings", "Failed to enable push notifications", t)
+//                        }
+//                    })
+//                }
+//            }
+//    }
+//
+//    private fun disablePushNotifications() {
+//        val accessToken = RetrofitInstance.getAccessToken()
+//            apiService.disablePushNotifications("Bearer $accessToken").enqueue(object :
+//                Callback<ResponseBody> {
+//                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//                    if (response.isSuccessful) {
+//                        Log.d("Settings", "Push notifications disabled")
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                    Log.e("Settings", "Failed to disable push notifications", t)
+//                }
+//            })
+//    }
 
     private fun logout() {
         auth.signOut()
