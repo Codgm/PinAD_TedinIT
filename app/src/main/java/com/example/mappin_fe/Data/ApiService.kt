@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -20,8 +21,11 @@ interface ApiService {
     @POST("users/google/login/")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<LoginResponse>
     // 예: 사용자 등록 API
-    @POST("register")
-    fun registerUser(@Body userAccount: UserAccount): Call<Void>
+    @POST("users/register/")
+    fun registerUser(@Body RegisterAccount: RegisterAccount): Call<Void>
+
+    @POST("users/login/")
+    suspend fun loginown(@Body RegisterAccount: RegisterAccount): Response<Void>
 
     @PUT("users/")
     suspend fun updateUserSettings(
@@ -74,5 +78,10 @@ interface ApiService {
     suspend fun showCoupons(
         @Header("Authorization") token: String
     ): Response<CouponResponse>
+
+    @POST("coupons/verify/")
+    suspend fun verifyCoupon(
+        @Body request: CouponVerifyRequest
+    ): Response<Void>
 
 }

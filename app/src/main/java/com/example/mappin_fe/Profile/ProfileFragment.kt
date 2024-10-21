@@ -24,9 +24,6 @@ import com.navercorp.nid.oauth.NidOAuthPreferencesManager.accessToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-//import com.google.firebase.auth.FirebaseAuth
-//import com.google.firebase.database.*
-
 class ProfileFragment : Fragment() {
 
     private lateinit var imgProfilePicture: ImageView
@@ -38,10 +35,7 @@ class ProfileFragment : Fragment() {
     private lateinit var btnSettings: Button
     private lateinit var tvInterests: TextView
     private lateinit var btnCouponBox: Button
-
-
-    //    private lateinit var firebaseAuth: FirebaseAuth
-//    private lateinit var databaseReference: DatabaseReference
+    private lateinit var btnQrScan: Button
     private lateinit var currentUserUid: String
 
     override fun onCreateView(
@@ -60,6 +54,11 @@ class ProfileFragment : Fragment() {
         btnSettings = view.findViewById(R.id.btnSettings)
         tvInterests = view.findViewById(R.id.tvInterests)
         btnCouponBox = view.findViewById(R.id.btnCouponBox)
+        btnQrScan = view.findViewById(R.id.btnQrScan)
+
+        btnQrScan.setOnClickListener {
+            openCouponScannerFragment()
+        }
 
         btnCouponBox.setOnClickListener {
             showCouponDialog()
@@ -89,6 +88,13 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun openCouponScannerFragment() {
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_body_container, CouponScannerFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun showCouponDialog() {

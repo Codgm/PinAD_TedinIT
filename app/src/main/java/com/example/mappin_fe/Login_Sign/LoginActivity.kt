@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mappin_fe.Data.LoginRequest
+import com.example.mappin_fe.Data.RegisterAccount
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.Data.UserAccount
 import com.example.mappin_fe.R
@@ -124,20 +125,50 @@ class LoginActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Email and Password cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
-                firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-//                            checkUserSettings(accessToken)
-                        } else {
-                            Toast.makeText(this, "Login Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                login(email, password)
             }
         }
 
         btnRegister.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun login(email: String, password: String) {
+        // CoroutineScope를 사용하여 비동기 로그인 처리
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitInstance.api.loginown(RegisterAccount(email, password))
+                withContext(Dispatchers.Main) {
+                    when (response.code()) {
+                        200 -> {
+                            // 로그인 성공
+                            Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
+                            }
+                            startActivity(intent)
+                            finish()
+                        }
+                        400 -> {
+                            // 로그인 실패
+                            Toast.makeText(this@LoginActivity, "로그인 실패: 잘못된 이메일 또는 비밀번호", Toast.LENGTH_SHORT).show()
+                        }
+                        403 -> {
+                            // 계정 비활성화
+                            Toast.makeText(this@LoginActivity, "계정이 비활성화 상태입니다", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            // 기타 에러 처리
+                            Toast.makeText(this@LoginActivity, "오류 발생: ${response.code()}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@LoginActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

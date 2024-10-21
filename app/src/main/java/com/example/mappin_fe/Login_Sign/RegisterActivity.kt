@@ -7,8 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.mappin_fe.Data.UserAccount
-import com.example.mappin_fe.R
+import com.example.mappin_fe.Data.RegisterAccount
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -17,150 +16,105 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.util.concurrent.TimeUnit
+import com.example.mappin_fe.Data.RetrofitInstance
+import com.example.mappin_fe.Data.UserAccount
+import com.example.mappin_fe.R
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var databaseRef: DatabaseReference
-
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
-    private lateinit var etPhoneNumber: EditText
-    private lateinit var etVerificationCode: EditText
-    private lateinit var btnSendVerification: Button
-    private lateinit var btnVerifyCode: Button
     private lateinit var btnRegister: Button
-
-    private var verificationId: String? = null
-    private var isPhoneVerified = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-        databaseRef = FirebaseDatabase.getInstance().getReference("Users")
-
+        // UI 요소 초기화
         etEmail = findViewById(R.id.et_email)
         etPassword = findViewById(R.id.et_pwd)
         etConfirmPassword = findViewById(R.id.et_confirm_pwd)
-        etPhoneNumber = findViewById(R.id.et_phone_number)
-        etVerificationCode = findViewById(R.id.et_verification_code)
-        btnSendVerification = findViewById(R.id.btn_send_verification)
-        btnVerifyCode = findViewById(R.id.btn_verify_code)
         btnRegister = findViewById(R.id.btn_register)
 
-        btnSendVerification.setOnClickListener {
-            etVerificationCode.visibility = View.VISIBLE
-            btnVerifyCode.visibility = View.VISIBLE
-            sendVerificationCode()
-        }
-
-        btnVerifyCode.setOnClickListener {
-            verifyCode()
-        }
-
         btnRegister.setOnClickListener {
-            if (isPhoneVerified) {
-//                registerUser()
-            } else {
-                Toast.makeText(this, "Please verify your phone number first", Toast.LENGTH_SHORT).show()
-            }
+            registerUser()
         }
     }
 
-    private fun sendVerificationCode() {
-        val phoneNumber = etPhoneNumber.text.toString().trim()
-        if (phoneNumber.isNotEmpty()) {
-            val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-                .setPhoneNumber(phoneNumber)
-                .setTimeout(60L, TimeUnit.SECONDS)
-                .setActivity(this)
-                .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                        signInWithPhoneAuthCredential(credential)
-                    }
+    private fun registerUser() {
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString().trim()
+        val confirmPassword = etConfirmPassword.text.toString().trim()
 
-                    override fun onVerificationFailed(e: FirebaseException) {
-                        Toast.makeText(this@RegisterActivity, "Verification failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                        this@RegisterActivity.verificationId = verificationId
-                        Toast.makeText(this@RegisterActivity, "Verification code sent", Toast.LENGTH_SHORT).show()
-                    }
-                })
-                .build()
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        } else {
-            Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show()
+        // 입력 유효성 검사
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            Toast.makeText(this, "모든 필드를 입력해주세요", Toast.LENGTH_SHORT).show()
+            return
         }
-    }
 
-    private fun verifyCode() {
-        val code = etVerificationCode.text.toString().trim()
-        if (code.isNotEmpty() && verificationId != null) {
-            val credential = PhoneAuthProvider.getCredential(verificationId!!, code)
-            signInWithPhoneAuthCredential(credential)
-        } else {
-            Toast.makeText(this, "Please enter the verification code", Toast.LENGTH_SHORT).show()
+        if (password.length < 6) {
+            Toast.makeText(this, "비밀번호는 최소 6자 이상이어야 합니다", Toast.LENGTH_SHORT).show()
+            return
         }
-    }
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    isPhoneVerified = true
-                    Toast.makeText(this, "Phone number verified", Toast.LENGTH_SHORT).show()
+        if (password != confirmPassword) {
+            Toast.makeText(this, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 회원가입 요청 객체 생성
+        val registerAccount = RegisterAccount(
+            email = email,
+            password = password,
+//            password2 = confirmPassword
+        )
+
+        // API 호출
+        RetrofitInstance.api.registerUser(registerAccount).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "회원가입이 완료되었습니다. 이메일을 확인해주세요.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    // 로그인 화면으로 이동
+                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
-                    Toast.makeText(this, "Verification failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    try {
+                        // 에러 응답 처리
+                        response.errorBody()?.string()?.let { errorString ->
+                            val message = when {
+                                errorString.contains("email") -> "이미 등록된 이메일입니다"
+                                errorString.contains("password") -> "비밀번호 형식이 올바르지 않습니다"
+                                else -> "회원가입에 실패했습니다. 다시 시도해주세요"
+                            }
+                            Toast.makeText(this@RegisterActivity, message, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "오류가 발생했습니다. 다시 시도해주세요.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
-    }
 
-//    private fun registerUser() {
-//        val email = etEmail.text.toString().trim()
-//        val password = etPassword.text.toString().trim()
-//        val confirmPassword = etConfirmPassword.text.toString().trim()
-//        val phoneNumber = etPhoneNumber.text.toString().trim()
-//
-//        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phoneNumber.isEmpty()) {
-//            Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//
-//        if (password.length < 6) {
-//            Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//
-//        if (password != confirmPassword) {
-//            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//
-//        firebaseAuth.createUserWithEmailAndPassword(email, password)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    val userId = firebaseAuth.currentUser?.uid
-//                    if (userId != null) {
-//                        val user = UserAccount(idToken = userId, emailId = email, password = password, phoneNumber = phoneNumber)
-//                        databaseRef.child(userId).setValue(user)
-//                            .addOnCompleteListener { dbTask ->
-//                                if (dbTask.isSuccessful) {
-//                                    Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
-//                                    val intent = Intent(this, LoginActivity::class.java)
-//                                    startActivity(intent)
-//                                    finish()
-//                                } else {
-//                                    Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
-//                    }
-//                } else {
-//                    Toast.makeText(this, "Registration Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//    }
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "네트워크 오류가 발생했습니다. 연결을 확인해주세요.",
+                    Toast.LENGTH_LONG
+                ).show()
+                t.printStackTrace()
+            }
+        })
+    }
 }

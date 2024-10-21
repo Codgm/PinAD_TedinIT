@@ -13,6 +13,14 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
+        <Button
+            android:id="@+id/btnQrScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QR 스캔하기"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="right" />
+
         <!-- 프로필 이미지 -->
         <ImageView
             android:id="@+id/imgProfilePicture"
@@ -24,7 +32,8 @@
             android:src="@drawable/ic_default_profile"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
-            android:contentDescription="Profile Picture" />
+            android:contentDescription="Profile Picture"/>
+
 
         <!-- 사용자 닉네임 -->
         <TextView
