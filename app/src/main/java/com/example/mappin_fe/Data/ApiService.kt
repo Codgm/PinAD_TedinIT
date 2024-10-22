@@ -25,7 +25,7 @@ interface ApiService {
     fun registerUser(@Body RegisterAccount: RegisterAccount): Call<Void>
 
     @POST("users/login/")
-    suspend fun loginown(@Body RegisterAccount: RegisterAccount): Response<Void>
+    suspend fun loginown(@Body RegisteredAccount: RegisteredAccount): Response<Void>
 
     @PUT("users/")
     suspend fun updateUserSettings(
@@ -83,5 +83,11 @@ interface ApiService {
     suspend fun verifyCoupon(
         @Body request: CouponVerifyRequest
     ): Response<Void>
+
+    @POST("purchases/verify")
+    suspend fun verifyPurchase(
+        @Header("Authorization") token: String,
+        @Body purchaseInfo: PurchaseInfo
+    ): Response<Any>
 
 }
