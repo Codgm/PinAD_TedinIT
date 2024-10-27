@@ -48,11 +48,10 @@
 
         <!-- 사용자 이메일 -->
         <TextView
-            android:id="@+id/tvUserEmail"
+            android:id="@+id/tvUserGender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
-            android:visibility="gone"
+            android:text="Gender"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
             android:textColor="?attr/textColorSecondary"/>
@@ -68,6 +67,14 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:textColor="?attr/textColorSecondary"/>
+
+        <Button
+            android:id="@+id/btnSelectPlan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="플랜 선택"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"/>
 
         <!-- 관심사 표시 -->
         <LinearLayout
@@ -137,6 +144,15 @@
             android:layout_marginTop="16dp"
             android:background="?attr/colorPrimary"
             android:textColor="?attr/colorOnPrimary" />
+
+        <Button
+            android:id="@+id/btnInviteFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="친구 초대하기"
+            android:layout_marginTop="16dp"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorOnPrimary"/>
 
         <!-- 설정 버튼 -->
         <Button

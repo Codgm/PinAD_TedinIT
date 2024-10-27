@@ -42,7 +42,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class PointSystemFragment : Fragment(), OnMapReadyCallback {
+class CouponPointFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var tvCurrentPoints: TextView
     private lateinit var tvEstimatedCost: TextView
@@ -56,20 +56,24 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
     private lateinit var searchButton: Button
     private var selectedLocation: LatLng? = null
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private lateinit var switchAdBoost: Switch
     private var currentPoints = 1000
     private lateinit var category: String
-    private lateinit var info: String // contentData 대신 info 사용
-    private lateinit var title: String // title 추가
-    private lateinit var description: String // description 추가
-    private var is_ads: Boolean = false // is_ads 추가
+    private lateinit var info: String
+    private lateinit var title: String
+    private lateinit var description: String
+    private var is_ads: Boolean = false
     private var selectedTags: List<String> = listOf()
     private lateinit var switchVisibility: Switch
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var media_files: List<MediaFile>
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var basicConsumption: Int = -3000
+    private var basicConsumption: Int = -5000
+    private val basicRange = 100
+    private val basicDuration = 60
+    private val rangeIncrementCost = 30
+    private val durationIncrementCost = 20
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,14 +84,9 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
         setupSpinners()
         updateCurrentPointsText()
         setupListeners()
-
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-
-        // 현재 위치를 가져오는 함수 호출
         getCurrentLocation()
         return view
     }
@@ -102,34 +101,33 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
                     Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
                 } ?: run {
                     Log.e("Location", "Unable to get current location")
-                    // 위치를 가져올 수 없을 때의 처리
                 }
             }
             .addOnFailureListener { e ->
                 Log.e("Location", "Error getting location", e)
-                // 위치 가져오기 실패 시 처리
             }
     }
 
-
     private fun initializeViews(view: View) {
         info = arguments?.getString("INFO") ?: ""
-        title = arguments?.getString("TITLE") ?: "" // title 수신
-        description = arguments?.getString("DESCRIPTION") ?: "" // description 수신
-        is_ads = arguments?.getBoolean("is_Ads", false) ?: false // is_ads 수신
+        title = arguments?.getString("TITLE") ?: ""
+        description = arguments?.getString("DESCRIPTION") ?: ""
+        is_ads = arguments?.getBoolean("is_Ads", false) ?: false
         selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
         category = arguments?.getString("CATEGORY") ?: ""
-        // 미디어 파일 정보 받기
+
         arguments?.let {
             val mediaFilesJson = it.getString("MEDIA_FILES")
             media_files = Gson().fromJson(mediaFilesJson, object : TypeToken<List<MediaFile>>() {}.type)
         }
-        Log.d("PointSystemFragment", "Number of media files: ${media_files}")
-        Log.d("PointSystemFragment", "tags: $selectedTags")
-        Log.d("PointSystemFragment", "Info: $info")
-        Log.d("PointSystemFragment", "Title: $title") // title 로깅
-        Log.d("PointSystemFragment", "Description: $description") // description 로깅
-        Log.d("PointSystemFragment", "is_Ads: $is_ads") // is_ads 로깅
+
+        Log.d("NewPointSystemFragment", "Number of media files: ${media_files}")
+        Log.d("NewPointSystemFragment", "tags: $selectedTags")
+        Log.d("NewPointSystemFragment", "Info: $info")
+        Log.d("NewPointSystemFragment", "Title: $title")
+        Log.d("NewPointSystemFragment", "Description: $description")
+        Log.d("NewPointSystemFragment", "is_Ads: $is_ads")
+
         tvCurrentPoints = view.findViewById(R.id.tv_current_points)
         tvEstimatedCost = view.findViewById(R.id.tv_estimated_cost)
         imgPointIcon = view.findViewById(R.id.img_point_icon)
@@ -203,7 +201,6 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
     private fun updateCurrentPointsText() {
         tvCurrentPoints.text = "Current Points: $currentPoints"
         imgPointIcon.setImageResource(R.drawable.ic_point)
@@ -236,7 +233,7 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
             UserUtils.fetchUserDetails { nickname, _ ->
                 if (calculateAndUpdatePoints()) {
                     val pinData = createPinData(nickname)
-                    if (isAdded && userVisibleHint) { // Fragment가 활성화되어 있는지 확인
+                    if (isAdded && userVisibleHint) {
                         sendPinDataToServer(pinData) { success ->
                             btnCompletePin.isEnabled = true
                             if (success) {
@@ -253,29 +250,17 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-
     }
 
     private fun calculateEstimatedCost(): Int {
-        val rangeCost = when (spinnerAdRange.selectedItemPosition) {
-            1 -> 30
-            2 -> 45
-            3 -> 65
-            4 -> 90
-            5 -> 170
-            else -> 0
-        }
+        val selectedRange = getSelectedRange() - basicRange
+        val selectedDuration = getSelectedDuration() - basicDuration
 
-        val durationCost = when (spinnerAdDuration.selectedItemPosition) {
-            1 -> 20 // 2시간
-            2 -> 40 // 4시간
-            3 -> 80 // 8시간
-            4 -> 160 // 16시간
-            5 -> 240 // 24시간
-            else -> 0 // 기본값
-        }
+        val rangeCost = if (selectedRange > 0) (selectedRange / 100) * rangeIncrementCost else 0
+        val durationCost = if (selectedDuration > 0) (selectedDuration / 10) * durationIncrementCost else 0
 
         val totalCost = rangeCost + durationCost - basicConsumption
+
         tvEstimatedCost.text = "Estimated Cost: $totalCost"
         return totalCost
     }
@@ -318,7 +303,6 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
             updated_at = Date(now.time + (getSelectedDuration() * 60 * 60 * 1000))
         )
     }
-
 
     private fun sendPinDataToServer(pinData: PinDataResponse, onComplete: (Boolean) -> Unit) {
         lifecycleScope.launch {
@@ -381,6 +365,38 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun getSelectedRange(): Int = when (spinnerAdRange.selectedItemPosition) {
+        0 -> 100 // 100m
+        1 -> 300 // 300m
+        2 -> 500 // 500m
+        3 -> 700 // 700m
+        4 -> 1000 // 1km
+        5 -> 2000 // 2km
+        else -> 0 // 잘못된 선택
+    }
+
+    private fun getSelectedDuration(): Int = when (spinnerAdDuration.selectedItemPosition) {
+        0 -> 60 // 1시간
+        1 -> 120 // 2시간
+        2 -> 180 // 3시간
+        3 -> 240 //4시간
+        4 -> 480 // 8시간
+        5 -> 960 // 16시간
+        6 -> 1440 // 24시간
+        else -> 0 // 잘못된 선택
+    }
+
+    private fun navigateToMainActivity() {
+        startActivity(Intent(context, MainActivity::class.java))
+        activity?.finish()
+    }
+
+    private fun showSafeToast(message: String) {
+        activity?.runOnUiThread {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // MapView 생명주기 메서드들
     override fun onResume() {
         super.onResume()
@@ -402,55 +418,8 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
-    private fun showSafeToast(message: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            if (isAdded && context != null) {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            } else {
-                Log.w("PinData", "Cannot show toast, fragment is not attached or context is null")
-            }
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
-    }
-
-
-    private fun preparePinDataPart(pinData: PinDataResponse): RequestBody {
-        val gson = Gson()
-        val pinDataJson = gson.toJson(pinData)
-        Log.d("PinData", "Prepared JSON: $pinDataJson")
-        return pinDataJson.toRequestBody("application/json".toMediaTypeOrNull())
-    }
-
-
-    private fun navigateToMainActivity() {
-        val intent = Intent(activity, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-        activity?.finish()
-    }
-
-    private fun getSelectedRange(): Int = when (spinnerAdRange.selectedItemPosition) {
-        0 -> 100 // 100m
-        1 -> 300 // 300m
-        2 -> 500 // 500m
-        3 -> 700 // 700m
-        4 -> 1000 // 1km
-        5 -> 2000 // 2km
-        else -> 0 // 잘못된 선택
-    }
-
-    private fun getSelectedDuration(): Int = when (spinnerAdDuration.selectedItemPosition) {
-        0 -> 30 // 30분
-        1 -> 60 // 1시간
-        2 -> 120 // 2시간
-        3 -> 240 //4시간
-        4 -> 480 // 8시간
-        5 -> 960 // 16시간
-        6 -> 1440 // 24시간
-        else -> 0 // 잘못된 선택
     }
 }

@@ -33,14 +33,21 @@
     <string name="back">back</string>
     <string name="kakao">Kakao</string>
     <string-array name="ad_ranges">
-        <item>1km (Free)</item>
-        <item>2km (50 Points)</item>
-        <item>3km (100 Points)</item>
+        <item>100m (Free)</item>
+        <item>300m (30 Points)</item>
+        <item>500m (45 Points)</item>
+        <item>700m (65 Points)</item>
+        <item>1km (90 Points)</item>
+        <item>2km (170 Points)</item>
     </string-array>
     <string-array name="ad_durations">
-        <item>2 hours (Free)</item>
-        <item>4 hours (100 Points)</item>
-        <item>8 hours (200 Points)</item>
+        <item>1 hours (Free)</item>
+        <item>2 hours (20 Points)</item>
+        <item>4 hours (40 Points)</item>
+        <item>8 hours (80 Points)</item>
+        <item>16 hours (160 Points)</item>
+        <item>24 hours (240 Points)</item>
     </string-array>
     <string name="qr_code">QR 코드</string>
+    <string name="thumbnail_list">thumbnail_list</string>
 </resources>

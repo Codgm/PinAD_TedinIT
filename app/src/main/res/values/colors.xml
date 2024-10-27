@@ -24,6 +24,33 @@
     <color name="tag_text_color">#333333</color>
     <color name="tag_selected_text_color">#000000</color>
 
+    <!-- Base Colors -->
+    <color name="background">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Enterprise Plan Colors -->
+    <color name="premium_stroke">#FFD700</color>
+    <color name="premium_background">#FFF5CD</color>
+    <color name="premium_text">#B8860B</color>
+    <color name="premium_price">#DAA520</color>
+
+    <!-- Business Plan Colors -->
+    <color name="business_stroke">#2196F3</color>
+    <color name="business_text">#1976D2</color>
+    <color name="business_background">#D5DAFF</color>
+    <color name="business_price">#4A148C</color>
+
+    <!-- Pro Plan Colors -->
+    <color name="pro_stroke">#4CAF50</color>
+    <color name="pro_text">#388E3C</color>
+    <color name="pro_background">#D1FAC7</color>
+    <color name="pro_price">#027864</color>
+
+    <!-- Free Plan Colors -->
+    <color name="free_stroke">#9E9E9E</color>
+    <color name="free_text">#1A1919</color>
+
     <!-- 현재 포인트 색상 -->
     <color name="points_color">#B200FF</color>
     <!-- 차감 예정 포인트 색상 -->

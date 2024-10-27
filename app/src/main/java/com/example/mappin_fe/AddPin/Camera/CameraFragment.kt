@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mappin_fe.AddPin.Category.CategorySelectionFragment
 import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
 import com.example.mappin_fe.R
@@ -44,6 +45,7 @@ class CameraFragment : Fragment() {
     private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var thumbnailAdapter: ThumbnailAdapter
 
     // 미디어 파일 경로를 저장할 리스트
     private val mediaFiles = mutableListOf<MediaFile>()
@@ -59,12 +61,11 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (allPermissionsGranted()) {
-            startCamera()
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
+        setupThumbnailRecyclerView()
+
+        binding.thumbnailRecyclerView.apply {
+            adapter = thumbnailAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
         binding.captureButton.setOnClickListener { takePhoto() }
@@ -75,6 +76,14 @@ class CameraFragment : Fragment() {
         binding.backButton.setOnClickListener { onBackToCaptureMode() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        if (allPermissionsGranted()) {
+            startCamera()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
+        }
     }
 
     private fun takePhoto() {
@@ -108,13 +117,11 @@ class CameraFragment : Fragment() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
-                    binding.capturedImageView.setImageURI(output.savedUri)
+                    output.savedUri?.let { uri ->
+                        saveMediaFile(uri, "image")
+                        thumbnailAdapter.notifyDataSetChanged()  // Adapter     갱신
+                    }
 
-                    // 미디어 URI 저장
-                    saveMediaFile(output.savedUri!!, "image")
-
-                    // 미리보기 화면 표시
-                    showPreviewScreen(isImage = true)
                 }
             }
         )
@@ -177,8 +184,6 @@ class CameraFragment : Fragment() {
                             // 미디어 URI 저장
                             saveMediaFile(recordEvent.outputResults.outputUri, "video")
 
-                            // 미리보기 화면 표시
-                            showPreviewScreen(isImage = false)
                         } else {
                             recording?.close()
                             recording = null
@@ -194,30 +199,54 @@ class CameraFragment : Fragment() {
             }
     }
 
-    private fun showPreviewScreen(isImage: Boolean) {
+    private fun setupThumbnailRecyclerView() {
+        thumbnailAdapter = ThumbnailAdapter(
+            mediaFiles = mediaFiles,
+            onItemDeleted = { position ->
+                // 삭제 후 필요한 처리
+            },
+            onItemClicked = { mediaFile ->
+                // 전체화면 프리뷰 표시
+                showPreviewScreen(mediaFile)
+            }
+        )
+
+        binding.thumbnailRecyclerView.apply {
+            adapter = thumbnailAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+    }
+
+    private fun showPreviewScreen(mediaFile: MediaFile) {
         binding.previewContainer.visibility = View.VISIBLE
         binding.viewFinder.visibility = View.GONE
+        binding.controlsContainer.visibility = View.GONE
 
         // 미리보기 화면에서 촬영 버튼 숨기기
-        binding.captureButton.visibility = View.GONE
-        binding.videoCaptureButton.visibility = View.GONE
-
-        if (isImage) {
-            binding.capturedImageView.visibility = View.VISIBLE
-            binding.capturedVideoView.visibility = View.GONE
-        } else {
-            binding.capturedImageView.visibility = View.GONE
-            binding.capturedVideoView.visibility = View.VISIBLE
+        when (mediaFile.type) {
+            "image" -> {
+                binding.capturedImageView.visibility = View.VISIBLE
+                binding.capturedVideoView.visibility = View.GONE
+                binding.capturedImageView.setImageURI(Uri.parse(mediaFile.uri))
+            }
+            "video" -> {
+                binding.capturedImageView.visibility = View.GONE
+                binding.capturedVideoView.visibility = View.VISIBLE
+                binding.capturedVideoView.setVideoURI(Uri.parse(mediaFile.uri))
+                binding.capturedVideoView.start()
+            }
         }
     }
 
     private fun onBackToCaptureMode() {
         binding.previewContainer.visibility = View.GONE
         binding.viewFinder.visibility = View.VISIBLE
-
-        // 촬영 버튼 다시 보이기
-        binding.captureButton.visibility = View.VISIBLE
-        binding.videoCaptureButton.visibility = View.VISIBLE
+        binding.controlsContainer.visibility = View.VISIBLE
+        binding.capturedVideoView.stopPlayback()
     }
 
     private fun startCamera() {

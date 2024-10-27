@@ -84,6 +84,28 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- 이미지 업로드 섹션 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/uploadButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="이미지 업로드"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:id="@+id/imagePreviewLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+
+        </HorizontalScrollView>
+
         <Button
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"

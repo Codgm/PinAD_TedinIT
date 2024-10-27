@@ -1,18 +1,26 @@
 package com.example.mappin_fe.AddPin.Category
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import com.example.mappin_fe.AddPin.Camera.MediaFile
+import com.example.mappin_fe.AddPin.PointPay.CouponPointFragment
 import com.example.mappin_fe.AddPin.PointPay.PointSystemFragment
+import com.example.mappin_fe.AddPin.Review.ReviewLocationFragment
 import com.example.mappin_fe.R
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -21,6 +29,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
+import java.io.File
 
 class CategorySelectionFragment : Fragment() {
 
@@ -30,8 +39,32 @@ class CategorySelectionFragment : Fragment() {
     private lateinit var templateContent: LinearLayout
     private lateinit var nextButton: Button
     private lateinit var tagChipGroup: ChipGroup
-    private lateinit var mediaFiles: List<MediaFile>
+    private lateinit var uploadButton: MaterialButton
+    private lateinit var imagePreviewLayout: LinearLayout
+    private  var mediaFiles =  mutableListOf<MediaFile>()
     private var is_ads: Boolean = false
+
+    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                // Get the real path from URI
+                val realPath = getRealPathFromURI(uri)
+                if (realPath != null) {
+                    // Create a new MediaFile object
+                    val mediaFile = MediaFile(
+                        uri = realPath,
+                        type = "image"
+                    )
+
+                    // Add to mediaFiles list
+                    mediaFiles.add(mediaFile)
+
+                    // Add preview
+                    addImagePreview(uri, mediaFile)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +82,15 @@ class CategorySelectionFragment : Fragment() {
         templateContent = view.findViewById(R.id.templateContent)
         nextButton = view.findViewById(R.id.btn_next)
         tagChipGroup = view.findViewById(R.id.tagChipGroup)
+        uploadButton = view.findViewById(R.id.uploadButton)
+        imagePreviewLayout = view.findViewById(R.id.imagePreviewLayout)
 
         setupCategories()
+        setupUploadButton()
         setupNextButton()
+        mediaFiles.forEach { mediaFile ->
+            addImagePreview(Uri.parse(mediaFile.uri), mediaFile)
+        }
 
         return view
     }
@@ -59,29 +98,121 @@ class CategorySelectionFragment : Fragment() {
     private fun setupNextButton() {
         nextButton.setOnClickListener {
             if (areAllFieldsFilled()) {
-                // 선택한 서브카테고리 정보를 번들에 담아 전달
+                // Gather data and create bundle as before
                 val (title, description, info) = gatherContentData()
                 val selectedTags = getSelectedTags()
 
                 val bundle = Bundle().apply {
                     putString("TITLE", title)
                     putString("DESCRIPTION", description)
-                    putString("CATEGORY", categoryChipGroup.toString())
-                    putString("INFO", info) // info 추가
+                    putString("CATEGORY", getSelectedCategory())  // New function to get selected category
+                    putString("INFO", info)
                     putBoolean("is_Ads", is_ads)
                     putStringArray("SELECTED_TAGS", selectedTags.toTypedArray())
                     putString("MEDIA_FILES", Gson().toJson(mediaFiles))
                 }
-                val PointSystemFragment = PointSystemFragment().apply {
-                    arguments = bundle
+
+                // Navigate based on the selected category
+                when (getSelectedCategory()) {
+                    "리뷰" -> {
+                        val reviewLocationFragment = ReviewLocationFragment().apply {
+                            arguments = bundle
+                        }
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, reviewLocationFragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    "쿠폰요청" -> {
+                        val couponPointFragment = CouponPointFragment().apply {
+                            arguments = bundle
+                        }
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, couponPointFragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    else -> {
+                        val pointSystemFragment = PointSystemFragment().apply {
+                            arguments = bundle
+                        }
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, pointSystemFragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
                 }
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, PointSystemFragment)
-                    .addToBackStack(null)
-                    .commit()
             } else {
                 Toast.makeText(context, "Please complete all required fields.", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun setupUploadButton() {
+        uploadButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            getContent.launch(intent)
+        }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        context?.contentResolver?.query(uri, projection, null, null, null)?.use { cursor ->
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            if (cursor.moveToFirst()) {
+                return cursor.getString(columnIndex)
+            }
+        }
+        return uri.toString()
+    }
+
+    private fun addImagePreview(uri: Uri, mediaFile: MediaFile) {
+        val imageView = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(0, 200, 1f) // 비율을 맞추기 위해 0으로 설정
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            setImageURI(uri)
+            setBackgroundResource(R.drawable.image_border) // 이미지 테두리 배경 추가
+        }
+
+        val deleteButton = ImageButton(context).apply {
+            setImageResource(android.R.drawable.ic_menu_delete)
+            layoutParams = LinearLayout.LayoutParams(50, 50).apply {
+                marginStart = 8 // 버튼과 이미지 사이 여백 추가
+            }
+            background = null // 배경 제거
+            setOnClickListener {
+                // Remove from mediaFiles list
+                mediaFiles.remove(mediaFile)
+                Log.d("mediafiles", "$mediaFiles")
+
+                // Remove preview
+                val previewContainer = (parent as ViewGroup) // Get the parent view
+                previewContainer.removeView(this) // Remove the delete button
+                previewContainer.removeView(imageView) // Remove the image view
+                imagePreviewLayout.removeView(previewContainer) // Remove the container
+            }
+        }
+
+        // Create a container for the image and delete button
+        val previewContainer = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(8, 8, 8, 8) // 컨테이너에 패딩 추가
+            setBackgroundResource(R.drawable.preview_background) // 배경 추가
+            addView(imageView) // 이미지 미리보기 추가
+            addView(deleteButton) // 삭제 버튼 추가
+        }
+
+        // Add the container to the image preview layout
+        imagePreviewLayout.addView(previewContainer)
+    }
+
+
+    private fun getSelectedCategory(): String {
+        val selectedChipId = categoryChipGroup.checkedChipId
+        return if (selectedChipId != View.NO_ID) {
+            (categoryChipGroup.findViewById<Chip>(selectedChipId))?.text.toString()
+        } else {
+            ""
         }
     }
 
@@ -134,7 +265,7 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun setupCategories() {
-        val categories = listOf("광고", "할인 요청", "리뷰")
+        val categories = listOf("광고", "쿠폰요청", "리뷰")
         categories.forEach { category ->
             val chip = Chip(context)
             chip.text = category
@@ -168,7 +299,7 @@ class CategorySelectionFragment : Fragment() {
                 showAdTemplate()
                 setupTags(getAdTags())
             }
-            "할인 요청" -> {
+            "쿠폰요청" -> {
                 showDiscountRequestTemplate()
                 setupTags(getDiscountRequestTags())
             }
@@ -189,7 +320,7 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun showDiscountRequestTemplate() {
-        templateTitle.text = "할인 요청"
+        templateTitle.text = "쿠폰요청"
         addStyledField("상품명", R.style.TemplateStyle_DiscountRequest)
         addStyledField("요청 할인율", R.style.TemplateStyle_DiscountRequest)
         addStyledField("요청 사유", R.style.TemplateStyle_DiscountRequest, true)
@@ -204,25 +335,6 @@ class CategorySelectionFragment : Fragment() {
         addRatingBar(styleResId)
         addStyledField("장점", styleResId, true)
         addStyledField("단점", styleResId, true)
-//        addStyledField("가장 기억에 남는 특징이나 경험", styleResId, true)
-//        addStyledField("추천 대상", styleResId, true)
-//        addStyledField("추가 커멘트", styleResId, true)
-//
-//        val revisitGroup = RadioGroup(ContextThemeWrapper(context, styleResId))
-//        val yesButton = RadioButton(ContextThemeWrapper(context, styleResId)).apply {
-//            text = "예"
-//        }
-//        val noButton = RadioButton(ContextThemeWrapper(context, styleResId)).apply {
-//            text = "아님"
-//        }
-//        revisitGroup.addView(yesButton)
-//        revisitGroup.addView(noButton)
-//
-//        revisitGroup.setOnCheckedChangeListener { _, checkedId ->
-//            // Handle revisit selection if needed
-//        }
-//
-//        templateContent.addView(revisitGroup)
     }
 
 //    private fun showAttractionTemplate(styleResId: Int) {
@@ -340,7 +452,7 @@ class CategorySelectionFragment : Fragment() {
             "명소 추천" -> R.style.TemplateStyle_Attraction
             "약속 장소" -> R.style.TemplateStyle_MeetingPoint
             "여행 메모" -> R.style.TemplateStyle_TravelNote
-            "할인 요청" -> R.style.TemplateStyle_DiscountRequest
+            "쿠폰 요청" -> R.style.TemplateStyle_DiscountRequest
             else -> R.style.TemplateStyle_Default
         }
     }
@@ -354,7 +466,7 @@ class CategorySelectionFragment : Fragment() {
             "명소 추천" -> R.color.template_attraction
             "약속 장소" -> R.color.template_meeting_point
             "여행 메모" -> R.color.template_travel_note
-            "할인 요청" -> R.color.template_discount_request
+            "쿠폰 요청" -> R.color.template_discount_request
             else -> R.color.template_default
         }
     }
@@ -368,7 +480,7 @@ class CategorySelectionFragment : Fragment() {
             "명소 추천" -> R.drawable.ic_attraction
             "약속 장소" -> R.drawable.ic_meeting
             "여행 메모" -> R.drawable.ic_travel
-            "할인 요청" -> R.drawable.ic_discount
+            "쿠폰 요청" -> R.drawable.ic_discount
             else -> R.drawable.ic_default
         }
     }

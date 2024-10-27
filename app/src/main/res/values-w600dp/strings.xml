@@ -43,4 +43,5 @@
         <item>8 hours (200 Points)</item>
     </string-array>
     <string name="qr_code">QR 코드</string>
+    <string name="thumbnail_list">thumbnail_list</string>
 </resources>

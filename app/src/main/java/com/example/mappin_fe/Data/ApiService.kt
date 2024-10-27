@@ -33,6 +33,11 @@ interface ApiService {
         @Body userAccount: UserAccount
     ): Response<Void>
 
+    @GET("users/")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String,
+    ): Response<ProfileData>
+
     @GET("pins/") // 핀 데이터 API 엔드포인트
     suspend fun getUserPins(): Response<List<FltPinData>>
 
@@ -53,6 +58,9 @@ interface ApiService {
         @Part("visibility") visibility: RequestBody,
         @Part("is_ads") is_ads: RequestBody,
     ): Response<PinDataResponse>
+
+    @POST("api/reviews")
+    suspend fun submitReview(@Body reviewRequest: ReviewRequest): Response<ReviewResponse>
 
     @GET("pins/search/")
     suspend fun searchPins(

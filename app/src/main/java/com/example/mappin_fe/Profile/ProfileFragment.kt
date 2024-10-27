@@ -1,8 +1,11 @@
 package com.example.mappin_fe.Profile
 
+import PlanSelectionFragment
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -28,6 +31,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.example.mappin_fe.Data.CouponResponse
+import com.example.mappin_fe.Data.ProfileData
 import com.example.mappin_fe.Data.PurchaseInfo
 import com.example.mappin_fe.Data.RetrofitInstance
 import com.example.mappin_fe.R
@@ -39,7 +43,7 @@ import retrofit2.Response
 class ProfileFragment : Fragment() {
 
     private lateinit var imgProfilePicture: ImageView
-    private lateinit var tvUserEmail: TextView
+    private lateinit var tvUserGender: TextView
     private lateinit var tvUserNickname: TextView
     private lateinit var tvUserDescription: TextView
     private lateinit var tvPoints: TextView
@@ -51,6 +55,8 @@ class ProfileFragment : Fragment() {
     private lateinit var currentUserUid: String
     private lateinit var billingClient: BillingClient
     private var productDetailsList: List<ProductDetails> = emptyList()
+    private lateinit var btnSelectPlan: Button
+    private lateinit var inviteButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +66,7 @@ class ProfileFragment : Fragment() {
 
         // 뷰 초기화
         imgProfilePicture = view.findViewById(R.id.imgProfilePicture)
-        tvUserEmail = view.findViewById(R.id.tvUserEmail)
+        tvUserGender = view.findViewById(R.id.tvUserGender)
         tvUserNickname = view.findViewById(R.id.tvUserNickname)
         tvUserDescription = view.findViewById(R.id.tvUserDescription)
         tvPoints = view.findViewById(R.id.tvPoints)
@@ -69,20 +75,25 @@ class ProfileFragment : Fragment() {
         tvInterests = view.findViewById(R.id.tvInterests)
         btnCouponBox = view.findViewById(R.id.btnCouponBox)
         btnQrScan = view.findViewById(R.id.btnQrScan)
+        btnSelectPlan = view.findViewById(R.id.btnSelectPlan)
+        inviteButton = view.findViewById(R.id.btnInviteFriends)
+        inviteButton.setOnClickListener {
+            openFriendsInviteFragment()
+        }
+
 
         btnQrScan.setOnClickListener {
             openCouponScannerFragment()
         }
 
+        btnSelectPlan.setOnClickListener {
+//            openWebsite("https://www.example.com")
+            navigateToPlanSelectionFragment()
+        }
+
         btnCouponBox.setOnClickListener {
             showCouponDialog()
         }
-
-
-        // Firebase 초기화
-//        firebaseAuth = FirebaseAuth.getInstance()
-//        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-//        currentUserUid = firebaseAuth.currentUser?.uid ?: ""
 
         // 프로필 데이터 로드
         loadUserProfile()
@@ -108,12 +119,33 @@ class ProfileFragment : Fragment() {
         return view
     }
 
+    private fun openFriendsInviteFragment() {
+        val fragment = FriendsInviteFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun openCouponScannerFragment() {
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_body_container, CouponScannerFragment())
         transaction.addToBackStack(null)
         transaction.commit()
     }
+
+    private fun navigateToPlanSelectionFragment() {
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_body_container, PlanSelectionFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+//    private fun openWebsite(url: String) {
+//        val intent = Intent(Intent.ACTION_VIEW)
+//        intent.data = Uri.parse(url)
+//        startActivity(intent)
+//    }
 
     private fun showCouponDialog() {
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
@@ -172,15 +204,23 @@ class ProfileFragment : Fragment() {
             .setProductList(
                 listOf(
                     QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId("product_id_100")
+                        .setProductId("product_id_2000") // 2000원 충전 상품
                         .setProductType(BillingClient.ProductType.INAPP)
                         .build(),
                     QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId("product_id_500")
+                        .setProductId("product_id_5000") // 5000원 충전 상품
                         .setProductType(BillingClient.ProductType.INAPP)
                         .build(),
                     QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId("product_id_1000")
+                        .setProductId("product_id_10000") // 1만원 충전 상품
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build(),
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId("product_id_20000") // 2만원 충전 상품
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build(),
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId("product_id_50000") // 5만원 충전 상품
                         .setProductType(BillingClient.ProductType.INAPP)
                         .build()
                 )
@@ -194,6 +234,7 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+
 
 
     private fun showPointPackageDialog() {
@@ -226,12 +267,25 @@ class ProfileFragment : Fragment() {
 
     private fun getPointAmount(productId: String): Int {
         return when (productId) {
-            "product_id_100" -> 100
-            "product_id_500" -> 500
-            "product_id_1000" -> 1000
+            "product_id_2000" -> 600      // 2000원 충전 시 (2000 * 3)
+            "product_id_5000" -> 1500     // 5000원 충전 시 (5000 * 3)
+            "product_id_10000" -> 3000    // 1만원 충전 시 (10000 * 3)
+            "product_id_20000" -> 6000    // 2만원 충전 시 (20000 * 3)
+            "product_id_50000" -> 15000   // 5만원 충전 시 (50000 * 3)
             else -> 0
         }
     }
+
+    private fun calculateBonusPoints(productId: String, baseAmount: Int): Int {
+        val bonusPercentage = when (productId) {
+            "product_id_10000" -> 300  // 1만원 충전 시 10% 보너스
+            "product_id_20000" -> 1200  // 2만원 충전 시 20% 보너스
+            "product_id_50000" -> 4500 // 5만원 충전 시 30% 보너스
+            else -> 0  // 1만원 미만은 보너스 없음
+        }
+        return (baseAmount * bonusPercentage) / 100
+    }
+
 
     private fun startBillingFlow(productDetails: ProductDetails) {
         try {
@@ -313,11 +367,18 @@ class ProfileFragment : Fragment() {
                         )
 
                         if (response.isSuccessful) {
+                            val productId = purchase.products[0]
+                            val baseAmount = getPointAmount(productId)
+
+                            // 충전된 기본 포인트에 보너스 포인트 계산 후 추가
+                            val bonusPoints = calculateBonusPoints(productId, baseAmount)
+                            val totalPoints = baseAmount + bonusPoints
+
                             // 서버 검증 성공 후 Google Play에 구매 확인
                             billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                                     // 구매 프로세스 완료
-                                    Toast.makeText(context, "포인트 충전이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "포인트 충전이 완료되었습니다. 총 ${totalPoints}포인트가 추가되었습니다.", Toast.LENGTH_SHORT).show()
                                     loadUserProfile() // 프로필 정보 새로고침
                                 } else {
                                     Toast.makeText(context, "구매 확인 처리 실패", Toast.LENGTH_SHORT).show()
@@ -335,22 +396,59 @@ class ProfileFragment : Fragment() {
     }
 
 
+
     private fun loadUserProfile() {
-//        databaseReference.child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val userAccount = snapshot.getValue(UserAccount::class.java)
-//                userAccount?.let {
-//                    tvUserEmail.text = userAccount.emailId ?: "No email provided"
-//                    tvUserNickname.text = userAccount.nickname ?: "No nickname provided"
-//                    tvUserDescription.text = "Introduce yourself..."  // 사용자 소개는 필요에 따라 변경 가능
-//                    tvInterests.text = userAccount.interests ?: "No interests specified"
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // Error handling
-//                Toast.makeText(context, "Error loading user data: ${error.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        })
+        lifecycleScope.launch {
+            try {
+                val token = RetrofitInstance.getAccessToken()
+
+                if (token == null) {
+                    handleError("로그인이 필요합니다")
+                    return@launch
+                }
+                // API 호출하여 사용자 데이터 가져오기
+                val response = RetrofitInstance.api.getUserProfile("Bearer $token")
+
+                if (response.isSuccessful) {
+                    response.body()?.let { userAccount ->
+                        // UI 업데이트
+                        updateUIWithUserData(userAccount)
+                    }
+                } else {
+                    handleError("프로필 로딩 실패: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                handleError("네트워크 오류: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateUIWithUserData(userAccount: ProfileData) {
+        // 메인 스레드에서 UI 업데이트
+        activity?.runOnUiThread {
+            tvUserGender.text = userAccount.gender ?: "이메일 정보 없음"
+            tvUserNickname.text = userAccount.nickname ?: "닉네임 정보 없음"
+            tvUserDescription.text = userAccount.description ?: "자기소개를 입력해주세요"
+//            tvPoints.text = "${userAccount.points ?: 0} P"
+            tvInterests.text = userAccount.tags ?: "관심사를 입력해주세요"
+
+            // 프로필 이미지가 있는 경우 로드
+            userAccount.profileImage?.let { base64Image ->
+                try {
+                    val imageBytes = Base64.decode(base64Image, Base64.DEFAULT)
+                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    imgProfilePicture.setImageBitmap(bitmap)
+                } catch (e: Exception) {
+                    // 이미지 로드 실패시 기본 이미지 설정
+                    imgProfilePicture.setImageResource(R.drawable.ic_default_profile)
+                }
+            }
+        }
+    }
+
+    private fun handleError(errorMessage: String) {
+        activity?.runOnUiThread {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 }
