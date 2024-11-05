@@ -123,12 +123,34 @@
             android:background="@drawable/spinner_background"
             android:layout_marginBottom="16dp"/>
 
+        <!-- 광고 공개 여부 설정 스위치 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Public Visibility"
+                android:textSize="18sp"
+                android:textColor="@color/label_color"
+                android:layout_marginEnd="8dp"/>
+
+            <Switch
+                android:id="@+id/switchVisibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
         <!-- 핀 설정 완료 버튼 -->
         <Button
             android:id="@+id/btn_complete_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Complete Pin Setup"
+            android:text="완료"
             android:textColor="@color/button_text_color"
             android:background="@drawable/button_background"
             android:layout_marginTop="16dp"/>

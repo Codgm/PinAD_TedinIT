@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="false"
     android:background="?attr/colorBackground"
-    android:padding="16dp"
-    style="@style/Base.Theme.Mappin_Fe">
+    style="@style/Base.Theme.pinAD_fe">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:padding="16dp">
 
         <Button
             android:id="@+id/btnQrScan"
@@ -34,7 +35,6 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="Profile Picture"/>
 
-
         <!-- 사용자 닉네임 -->
         <TextView
             android:id="@+id/tvUserNickname"
@@ -56,25 +56,34 @@
             android:layout_marginTop="4dp"
             android:textColor="?attr/textColorSecondary"/>
 
-        <!-- 사용자 소개 -->
-        <TextView
-            android:id="@+id/tvUserDescription"
-            android:layout_width="wrap_content"
+        <!-- 플랜 선택과 친구 초대하기 버튼을 가로로 정렬 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User description goes here"
-            android:visibility="gone"
-            android:textSize="14sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
-            android:textColor="?attr/textColorSecondary"/>
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/btnSelectPlan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="플랜 선택"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal"/>
+            <Button
+                android:id="@+id/btnSelectPlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="플랜 선택"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnInviteFriends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="친구 초대"
+                android:layout_marginEnd="8dp"/>
+
+            <!-- 내 쿠폰함 버튼 -->
+            <Button
+                android:id="@+id/btnCouponBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 쿠폰함" />
+        </LinearLayout>
 
         <!-- 관심사 표시 -->
         <LinearLayout
@@ -103,6 +112,7 @@
 
         <!-- 포인트 표시 및 충전 -->
         <LinearLayout
+            android:id="@+id/PointSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -130,38 +140,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Charge"
-                android:layout_marginStart="8dp"
-                android:background="?attr/colorPrimary"
-                android:textColor="?attr/colorOnPrimary"/>
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <!-- 보유 쿠폰 카드 -->
-        <Button
-            android:id="@+id/btnCouponBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="내 쿠폰함"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary" />
-
-        <Button
-            android:id="@+id/btnInviteFriends"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="친구 초대하기"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary"/>
-
-        <!-- 설정 버튼 -->
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Settings"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary" />
+            android:text="설정"
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>

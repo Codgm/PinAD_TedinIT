@@ -117,7 +117,7 @@
                 android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="다음" />
+                android:text="완료" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

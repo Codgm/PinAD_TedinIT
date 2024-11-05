@@ -5,13 +5,22 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mappin_fe"
-    compileSdk = 34
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\sgm43\\.android\\upload-keystore.jks")
+            storePassword = "android"
+            keyPassword = "android"
+            keyAlias = "upload"
+        }
+    }
+    namespace = "com.pinAD.pinAD_fe"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.mappin_fe"
+        applicationId = "com.pinAD.pinAD_fe"
         minSdk = 24
-        targetSdk = 34
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -52,6 +61,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.flexbox)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -70,19 +80,21 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.code.scanner)
     implementation(libs.coil)
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation("androidx.fragment:fragment:1.5.7")
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("com.google.android.material:material:1.12.0")
     implementation ("com.google.code.gson:gson:2.10.1")
     // Retrofit 라이브러리
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Gson 변환기
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.firebase:firebase-messaging:23.0.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
     implementation(libs.firebase.auth)
     implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)

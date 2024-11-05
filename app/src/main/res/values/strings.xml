@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mappin_Fe</string>
+    <string name="app_name">PinAD</string>
     <string name="default_web_client_id">YOUR_CLIENT_ID</string>
     <string name="kakao_app_key">607b30fba1f577a8f048920ea64a6d50</string>
     <string name="naver_client_id">dXtaisFDzZtaLMIyRRtW</string>
@@ -34,20 +34,43 @@
     <string name="kakao">Kakao</string>
     <string-array name="ad_ranges">
         <item>100m (Free)</item>
-        <item>300m (30 Points)</item>
-        <item>500m (45 Points)</item>
-        <item>700m (65 Points)</item>
-        <item>1km (90 Points)</item>
-        <item>2km (170 Points)</item>
+        <item>300m (90 Points)</item>
+        <item>500m (150 Points)</item>
+        <item>700m (210 Points)</item>
+        <item>1km (300 Points)</item>
+        <item>2km (600 Points)</item>
     </string-array>
     <string-array name="ad_durations">
-        <item>1 hours (Free)</item>
-        <item>2 hours (20 Points)</item>
-        <item>4 hours (40 Points)</item>
-        <item>8 hours (80 Points)</item>
-        <item>16 hours (160 Points)</item>
-        <item>24 hours (240 Points)</item>
+        <item>30 minutes (Free)</item>
+        <item>60 minutes (60 Points)</item>
+        <item>120 minutes (180 Points)</item>
+        <item>240 minutes (420 Points)</item>
+        <item>480 minutes (900 Points)</item>
+        <item>960 minutes (1860 Points)</item>
+        <item>1440 minutes (2820 Points)</item>
+    </string-array>
+
+    <string-array name="coupon_ranges">
+        <item>100m (Free)</item>
+        <item>300m (90 Points)</item>
+        <item>500m (150 Points)</item>
+        <item>700m (210 Points)</item>
+        <item>1km (300 Points)</item>
+        <item>2km (600 Points)</item>
+    </string-array>
+    <string-array name="coupon_durations">
+        <item>60 minutes (Free)</item>
+        <item>120 minutes (120 Points)</item>
+        <item>180 minutes (240 Points)</item>
+        <item>240 minutes (360 Points)</item>
+        <item>480 minutes (840 Points)</item>
+        <item>960 minutes (1800 Points)</item>
+        <item>1440 minutes (2760 Points)</item>
     </string-array>
     <string name="qr_code">QR 코드</string>
     <string name="thumbnail_list">thumbnail_list</string>
+    <string name="onboarding_image">onboarding_image</string>
+    <string name="feature_title">feature_title</string>
+    <string name="feature_description">feature_description</string>
+    <string name="page_indicator">page_indicator</string>
 </resources>

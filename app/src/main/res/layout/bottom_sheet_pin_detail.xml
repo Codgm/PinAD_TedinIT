@@ -50,6 +50,21 @@
             app:layout_constraintStart_toEndOf="@id/tvTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- 승인 버튼 -->
+        <Button
+            android:id="@+id/btnApproveRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="승인"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:backgroundTint="?attr/colorOnBackground"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- 진행 상황 ProgressBar -->
         <ProgressBar
             android:id="@+id/progressBar"
@@ -132,16 +147,14 @@
             app:layout_constraintTop_toBottomOf="@id/chipGroupTags" />
 
         <!-- 미디어 이미지 -->
-        <ImageView
-            android:id="@+id/ivMedia"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="16dp"
-            android:scaleType="centerCrop"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMedia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvMoreDetails" />
+            app:layout_constraintTop_toBottomOf="@id/tvMoreDetails"/>
 
         <!-- 콘텐츠 데이터 -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,7 +165,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivMedia">
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewMedia">
 
             <!-- Field 1 -->
             <TextView

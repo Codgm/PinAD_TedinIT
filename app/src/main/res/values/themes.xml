@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme for light mode. -->
-    <style name="Base.Theme.Mappin_Fe" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.pinAD_fe" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -91,5 +91,12 @@
         <item name="android:textColor">@color/default_text</item>
     </style>
 
-    <style name="Theme.Mappin_Fe" parent="Base.Theme.Mappin_Fe" />
+    <style name="ToolbarTitleStyle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Theme.pinAD_fe" parent="Base.Theme.pinAD_fe">
+        <!-- Additional customizations for the main theme -->
+    </style>
 </resources>

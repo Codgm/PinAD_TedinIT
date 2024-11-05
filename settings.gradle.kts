@@ -21,6 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mappin_Fe"
+rootProject.name = "pinAD"
 include(":app")
  

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="?attr/colorBackground"
-    style="@style/Base.Theme.Mappin_Fe">
+    style="@style/Base.Theme.pinAD_fe">
 
     <!-- 뒤로가기 버튼 -->
     <ImageButton
@@ -44,7 +44,7 @@
                 android:textSize="16sp"
                 android:textColor="?attr/colorOnBackground"/>
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchNotification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
