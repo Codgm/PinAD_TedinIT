@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Notification Settings"
+                android:text="@string/NotificationSetting"
                 android:textSize="16sp"
                 android:textColor="?attr/colorOnBackground"/>
 
@@ -49,6 +49,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/language_setting"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
         <!-- 테마 설정 -->
@@ -117,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Logout"
+            android:text="@string/Logout"
             android:textColor="?attr/colorOnPrimary"
             android:background="?attr/colorPrimary"
             android:padding="12dp"/>
@@ -127,7 +152,7 @@
             android:id="@+id/btnDeleteAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete Account"
+            android:text="@string/DeleteAccount"
             android:textColor="?attr/colorError"
             android:background="@android:color/holo_red_dark"
             android:padding="12dp"/>

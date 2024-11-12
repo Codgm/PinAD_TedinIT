@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PinAD</string>
+    <string name="feature_image_description">온보딩 화면의 기능 이미지</string>
+    <string name="title_activity_login">로그인 화면</string>
+    <string name="prompt_email">이메일</string>
+    <string name="prompt_password">비밀번호</string>
+    <string name="action_sign_in">로그인 또는 등록</string>
+    <string name="action_sign_in_short">회원가입</string>
+    <string name="welcome">환영합니다!</string>
+    <string name="invalid_username">유효한 사용자 이름이 아닙니다</string>
+    <string name="invalid_password">비밀번호는 5자 이상이어야 합니다</string>
+    <string name="login_failed">로그인 실패</string>
+    <string name="enter_the_password">비밀번호 입력</string>
+    <string name="enter_the_email">이메일 입력</string>
+    <string name="enter_nickname">별명 입력</string>
+    <string name="enter_interests">관심사 선택</string>
+    <string name="title_activity_bottom_navigation_fragment">하단 탐색 조각</string>
+    <string name="title_home">홈</string>
+    <string name="title_search">검색</string>
+    <string name="title_add_pin">핀 작성</string>
+    <string name="title_hot_pin">인기 핀</string>
+    <string name="title_profile">프로필</string>
+    <string name="hello_blank_fragment">안녕 빈 조각</string>
+    <string name="desc_back">돌아가기</string>
+    <string name="start_capture">캡처 시작</string>
+    <string name="next">다음</string>
+    <string name="take_photo">사진 찍기</string>
+    <string name="stop_capture">캡처 중지</string>
+    <string name="back">뒤로</string>
+    <string name="kakao">카카오</string>
+    <string name="qr_code">QR 코드</string>
+    <string name="thumbnail_list">썸네일 리스트</string>
+    <string name="onboarding_image">온보딩 이미지</string>
+    <string name="feature_title">기능 제목</string>
+    <string name="feature_description">기능 설명</string>
+    <string name="page_indicator">페이지 표시기</string>
+    <string name="Searchbar">태그, 아이디, 이름</string>
+    <string name="TagSelect">관심사 선택</string>
+    <string name="Add">추가</string>
+    <string name="NewTagAdd">새로운 관심사 입력</string>
+    <string name="SelectCategory">카테고리 선택</string>
+    <string name="Next">다음</string>
+    <string name="Login">로그인</string>
+    <string name="PlanSelection">플랜을 선택하세요</string>
+    <string name="LocationSelect">위치 선택</string>
+    <string name="ReviewLocationSelection">리뷰 장소의 위치를 지도에서 선택해주세요</string>
+    <string name="LocationSearch">주소/매장명/장소</string>
+    <string name="Search">검색</string>
+    <string name="ShotFormVideo">숏폼 영상 추가</string>
+    <string name="Recipt">영수증 추가</string>
+    <string name="End">완료</string>
+    <string name="RangeSelect">범위 선택:</string>
+    <string name="DurationSelect">시간 선택:</string>
+    <string name="PublicVisibility">공개 가시성</string>
+    <string name="HotPin">인기 게시물</string>
+    <string name="PlanSelect">플랜 선택</string>
+    <string name="CouponBox">쿠폰함</string>
+    <string name="Interest">관심사</string>
+    <string name="Points">포인트</string>
+    <string name="Charge">충전</string>
+    <string name="Setting">설정</string>
+    <string name="NotificationSetting">알림 설정</string>
+    <string name="Logout">로그아웃</string>
+    <string name="DeleteAccount">회원탈퇴</string>
+    <string-array name="ad_ranges">
+        <item>100m (무료)</item>
+        <item>300m (90 포인트)</item>
+        <item>500m (150 포인트)</item>
+        <item>700m (210 포인트)</item>
+        <item>1km (300 포인트)</item>
+        <item>2km (600 포인트)</item>
+    </string-array>
+    <string-array name="ad_durations">
+        <item>30 minutes (무료)</item>
+        <item>60 minutes (60 포인트)</item>
+        <item>120 minutes (180 포인트)</item>
+        <item>240 minutes (420 포인트)</item>
+        <item>480 minutes (900 포인트)</item>
+        <item>960 minutes (1860 포인트)</item>
+        <item>1440 minutes (2820 포인트)</item>
+    </string-array>
+    <string name="language_setting">언어</string>
+    <string name="language_english">영어</string>
+    <string name="language_korean">한국어</string>
+    <string name="Welcome_to_pinAD">pinAD에 오신 것을 환영합니다!</string>
+    <string name="Notification">알림</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="Accept">수락</string>
+    <string name="Refuse">거절</string>
+    <string name="Requested_CouponBox">요청된 쿠폰함</string>
+    <string name="Verifying_Coupons">쿠폰 검증하기</string>
+    <string name="type_coupon_code">쿠폰 코드를 입력하세요</string>
+
+    <!-- Categories -->
+    <string name="category_ad">광고</string>
+    <string name="category_coupon">쿠폰 요청</string>
+    <string name="category_review">리뷰</string>
+
+    <!-- Fields -->
+    <string name="field_title">타이틀</string>
+    <string name="field_details">세부사항</string>
+    <string name="field_product_name">상품명</string>
+    <string name="field_quantity">판매 수량</string>
+    <string name="field_discount_amount">할인율/할인금액</string>
+    <string name="field_max_issued_count">최대 인원수</string>
+    <string name="field_request_reason">요청사유</string>
+    <string name="review_product_name">제품명 / 서비스명</string>
+    <string name="review_product_location">제품/서비스 위치</string>
+    <string name="review_advantages">장점</string>
+    <string name="review_disadvantages">단점</string>
+
+
+    <!-- Discount Types -->
+    <string name="discount_type_percent">퍼센트 할인</string>
+    <string name="discount_type_fixed">고정 할인</string>
+
+    <!-- Tags -->
+    <string name="tag_food_drink">식사/음료</string>
+    <string name="tag_clothing_shoes">의류/신발</string>
+    <string name="tag_beauty_health">뷰티/헬스</string>
+    <string name="tag_sports_leisure">스포츠/레저</string>
+    <string name="tag_convenience_mart">편의점/마트</string>
+    <string name="tag_culture_entertainment">문화/엔터</string>
+    <string name="tag_education_books">교육/도서</string>
+    <string name="tag_automotive">자동차</string>
+    <string name="tag_life_service">생활서비스</string>
+    <string name="tag_event">행사/이벤트</string>
+    <string name="tag_other">기타</string>
+</resources>

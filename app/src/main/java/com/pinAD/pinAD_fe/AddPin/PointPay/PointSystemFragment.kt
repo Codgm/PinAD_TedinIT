@@ -1,7 +1,9 @@
 package com.pinAD.pinAD_fe.AddPin.PointPay
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
@@ -11,8 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.pinAD.pinAD_fe.AddPin.Camera.MediaFile
 import com.pinAD.pinAD_fe.Data.pin.FTag
 import com.pinAD.pinAD_fe.Data.pin.PinDataResponse
@@ -30,7 +36,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.pinAD.pinAD_fe.Profile.ProfileFragment
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -56,11 +65,11 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationSearchEditText: EditText
     private lateinit var searchButton: Button
     private var selectedLocation: LatLng? = null
-    private var currentPoints = 100000
     private lateinit var category: String
     private lateinit var info: String // contentData 대신 info 사용
     private lateinit var title: String // title 추가
     private lateinit var description: String // description 추가
+    private var currentPoints: Int = 0
     private var is_ads: Boolean = false // is_ads 추가
     private var pin_type: Int = 0
     private var selectedTags: List<String> = listOf()
@@ -69,8 +78,11 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var media_files: List<MediaFile>
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var basicConsumption: Int = -3000
+
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -85,32 +97,43 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        // FusedLocationProviderClient 초기화
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-
-        // 현재 위치를 가져오는 함수 호출
-        getCurrentLocation()
         return view
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocation() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                location?.let {
-                    latitude = it.latitude
-                    longitude = it.longitude
-                    Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
-                } ?: run {
-                    Log.e("Location", "Unable to get current location")
-                    // 위치를 가져올 수 없을 때의 처리
+    private fun getUserLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        try {
+            fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                val location = task.result
+                if (location != null) {
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                    googleMap.addMarker(MarkerOptions().position(userLatLng).title("내 위치"))
+                } else {
+                    Toast.makeText(context, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-            .addOnFailureListener { e ->
-                Log.e("Location", "Error getting location", e)
-                // 위치 가져오기 실패 시 처리
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            Toast.makeText(context, "위치 권한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 권한이 허용된 경우
+                    getUserLocation()
+                } else {
+                    // 권한이 거부된 경우
+                    Toast.makeText(context, "위치 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
             }
+        }
     }
 
 
@@ -165,6 +188,17 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
                     .title("선택한 위치")
             )
         }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            googleMap.isMyLocationEnabled = true
+            getUserLocation() // 사용자 위치 가져오기
+        } else {
+            // 권한이 없으면 권한 요청
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION
+            )
+        }
     }
 
     private fun setupSpinners() {
@@ -211,7 +245,8 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("SetTextI18n")
     private fun updateCurrentPointsText() {
-        tvCurrentPoints.text = "Current Points: $currentPoints"
+        currentPoints = UserDataManager.userData?.points ?: 100000
+        tvCurrentPoints.text = "보유 포인트: ${currentPoints}"
         imgPointIcon.setImageResource(R.drawable.ic_point)
     }
 
@@ -243,24 +278,47 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
             UserUtils.fetchUserDetails { nickname, _ ->
                 if (calculateAndUpdatePoints()) {
                     val pinData = createPinData(nickname)
-                    if (isAdded && userVisibleHint) { // Fragment가 활성화되어 있는지 확인
+                    if (isAdded && userVisibleHint) {
                         sendPinDataToServer(pinData) { success ->
                             btnCompletePin.isEnabled = true
                             if (success) {
                                 navigateToMainActivity()
+                                updatePointsAndFetchLatestData()
                             }
                         }
                     } else {
-                        showSafeToast("Fragment is not active")
                         btnCompletePin.isEnabled = true
                     }
                 } else {
-                    Toast.makeText(context, "Insufficient points!", Toast.LENGTH_SHORT).show()
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("포인트 부족")
+                        .setMessage("보유하신 포인트가 부족합니다. 포인트를 충전하세요.")
+                        .setPositiveButton("포인트 결제") { _, _ ->
+                            parentFragmentManager.beginTransaction().apply {
+                                replace(R.id.fragment_container, ProfileFragment())
+                                addToBackStack(null)
+                                commit()
+                            }
+                        }
+                        .setNegativeButton("취소", null)
+                        .create()
+                    dialog.show()
                     btnCompletePin.isEnabled = true
                 }
             }
         }
 
+    }
+
+    private fun updatePointsAndFetchLatestData() {
+        lifecycleScope.launch {
+            val updatedProfileData = UserDataManager.getUserData(forceRefresh = true)
+            updatedProfileData?.let {
+                // UI 갱신
+                currentPoints = it.points!!
+                updateCurrentPointsText()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -306,11 +364,40 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
         val location = LatLng(latitude,longitude)
         val range = getSelectedRange()
         val duration = getSelectedDuration() * 3600
-        val infoJson = JSONObject().apply {
-            // 기존 info 내용이 있다면 여기에 추가
-            put("additionalInfo", info)
-        }
         val tags = selectedTags.map { FTag(it) }
+        val infoJsonStr = info
+        val processedInfo = try {
+            val originalInfoJson = JSONObject(infoJsonStr)
+
+            // 새로운 JSONObject를 생성하여 원래 타입 유지하면서 데이터 복사
+            val processedInfoJson = JSONObject()
+
+            // 각 필드에 대해 적절한 타입으로 처리
+            originalInfoJson.keys().forEach { key ->
+                when (key) {
+                    "max_issued_count" -> processedInfoJson.put(key, originalInfoJson.getInt(key))
+                    "discount_amount" -> processedInfoJson.put(key, originalInfoJson.getInt(key))
+                    "rating" -> processedInfoJson.put(key, originalInfoJson.getDouble(key))
+                    "discount_type" -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                    "product_name" -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                    // 필요한 경우 다른 필드들에 대한 처리 추가
+                    else -> {
+                        // 타입을 자동으로 감지하여 처리
+                        val value = originalInfoJson.get(key)
+                        when (value) {
+                            is Int -> processedInfoJson.put(key, originalInfoJson.getInt(key))
+                            is Double -> processedInfoJson.put(key, originalInfoJson.getDouble(key))
+                            is Boolean -> processedInfoJson.put(key, originalInfoJson.getBoolean(key))
+                            else -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                        }
+                    }
+                }
+            }
+            processedInfoJson.toString()
+        } catch (e: Exception) {
+            Log.e("PinData", "Error processing info JSON", e)
+            infoJsonStr // 에러 발생시 원본 문자열 반환
+        }
 
         return PinDataResponse(
             id = UUID.randomUUID().toString(),
@@ -325,7 +412,7 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
             pin_type = pin_type,
 //            category = category,
             media_files = media_files.map { it.uri },
-            info = infoJson.toString(),
+            info = processedInfo,
             tags = tags,
             visibility = if (switchVisibility.isChecked) "public" else "private",
             is_ads = is_ads, // is_ads 추가
@@ -346,7 +433,7 @@ class PointSystemFragment : Fragment(), OnMapReadyCallback {
                 val durationPart = pinData.duration.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val pintypePart = pinData.pin_type.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 //                val categoryPart = pinData.category.toRequestBody("text/plain".toMediaTypeOrNull())
-                val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
+                val infoPart = pinData.info.toString().toRequestBody("application/json".toMediaTypeOrNull())
                 val tagsParts = ArrayList<RequestBody>()
                 // Tag 객체에서 name 필드를 사용하여 RequestBody로 변환
                 pinData.tags.forEach { tag ->

@@ -50,6 +50,7 @@ class HotPinFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         pinCountTextView = view.findViewById(R.id.pinCountTextView)
 
+
         setupRecyclerView()
         setupTagRecyclerView()
         setupSwipeRefresh()
@@ -62,7 +63,17 @@ class HotPinFragment : Fragment() {
 
     private fun setupDefaultTags() {
         // 기본 태그 하드코딩
-        val defaultTags = listOf("패션/의류", "신발", "액세서리", "뷰티/화장품", "전자제품", "스포츠/레저용품", "생활용품", "도서", "식품/음료", "전자기기") // 기본 태그 예시
+        val defaultTags = listOf(getString(R.string.tag_food_drink),
+            getString(R.string.tag_clothing_shoes),
+            getString(R.string.tag_beauty_health),
+            getString(R.string.tag_sports_leisure),
+            getString(R.string.tag_convenience_mart),
+            getString(R.string.tag_culture_entertainment),
+            getString(R.string.tag_education_books),
+            getString(R.string.tag_automotive),
+            getString(R.string.tag_life_service),
+            getString(R.string.tag_event),
+            getString(R.string.tag_other)) // 기본 태그 예시
 //        updateChipGroup(defaultTags)
         tagAdapter.submitList(defaultTags)
     }
@@ -163,7 +174,7 @@ class HotPinFragment : Fragment() {
                     keyword = tagName,
                     latitude = currentLocation?.latitude ?: 0.0,
                     longitude = currentLocation?.longitude ?: 0.0,
-                    radius = 5000 // 예시 반경 (미터 단위)
+                    radius = 1 // 예시 반경 (미터 단위)
                 )
                 if (response.isSuccessful) {
                     val pins: List<FltPinData> = response.body() ?: emptyList()

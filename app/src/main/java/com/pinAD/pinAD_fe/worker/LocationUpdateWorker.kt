@@ -5,15 +5,19 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.pinAD.pinAD_fe.Data.location.LocationUpdateRequest
 import com.pinAD.pinAD_fe.service.LocationService
 import com.pinAD.pinAD_fe.R
 import com.pinAD.pinAD_fe.network.RetrofitInstance
+import com.pinAD.pinAD_fe.utils.NotificationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,30 +28,6 @@ class LocationUpdateWorker(
 
     companion object {
         private const val TAG = "LocationUpdateWorker"
-        private const val NOTIFICATION_CHANNEL_ID = "pin_notification_channel"
-        private const val NOTIFICATION_CHANNEL_NAME = "Pin Notifications"
-    }
-
-    init {
-        Log.d(TAG, "LocationUpdateWorker initialized")
-        createNotificationChannel()
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(TAG, "createNotificationChannel: Creating notification channel")
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "알림 채널입니다"
-            }
-
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-            Log.d(TAG, "createNotificationChannel: Channel created successfully")
-        }
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -105,40 +85,36 @@ class LocationUpdateWorker(
     }
 
     private fun createPinNotification(title: String, description: String) {
-        Log.d(TAG, "createPinNotification: Creating notification for pin with title: $title")
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        try {
+            // 알림 권한 체크
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
+                Log.w(TAG, "createPinNotification: Notification permission not granted")
+                return
+            }
 
-        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("새로운 $title 핀 발견") // 핀의 제목
-            .setContentText(description) // 핀의 설명
-            .setSmallIcon(R.drawable.ic_event)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-            .build()
+            // NotificationManager 서비스 가져오기
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // 고유한 ID를 사용하여 알림 생성
-        notificationManager.notify(title.hashCode(), notification)
-        Log.d(TAG, "createPinNotification: Notification created successfully")
-    }
-}
+            val notification = NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID_PINS)
+                .setContentTitle("새로운 $title 핀 발견")
+                .setContentText(description)
+                .setSmallIcon(R.drawable.ic_event)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .build()
 
-// Activity 확장 함수들
-fun Activity.startLocationService() {
-    Log.d("LocationServiceExt", "startLocationService: Starting service from activity")
-    Intent(this, LocationService::class.java).also { intent ->
-        intent.action = LocationService.ACTION_START_LOCATION_SERVICE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
+            // try-catch로 SecurityException 처리
+            try {
+                notificationManager.notify(title.hashCode(), notification)
+                Log.d(TAG, "createPinNotification: Notification created successfully for pin: $title")
+            } catch (se: SecurityException) {
+                Log.e(TAG, "createPinNotification: Failed to show notification due to permission issue", se)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "createPinNotification: Error creating notification", e)
         }
-    }
-}
-
-fun Activity.stopLocationService() {
-    Log.d("LocationServiceExt", "stopLocationService: Stopping service from activity")
-    Intent(this, LocationService::class.java).also { intent ->
-        intent.action = LocationService.ACTION_STOP_LOCATION_SERVICE
-        startService(intent)
     }
 }

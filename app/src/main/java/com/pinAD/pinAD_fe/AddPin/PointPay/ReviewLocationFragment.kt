@@ -1,8 +1,10 @@
 package com.pinAD.pinAD_fe.AddPin.Review
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.media.MediaMetadataRetriever
@@ -19,10 +21,16 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.pinAD.pinAD_fe.AddPin.Camera.MediaFile
 import com.pinAD.pinAD_fe.Data.pin.FTag
 import com.pinAD.pinAD_fe.Data.user_data.ProfileData
@@ -38,6 +46,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -47,6 +56,7 @@ import java.io.File
 import java.io.IOException
 import java.util.Date
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.util.UUID
 
 class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
@@ -77,6 +87,7 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         private const val FILE_PICKER_REQUEST_CODE = 100
+        private const val REQUEST_LOCATION_PERMISSION = 1
     }
 
     override fun onCreateView(
@@ -129,6 +140,42 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    private fun getUserLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        try {
+            fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                val location = task.result
+                if (location != null) {
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                    googleMap.addMarker(MarkerOptions().position(userLatLng).title("내 위치"))
+                } else {
+                    Toast.makeText(context, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            Toast.makeText(context, "위치 권한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 권한이 허용된 경우
+                    getUserLocation()
+                } else {
+                    // 권한이 거부된 경우
+                    Toast.makeText(context, "위치 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
@@ -172,10 +219,6 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
             }
         }
         displayMediaFiles()
-    }
-
-    private fun showUploadMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun searchLocation(query: String) {
@@ -450,10 +493,6 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // 서울 중심으로 초기 위치 설정
-        val seoul = LatLng(37.5665, 126.9780)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15f))
-
         // 지도 클릭 리스너 설정
         googleMap.setOnMapClickListener { latLng ->
             googleMap.clear()
@@ -464,20 +503,15 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
                     .title("선택한 위치")
             )
         }
-    }
 
-    private suspend fun fetchUserProfile(): ProfileData? {
-        return try {
-            val response = RetrofitInstance.api.getUserProfile()
-            if (response.isSuccessful) {
-                response.body()
-            } else {
-                Log.e(TAG, "Failed to fetch user profile: ${response.errorBody()?.string()}")
-                null
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error fetching user profile: ${e.message}")
-            null
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            googleMap.isMyLocationEnabled = true
+            getUserLocation() // 사용자 위치 가져오기
+        } else {
+            // 권한이 없으면 권한 요청
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         }
     }
 
@@ -494,6 +528,36 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
         }
 
         val tags = selectedTags.map { FTag(it) }
+        val infoJsonStr = info
+        val processedInfo = try {
+            val originalInfoJson = JSONObject(infoJsonStr)
+
+            // 새로운 JSONObject를 생성하여 원래 타입 유지하면서 데이터 복사
+            val processedInfoJson = JSONObject()
+
+            // 각 필드에 대해 적절한 타입으로 처리
+            originalInfoJson.keys().forEach { key ->
+                when (key) {
+                    "advantages" -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                    "disadvantages" -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                    // 필요한 경우 다른 필드들에 대한 처리 추가
+                    else -> {
+                        // 타입을 자동으로 감지하여 처리
+                        val value = originalInfoJson.get(key)
+                        when (value) {
+                            is Int -> processedInfoJson.put(key, originalInfoJson.getInt(key))
+                            is Double -> processedInfoJson.put(key, originalInfoJson.getDouble(key))
+                            is Boolean -> processedInfoJson.put(key, originalInfoJson.getBoolean(key))
+                            else -> processedInfoJson.put(key, originalInfoJson.getString(key))
+                        }
+                    }
+                }
+            }
+            processedInfoJson.toString()
+        } catch (e: Exception) {
+            Log.e("PinData", "Error processing info JSON", e)
+            infoJsonStr // 에러 발생시 원본 문자열 반환
+        }
 
         return ReviewRequest(
             id = UUID.randomUUID().toString(),
@@ -505,7 +569,7 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
             title = title,
             description = description,
             media_files = mediaFiles.map { it.uri },  // MediaFile의 uri를 String으로 변환
-            info = info,
+            info = processedInfo,
             tags = tags,
             visibility = visibility,
             is_ads = isAds,
@@ -520,7 +584,7 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
 
         lifecycleScope.launch {
             // 사용자 프로필 가져오기
-            val profileData = fetchUserProfile()
+            val profileData = UserDataManager.getUserData()
             val nickname = profileData?.nickname?.toIntOrNull() ?: 0 // 기본값 설정
 
             val pinData = createPinDataResponse(nickname) ?: run {
@@ -594,7 +658,7 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
             val descriptionBody = pinData.description.toRequestBody("text/plain".toMediaTypeOrNull())
             val latitudeBody = pinData.latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val longitudeBody = pinData.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            val infoPart = Gson().toJson(pinData.info).toRequestBody("application/json".toMediaTypeOrNull())
+            val infoPart = pinData.info.toString().toRequestBody("application/json".toMediaTypeOrNull())
             val isAdsBody = pinData.is_ads.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val visibilityBody = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
             val pintypePart = pinData.pin_type.toString().toRequestBody("text/plain".toMediaTypeOrNull())

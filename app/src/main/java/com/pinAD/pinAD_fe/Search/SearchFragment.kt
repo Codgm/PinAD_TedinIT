@@ -279,7 +279,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private fun searchPins(query: String, isTagSearch: Boolean = false) {
         val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자 위치의 위도
         val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자 위치의 경도
-        val searchRadius = 10000 // 10km 반경
+        val searchRadius = 1 // 10km 반경
 
         lifecycleScope.launch {
             try {

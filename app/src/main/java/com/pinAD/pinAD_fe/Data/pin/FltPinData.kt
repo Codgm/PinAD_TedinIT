@@ -13,6 +13,8 @@ data class FltPinData(
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String,
     @SerializedName("pin_type") val pin_type: Int,
+    @SerializedName("profile_picture") val profile_picture: String,
+    @SerializedName("duration_milliseconds") val duration_milliseconds: Int,
 //    @SerializedName("category") val category: String,
     @SerializedName("media") var media: String,
     @SerializedName("info") val info: Any?,

@@ -36,6 +36,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -641,7 +642,7 @@ class UserSettingsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val profileImagePart = (userResponses["profilePhoto"] as? File)?.let { file ->
-                    val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+                    val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("profile_picture", file.name, requestFile)
                 }
 

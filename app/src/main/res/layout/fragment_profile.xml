@@ -14,13 +14,28 @@
         android:gravity="center_horizontal"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnQrScan"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="QR 스캔하기"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="right" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgBellIcon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@android:drawable/ic_popup_reminder"
+                android:contentDescription="Bell Icon"
+                android:layout_gravity="start"
+                android:layout_marginEnd="300dp"/>
+
+            <ImageView
+                android:id="@+id/btnQrScan"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/qr_code_icon"
+                android:layout_gravity="end"
+                android:contentDescription="@string/qr_code"/>
+        </LinearLayout>
 
         <!-- 프로필 이미지 -->
         <ImageView
@@ -54,7 +69,8 @@
             android:text="Gender"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
-            android:textColor="?attr/textColorSecondary"/>
+            android:textColor="?attr/textColorSecondary"
+            android:visibility="invisible"/>
 
         <!-- 플랜 선택과 친구 초대하기 버튼을 가로로 정렬 -->
         <LinearLayout
@@ -67,7 +83,7 @@
                 android:id="@+id/btnSelectPlan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="플랜 선택"
+                android:text="@string/PlanSelect"
                 android:layout_marginEnd="8dp" />
 
             <Button
@@ -75,39 +91,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="친구 초대"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"/>
 
             <!-- 내 쿠폰함 버튼 -->
             <Button
                 android:id="@+id/btnCouponBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="내 쿠폰함" />
+                android:text="@string/CouponBox" />
         </LinearLayout>
 
         <!-- 관심사 표시 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:background="?attr/selectableItemBackground">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- 관심사 제목 -->
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Interests"
-                android:textSize="16sp"
-                android:textColor="?attr/textColorPrimary"/>
-
-            <TextView
-                android:id="@+id/tvInterests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Travel, Hiking"
-                android:textColor="?attr/textColorPrimary"/>
+                android:text="@string/Interest"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- HorizontalScrollView로 감싸서 태그들을 스크롤 가능하게 함 -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- ChipGroup으로 관심사 태그를 나열 -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupInterests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false">
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
         </LinearLayout>
 
         <!-- 포인트 표시 및 충전 -->
@@ -124,7 +147,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Points"
+                android:text="@string/Points"
                 android:textSize="16sp"
                 android:textColor="?attr/textColorPrimary"/>
 
@@ -139,7 +162,7 @@
                 android:id="@+id/btnChargePoints"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Charge"
+                android:text="@string/Charge"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
@@ -147,7 +170,7 @@
             android:id="@+id/btnSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="설정"
+            android:text="@string/Setting"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
 

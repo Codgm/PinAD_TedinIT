@@ -1,7 +1,9 @@
 package com.pinAD.pinAD_fe.AddPin.PointPay
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.pinAD.pinAD_fe.AddPin.Camera.MediaFile
@@ -30,6 +35,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.pinAD.pinAD_fe.AddPin.Review.ReviewLocationFragment
+import com.pinAD.pinAD_fe.AddPin.Review.ReviewLocationFragment.Companion
+import com.pinAD.pinAD_fe.Profile.ProfileFragment
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,6 +47,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
@@ -56,11 +66,8 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationSearchEditText: EditText
     private lateinit var searchButton: Button
     private var selectedLocation: LatLng? = null
-    private var currentPoints = 100000
+    private var currentPoints: Int = 0
     private lateinit var category: String
-    private lateinit var info: String
-    private lateinit var title: String
-    private lateinit var description: String
     private var is_ads: Boolean = false
     private var selectedTags: List<String> = listOf()
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -71,7 +78,13 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var basicConsumption: Int = -5000
     private var pin_type: Int = 0
+    private var product_name: String = ""
+    private var discount_amount: String = ""
+    private var discountInfo: JSONObject? = null
 
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -108,9 +121,13 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initializeViews(view: View) {
-        info = arguments?.getString("INFO") ?: ""
-        title = arguments?.getString("TITLE") ?: ""
-        description = arguments?.getString("DESCRIPTION") ?: ""
+        discountInfo = try {
+            arguments?.getString("INFO", "{}")?.let { JSONObject(it) }
+        } catch (e: Exception) {
+            JSONObject()
+        }
+        product_name = arguments?.getString("TITLE") ?: ""
+        discount_amount = arguments?.getString("DESCRIPTION") ?: ""
         is_ads = arguments?.getBoolean("is_Ads", false) ?: false
         selectedTags = arguments?.getStringArray("SELECTED_TAGS")?.toList() ?: emptyList()
         category = arguments?.getString("CATEGORY") ?: ""
@@ -123,9 +140,9 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
 
         Log.d("NewPointSystemFragment", "Number of media files: ${media_files}")
         Log.d("NewPointSystemFragment", "tags: $selectedTags")
-        Log.d("NewPointSystemFragment", "Info: $info")
-        Log.d("NewPointSystemFragment", "Title: $title")
-        Log.d("NewPointSystemFragment", "Description: $description")
+        Log.d("NewPointSystemFragment", "Info: $discountInfo")
+        Log.d("NewPointSystemFragment", "Title: $product_name")
+        Log.d("NewPointSystemFragment", "Description: $discount_amount")
         Log.d("NewPointSystemFragment", "is_Ads: $is_ads")
         Log.d("PointSystemFragment", "pin_type: $pin_type")
         tvCurrentPoints = view.findViewById(R.id.tv_current_points)
@@ -143,10 +160,6 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // 서울 중심으로 초기 위치 설정
-        val seoul = LatLng(37.5665, 126.9780)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15f))
-
         // 지도 클릭 리스너 설정
         googleMap.setOnMapClickListener { latLng ->
             googleMap.clear()
@@ -158,6 +171,52 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
                     .position(latLng)
                     .title("선택한 위치")
             )
+        }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            googleMap.isMyLocationEnabled = true
+            getUserLocation() // 사용자 위치 가져오기
+        } else {
+            // 권한이 없으면 권한 요청
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
+
+    private fun getUserLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        try {
+            fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                val location = task.result
+                if (location != null) {
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                    googleMap.addMarker(MarkerOptions().position(userLatLng).title("내 위치"))
+                } else {
+                    Toast.makeText(context, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            Toast.makeText(context, "위치 권한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 권한이 허용된 경우
+                    getUserLocation()
+                } else {
+                    // 권한이 거부된 경우
+                    Toast.makeText(context, "위치 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -204,7 +263,8 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("SetTextI18n")
     private fun updateCurrentPointsText() {
-        tvCurrentPoints.text = "Current Points: $currentPoints"
+        currentPoints = UserDataManager.userData?.points ?: 100000
+        tvCurrentPoints.text = "보유 포인트: ${currentPoints}"
         imgPointIcon.setImageResource(R.drawable.ic_point)
     }
 
@@ -241,6 +301,7 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
                             btnCompletePin.isEnabled = true
                             if (success) {
                                 navigateToMainActivity()
+                                updatePointsAndFetchLatestData()
                             }
                         }
                     } else {
@@ -248,7 +309,19 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
                         btnCompletePin.isEnabled = true
                     }
                 } else {
-                    Toast.makeText(context, "Insufficient points!", Toast.LENGTH_SHORT).show()
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("포인트 부족")
+                        .setMessage("보유하신 포인트가 부족합니다. 포인트를 충전하세요.")
+                        .setPositiveButton("포인트 결제") { _, _ ->
+                            parentFragmentManager.beginTransaction().apply {
+                                replace(R.id.fragment_container, ProfileFragment())
+                                addToBackStack(null)
+                                commit()
+                            }
+                        }
+                        .setNegativeButton("취소", null)
+                        .create()
+                    dialog.show()
                     btnCompletePin.isEnabled = true
                 }
             }
@@ -292,6 +365,17 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun updatePointsAndFetchLatestData() {
+        lifecycleScope.launch {
+            val updatedProfileData = UserDataManager.getUserData(forceRefresh = true)
+            updatedProfileData?.let {
+                // UI 갱신
+                currentPoints = it.points!!
+                updateCurrentPointsText()
+            }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createPinData(nickname: String): PinDataResponse {
         val now = Date()
@@ -300,7 +384,7 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
         val duration = getSelectedDuration()
         val infoJson = JSONObject().apply {
             // 기존 info 내용이 있다면 여기에 추가
-            put("additionalInfo", info)
+            put("additionalInfo", discountInfo)
         }
         val tags = selectedTags.map { FTag(it) }
 
@@ -312,12 +396,13 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
             range = range,
             duration = duration.toString(),
             user = nickname.toIntOrNull() ?: 0,
-            title = title, // title 추가
-            description = description, // description 추가
+            title = product_name, // title 추가
+            description = discount_amount, // description 추가
             pin_type = pin_type,
 //            category = category,
             media_files = media_files.map { it.uri },
-            info = infoJson.toString(),
+//            info = infoJson.toString(),
+            info = discountInfo,
             tags = tags,
             visibility = if (switchVisibility.isChecked) "public" else "private",
             is_ads = is_ads, // is_ads 추가
@@ -347,21 +432,55 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
                 val visibilityPart = pinData.visibility.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mediaFileParts = prepareMediaFiles()
                 val isAdsPart = (if (pinData.is_ads == true) 1 else 0).toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val discountType = if (discountInfo != null && discountInfo!!.has("discount_type")) {
+                    discountInfo!!.getString("discount_type")
+                } else {
+                    "PERCENTAGE" // 기본값
+                }
+                val maxissuedcount = if (discountInfo != null && discountInfo!!.has("max_issued_count")) {
+                    discountInfo!!.getInt("max_issued_count")
+                } else {
+                    0 // 기본값
+                }
+                val discountTypePart = discountType.toRequestBody("text/plain".toMediaTypeOrNull())
+                val maxissuedcountPart = maxissuedcount.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val discountAmountFloat = try {
+                    discount_amount.toFloat()
+                } catch (e: NumberFormatException) {
+                    Log.e("CouponPin", "Invalid discount amount format: $discount_amount")
+                    showSafeToast("할인 금액 형식이 올바르지 않습니다")
+                    onComplete(false)
+                    return@launch
+                }
+                val discountAmountPart = discountAmountFloat.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+                Log.d("CouponPin", """
+                Sending data to server:
+                - Product Name: ${pinData.title}
+                - Discount Amount: $discountAmountFloat
+                - Discount Type: $discountType
+                - Latitude: ${pinData.latitude}
+                - Longitude: ${pinData.longitude}
+            """.trimIndent())
+
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitInstance.api.savePinDataWithMedia(
+                    RetrofitInstance.api.saveCouponPinWithMedia(
                         title = titlePart,
-                        description = descriptionPart,
+//                        description = descriptionPart,
+                        discount_type = discountTypePart,
+                        discount_amount = discountAmountPart,
                         latitude = latitudePart,
                         longitude = longitudePart,
-                        range = rangePart,
-                        duration = durationPart,
-                        pin_type = pintypePart,
-//                        category = categoryPart,
-                        media_files = mediaFileParts,
-                        info = infoPart,
-                        tag_ids = tagsParts,
-                        visibility = visibilityPart,
-                        is_ads = isAdsPart
+                        max_num = maxissuedcountPart,
+//                        range = rangePart,
+//                        duration = durationPart,
+//                        pin_type = pintypePart,
+////                        category = categoryPart,
+//                        media_files = mediaFileParts,
+//                        info = infoPart,
+//                        tag_ids = tagsParts,
+//                        visibility = visibilityPart,
+//                        is_ads = isAdsPart
                     )
                 }
 

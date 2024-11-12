@@ -8,13 +8,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.work.*
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
+import com.google.android.gms.location.*
 import com.pinAD.pinAD_fe.worker.LocationUpdateWorker
+import com.pinAD.pinAD_fe.utils.NotificationHelper
 import java.util.concurrent.TimeUnit
 
 class LocationService : Service() {
@@ -25,18 +21,19 @@ class LocationService : Service() {
     companion object {
         private const val TAG = "LocationService"
         private const val NOTIFICATION_ID = 12345
-        private const val CHANNEL_ID = "location_service_channel"
         const val ACTION_START_LOCATION_SERVICE = "START_LOCATION_SERVICE"
         const val ACTION_STOP_LOCATION_SERVICE = "STOP_LOCATION_SERVICE"
         const val MIN_BACKOFF_MILLIS: Long = 1000
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate: Initializing LocationService")
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        createNotificationChannel()
+
+        // NotificationHelper를 통해 채널 생성
+        NotificationHelper.createNotificationChannels(this)
+
         setupLocationCallback()
     }
 
@@ -48,22 +45,6 @@ class LocationService : Service() {
             else -> Log.w(TAG, "onStartCommand: Unknown action received")
         }
         return START_STICKY
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        Log.d(TAG, "createNotificationChannel: Creating notification channel")
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "Location Service",
-            NotificationManager.IMPORTANCE_LOW
-        ).apply {
-            description = "위치 추적 서비스가 실행 중입니다"
-        }
-
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-        Log.d(TAG, "createNotificationChannel: Channel created successfully")
     }
 
     private fun createNotification(): Notification {
@@ -81,24 +62,23 @@ class LocationService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, CHANNEL_ID)
+        return NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID_SERVICE)
             .setContentTitle("위치 추적 중")
             .setContentText("백그라운드에서 위치를 추적하고 있습니다")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setContentIntent(pendingIntent)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
 
     private fun setupLocationCallback() {
-        Log.d(TAG, "setupLocationCallback: Setting up location callback")
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
-                    Log.d(
-                        TAG, "onLocationResult: New location received - " +
-                            "Lat: ${location.latitude}, Lng: ${location.longitude}")
+                    Log.d(TAG, "onLocationResult: New location - Lat: ${location.latitude}, Lng: ${location.longitude}")
                     scheduleLocationUpdate(location.latitude.toFloat(), location.longitude.toFloat())
-                } ?: Log.w(TAG, "onLocationResult: Location result was null")
+                }
             }
         }
     }
@@ -112,7 +92,7 @@ class LocationService : Service() {
         Log.d(TAG, "startLocationUpdates: Starting location updates")
         val locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-            TimeUnit.MINUTES.toMillis(15)
+            TimeUnit.MINUTES.toMillis(5)
         ).build()
 
         try {
@@ -122,7 +102,9 @@ class LocationService : Service() {
                 null
             )
 
-            startForeground(NOTIFICATION_ID, createNotification())
+            // 먼저 알림을 생성하고 startForeground 호출
+            val notification = createNotification()
+            startForeground(NOTIFICATION_ID, notification)
             isServiceRunning = true
             Log.d(TAG, "startLocationUpdates: Location updates started successfully")
         } catch (e: SecurityException) {
@@ -132,10 +114,6 @@ class LocationService : Service() {
     }
 
     private fun scheduleLocationUpdate(latitude: Float, longitude: Float) {
-        Log.d(
-            TAG, "scheduleLocationUpdate: Scheduling location update work - " +
-                "Lat: $latitude, Lng: $longitude")
-
         val locationData = workDataOf(
             "latitude" to latitude,
             "longitude" to longitude
@@ -156,17 +134,26 @@ class LocationService : Service() {
                 ExistingWorkPolicy.REPLACE,
                 updateRequest
             )
-        Log.d(TAG, "scheduleLocationUpdate: Work request enqueued successfully")
     }
 
     private fun stopLocationService() {
-        Log.d(TAG, "stopLocationService: Stopping location service")
         fusedLocationClient.removeLocationUpdates(locationCallback)
         stopForeground(true)
         stopSelf()
         isServiceRunning = false
-        Log.d(TAG, "stopLocationService: Service stopped successfully")
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+}
+
+// Activity Extension
+fun Activity.startLocationService() {
+    val serviceIntent = Intent(this, LocationService::class.java).apply {
+        action = LocationService.ACTION_START_LOCATION_SERVICE
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(serviceIntent)
+    } else {
+        startService(serviceIntent)
+    }
 }

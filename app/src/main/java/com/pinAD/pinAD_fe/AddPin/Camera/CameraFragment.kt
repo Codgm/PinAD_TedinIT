@@ -39,6 +39,7 @@ class CameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
+    private var isRecording = false
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var thumbnailAdapter: ThumbnailAdapter
@@ -110,7 +111,7 @@ class CameraFragment : Fragment() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    val msg = "Photo capture succeeded!"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     output.savedUri?.let { uri ->
@@ -126,14 +127,25 @@ class CameraFragment : Fragment() {
     private fun captureVideo() {
         val videoCapture = this.videoCapture ?: return
 
-        binding.videoCaptureButton.isEnabled = false
+        // 녹화 버튼 활성화
+        binding.videoCaptureButton.isEnabled = true
 
         val curRecording = recording
         if (curRecording != null) {
+            // 녹화 중이면 중지
             curRecording.stop()
             recording = null
+            isRecording = false
+            binding.videoCaptureButton.setImageResource(android.R.drawable.presence_video_online)
             return
         }
+
+        // 녹화 시작
+        isRecording = true
+        binding.videoCaptureButton.setImageResource(android.R.drawable.presence_video_busy)
+
+        // 녹화 시작 메시지 표시
+        Toast.makeText(requireContext(), "Video recording started", Toast.LENGTH_SHORT).show()
 
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
@@ -150,6 +162,7 @@ class CameraFragment : Fragment() {
             .setContentValues(contentValues)
             .build()
 
+        // 녹화 시작 및 설정
         recording = videoCapture.output
             .prepareRecording(requireContext(), mediaStoreOutputOptions)
             .apply {
@@ -164,38 +177,40 @@ class CameraFragment : Fragment() {
             .start(ContextCompat.getMainExecutor(requireContext())) { recordEvent ->
                 when (recordEvent) {
                     is VideoRecordEvent.Start -> {
-                        binding.videoCaptureButton.apply {
-                            getString(R.string.stop_capture)
-                            isEnabled = true
+                        // 아이콘과 메시지 업데이트
+                        binding.videoCaptureButton.post {
+                            binding.videoCaptureButton.setImageResource(android.R.drawable.presence_video_busy)
                         }
+
                         // 1분 타이머 시작
                         binding.videoCaptureButton.postDelayed({
-                            recording?.stop()
+                            if (isRecording) {
+                                recording?.stop()
+                                isRecording = false
+                                binding.videoCaptureButton.setImageResource(android.R.drawable.presence_video_online)
+                            }
                         }, 60000) // 60000ms = 1분
                     }
                     is VideoRecordEvent.Finalize -> {
                         if (!recordEvent.hasError()) {
-                            val msg = "Video capture succeeded: ${recordEvent.outputResults.outputUri}"
+                            val msg = "Video capture succeeded!"
                             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                             Log.d(TAG, msg)
-                            binding.capturedVideoView.setVideoURI(recordEvent.outputResults.outputUri)
-
-                            // 미디어 URI 저장
                             saveMediaFile(recordEvent.outputResults.outputUri, "video")
-
+                            thumbnailAdapter.notifyDataSetChanged()
                         } else {
                             recording?.close()
                             recording = null
                             Log.e(TAG, "Video capture ends with error: ${recordEvent.error}")
                         }
-                        binding.videoCaptureButton.apply {
-                            getString(R.string.start_capture)
-                            isEnabled = true
-                        }
+                        isRecording = false
+                        binding.videoCaptureButton.setImageResource(android.R.drawable.presence_video_online)
                     }
                 }
             }
     }
+
+
 
 
     private fun setupThumbnailRecyclerView() {

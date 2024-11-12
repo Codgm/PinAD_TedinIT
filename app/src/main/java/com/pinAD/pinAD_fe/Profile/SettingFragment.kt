@@ -2,8 +2,10 @@ package com.pinAD.pinAD_fe.Profile
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,10 +22,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.pinAD.pinAD_fe.Login_Sign.GlobalApplication.GlobalApplication
+import com.pinAD.pinAD_fe.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.util.Locale
 
 
 class SettingFragment : Fragment() {
@@ -40,6 +45,7 @@ class SettingFragment : Fragment() {
     private lateinit var auth : FirebaseAuth
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var tvLanguage: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +74,16 @@ class SettingFragment : Fragment() {
 
 
         // SharedPreferences 초기화
-        sharedPreferences = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        Log.d("sharedPreferences", "$sharedPreferences")
+        sharedPreferences = requireActivity().getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE)
+        Log.d("LanguageSettings", "$sharedPreferences")
+        tvLanguage = view.findViewById(R.id.tvLanguage)
+
+        loadLanguagePreference()
+
+        // 언어 변경 클릭 리스너
+        tvLanguage.setOnClickListener {
+            showLanguageSelectionDialog()
+        }
 
         // 초기 테마 설정
         updateTheme()
@@ -110,6 +124,50 @@ class SettingFragment : Fragment() {
 
         return view
     }
+
+    private fun loadLanguagePreference() {
+        val selectedLanguage = sharedPreferences.getString("language", "en")
+        tvLanguage.text = selectedLanguage?.let { getLanguageName(it) }
+    }
+
+    private fun getLanguageName(langCode: String): String {
+        return when (langCode) {
+            "en" -> "English"
+            "ko-rKR" -> "한국어"
+            else -> langCode
+        }
+    }
+
+    private fun showLanguageSelectionDialog() {
+        val currentLanguage = sharedPreferences.getString(GlobalApplication.LANGUAGE_KEY, "en")
+        val languageOptions = arrayOf("English", "한국어")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Language")
+            .setSingleChoiceItems(languageOptions, if (currentLanguage == "ko-rKR") 1 else 0) { dialog, which ->
+                val selectedLanguage = if (which == 1) "ko-rKR" else "en"
+                saveLanguagePreference(selectedLanguage)
+                dialog.dismiss()
+                // 언어 변경 후 앱 재시작
+                restartApp()
+            }
+            .create()
+            .show()
+    }
+
+    private fun restartApp() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        requireActivity().finish()
+    }
+
+    private fun saveLanguagePreference(language: String) {
+        sharedPreferences.edit()
+            .putString(GlobalApplication.LANGUAGE_KEY, language)
+            .apply()
+    }
+
 
 //    private fun loadNotificationSettings() {
 //        // 서버에서 푸시 알림 설정을 불러와 switch 상태 설정
@@ -173,10 +231,19 @@ class SettingFragment : Fragment() {
                 RetrofitInstance.setTokens(null, null)
 
                 // SharedPreferences에서 사용자 관련 데이터 제거
-                sharedPreferences.edit().remove("user_token").apply()
+                val preferences = requireActivity().getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
+                preferences.edit().apply {
+                    remove("user_token")
+                    remove("ACCESS_TOKEN")
+                    remove("REFRESH_TOKEN")
+                    // 필요한 경우 다른 사용자 관련 데이터도 제거
+                    apply()
+                }
 
                 Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-                val intent = Intent(activity, LoginActivity::class.java)
+                val intent = Intent(activity, LoginActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
                 startActivity(intent)
                 activity?.finish()
             } else {

@@ -2,23 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/colorChipBackground">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="내 쿠폰함"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp">
+
+        <!-- 텍스트뷰 (CouponBox) -->
+        <TextView
+            android:id="@+id/textViewCouponBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CouponBox"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_weight="1" /> <!-- 버튼을 오른쪽에 배치하기 위해 가중치를 줌 -->
+
+        <!-- 버튼 (RequestedCoupons) -->
+        <Button
+            android:id="@+id/buttonRequestedCoupons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Requested_CouponBox"
+            android:layout_marginEnd="16dp" /> <!-- 오른쪽 여백 추가 -->
+    </LinearLayout>
 
     <EditText
         android:id="@+id/editTextCouponCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="쿠폰 코드를 입력하세요"
+        android:hint="@string/type_coupon_code"
         android:layout_marginBottom="8dp"
         android:padding="8dp"
         android:background="@drawable/edit_text_background" />
@@ -27,11 +45,12 @@
         android:id="@+id/buttonVerifyCoupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="쿠폰 검증하기" />
+        android:text="@string/Verifying_Coupons" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCoupons"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>

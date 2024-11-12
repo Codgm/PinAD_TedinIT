@@ -14,7 +14,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="위치 선택"
+            android:text="@string/LocationSelect"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="리뷰 장소의 위치를 지도에서 선택해주세요"
+            android:text="@string/ReviewLocationSelection"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
@@ -44,14 +44,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="위치 검색 (예: 서울 상도동)" />
+                android:hint="@string/LocationSearch"/>
 
             <Button
                 android:id="@+id/searchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="검색" />
+                android:text="@string/Search" />
         </LinearLayout>
 
         <com.google.android.gms.maps.MapView
@@ -104,20 +104,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="숏폼 영상 추가" />
+                android:text="@string/ShotFormVideo" />
 
             <Button
                 android:id="@+id/attachReceiptButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="영수증 추가" />
+                android:text="@string/Recipt" />
 
             <Button
                 android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="완료" />
+                android:text="@string/End" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

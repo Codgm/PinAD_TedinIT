@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Category"
+            android:text="@string/SelectCategory"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/textColorPrimary"
@@ -31,10 +31,33 @@
             app:chipSpacingHorizontal="8dp"
             android:layout_marginBottom="16dp"/>
 
+        <LinearLayout
+            android:id="@+id/customTagContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/customTagInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/NewTagAdd"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Add" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Interests"
+            android:text="@string/TagSelect"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="?attr/textColorPrimary"
@@ -111,7 +134,7 @@
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next"
+            android:text="@string/Next"
             android:layout_gravity="end"
             android:layout_margin="16dp"
             android:background="?attr/colorPrimary"

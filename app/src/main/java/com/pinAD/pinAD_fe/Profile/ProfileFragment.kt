@@ -1,6 +1,7 @@
 package com.pinAD.pinAD_fe.Profile
 
 import PlanSelectionFragment
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -25,11 +26,16 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.bumptech.glide.Glide
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.pinAD.pinAD_fe.Data.user_data.ProfileData
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import com.pinAD.pinAD_fe.R
 import com.pinAD.pinAD_fe.Profile.coupon.CouponDialogFragment
 import com.pinAD.pinAD_fe.Profile.coupon.CouponScannerFragment
+import com.pinAD.pinAD_fe.Profile.notification.NotificationDialogFragment
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -40,15 +46,17 @@ class ProfileFragment : Fragment() {
     private lateinit var tvPoints: TextView
     private lateinit var btnChargePoints: Button
     private lateinit var btnSettings: Button
-    private lateinit var tvInterests: TextView
     private lateinit var btnCouponBox: Button
-    private lateinit var btnQrScan: Button
+    private lateinit var btnQrScan: ImageView
+    private lateinit var bellIcon: ImageView
     private lateinit var currentUserUid: String
     private lateinit var billingClient: BillingClient
     private var productDetailsList: List<ProductDetails> = emptyList()
     private lateinit var btnSelectPlan: Button
     private lateinit var inviteButton: Button
+    private lateinit var chipGroup: ChipGroup
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,11 +70,12 @@ class ProfileFragment : Fragment() {
         tvPoints = view.findViewById(R.id.tvPoints)
         btnChargePoints = view.findViewById(R.id.btnChargePoints)
         btnSettings = view.findViewById(R.id.btnSettings)
-        tvInterests = view.findViewById(R.id.tvInterests)
         btnCouponBox = view.findViewById(R.id.btnCouponBox)
         btnQrScan = view.findViewById(R.id.btnQrScan)
         btnSelectPlan = view.findViewById(R.id.btnSelectPlan)
         inviteButton = view.findViewById(R.id.btnInviteFriends)
+        chipGroup = view.findViewById(R.id.chipGroupInterests)
+        bellIcon = view.findViewById(R.id.imgBellIcon)
 
         inviteButton.setOnClickListener {
             openFriendsInviteFragment()
@@ -79,6 +88,10 @@ class ProfileFragment : Fragment() {
         btnSelectPlan.setOnClickListener {
 //            openWebsite("https://www.example.com")
             navigateToPlanSelectionFragment()
+        }
+
+        bellIcon.setOnClickListener {
+            NotificationDialogFragment().show(parentFragmentManager, "NotificationDialog")
         }
 
         btnCouponBox.setOnClickListener {
@@ -455,21 +468,10 @@ class ProfileFragment : Fragment() {
 
     private fun loadUserProfile() {
         lifecycleScope.launch {
-            try {
-                // API 호출하여 사용자 데이터 가져오기
-                val response = RetrofitInstance.api.getUserProfile()
-
-                if (response.isSuccessful) {
-                    response.body()?.let { userAccount ->
-                        // UI 업데이트
-                        updateUIWithUserData(userAccount)
-                    }
-                } else {
-                    handleError("프로필 로딩 실패: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                handleError("네트워크 오류: ${e.message}")
-                Log.d("profile", "${e.message}")
+            UserDataManager.getUserData()?.let { userAccount ->
+                updateUIWithUserData(userAccount)
+            } ?: run {
+                handleError("프로필 로딩 실패")
             }
         }
     }
@@ -480,19 +482,31 @@ class ProfileFragment : Fragment() {
             tvUserGender.text = userAccount.gender ?: "이메일 정보 없음"
             tvUserNickname.text = userAccount.nickname ?: "닉네임 정보 없음"
             tvPoints.text = "${userAccount.points ?: 0} P"
-            tvInterests.text = userAccount.tags?.joinToString(", ") ?: "관심사를 입력해주세요"
+            chipGroup.removeAllViews()
+
+            userAccount.tags?.let { tags ->
+                if (tags.isNotEmpty()) {
+                    for (tag in tags) {
+                        val chip = Chip(requireContext())
+                        chip.text = tag
+                        chip.isClickable = true
+                        chip.isCheckable = false  // 선택할 수 없게 설정
+
+                        // Chip을 ChipGroup에 추가
+                        chipGroup.addView(chip)
+                    }
+                } else {
+                    val noTagsChip = Chip(requireContext())
+                    noTagsChip.text = "관심사를 입력해주세요"
+                    chipGroup.addView(noTagsChip)
+                }
+            }
 
             // 프로필 이미지가 있는 경우 로드
-            userAccount.profile_picture?.let { base64Image ->
-                try {
-                    val imageBytes = Base64.decode(base64Image, Base64.DEFAULT)
-                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-
-                    imgProfilePicture.setImageBitmap(bitmap)
-                } catch (e: Exception) {
-                    // 이미지 로드 실패시 기본 이미지 설정
-                    imgProfilePicture.setImageResource(R.drawable.ic_default_profile)
-                }
+            userAccount.profile_picture?.let { imageUrl ->
+                Glide.with(requireContext())
+                    .load(imageUrl)  // URL을 Glide로 로드
+                    .into(imgProfilePicture)  // ImageView에 설정
             }
         }
     }

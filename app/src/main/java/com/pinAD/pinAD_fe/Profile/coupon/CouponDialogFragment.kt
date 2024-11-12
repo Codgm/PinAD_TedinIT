@@ -41,6 +41,7 @@ class CouponDialogFragment : DialogFragment() {
 
         editTextCouponCode = view.findViewById(R.id.editTextCouponCode)
         val buttonVerifyCoupon = view.findViewById<Button>(R.id.buttonVerifyCoupon)
+        val buttonRequestedCoupons = view.findViewById<Button>(R.id.buttonRequestedCoupons)
         couponAdapter = CouponAdapter { couponResponse ->
             showQrCodeDialog(decodeBase64ToBitmap(couponResponse.qr_code))
         }
@@ -61,6 +62,11 @@ class CouponDialogFragment : DialogFragment() {
             } else {
                 Toast.makeText(requireContext(), "쿠폰 코드를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        buttonRequestedCoupons.setOnClickListener {
+            // RequestedCouponDialogFragment 호출
+            RequestedCouponDialogFragment().show(childFragmentManager, "RequestedCouponDialog")
         }
 
         editTextCouponCode.setOnEditorActionListener { _, actionId, _ ->

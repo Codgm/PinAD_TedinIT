@@ -2,6 +2,8 @@ package com.pinAD.pinAD_fe.AddPin.Category
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,6 +30,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
+import java.io.File
 
 class CategorySelectionFragment : Fragment() {
 
@@ -96,15 +99,19 @@ class CategorySelectionFragment : Fragment() {
     private fun setupNextButton() {
         nextButton.setOnClickListener {
             if (areAllFieldsFilled()) {
-                // Gather data and create bundle as before
-                val (title, description, info) = gatherContentData()
-                val selectedTags = getSelectedTags()
+                val selectedCategory = getSelectedCategory()
 
-                val pin_type = when (getSelectedCategory()) {
-                    "리뷰" -> 2
-                    "쿠폰요청" -> 1
-                    else -> 0 // 기본값 광고(또는 그 외)
+                val pin_type = when (selectedCategory) {
+                    getString(R.string.category_review) -> 2
+                    getString(R.string.category_coupon) -> 1
+                    else -> 0
                 }
+                // Gather data and create bundle as before
+                val (title, description, info) = when (pin_type) {
+                    2 -> gatherReviewData()
+                    else -> gatherContentData()
+                }
+                val selectedTags = getSelectedTags()
 
                 val bundle = Bundle().apply {
                     putString("TITLE", title)
@@ -172,42 +179,69 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun addImagePreview(uri: Uri, mediaFile: MediaFile) {
-        val imageView = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(0, 200, 1f).apply {
-                setMargins(0, 16, 16, 0) // 이미지와 삭제 버튼 간격
+        val previewContainer = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(16, 16, 16, 16)
+            background = context.getDrawable(R.drawable.preview_background) // 그림자 효과
+        }
+
+        // 미디어 파일이 이미지인지 비디오인지 확인
+        if (mediaFile.type == "image") {
+            val imageView = ImageView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(0, 200, 1f).apply {
+                    setMargins(0, 16, 16, 0) // 이미지와 삭제 버튼 간격
+                }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageURI(uri)
+                setBackgroundResource(R.drawable.image_border) // 테두리
             }
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            setImageURI(uri)
-            setBackgroundResource(R.drawable.image_border) // 테두리
+            previewContainer.addView(imageView)
+        } else if (mediaFile.type == "video") {
+            val videoThumbnail = ImageView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(0, 200, 1f).apply {
+                    setMargins(0, 16, 16, 0) // 비디오와 삭제 버튼 간격
+                }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageBitmap(getVideoThumbnail(uri)) // 비디오의 썸네일을 설정
+                setBackgroundResource(R.drawable.image_border) // 테두리
+            }
+            previewContainer.addView(videoThumbnail)
+
+            videoThumbnail.setOnClickListener {
+                val videoView = VideoView(context).apply {
+                    setVideoURI(uri)
+                    start()
+                }
+                previewContainer.addView(videoView)
+            }
         }
 
         val deleteButton = ImageButton(context).apply {
             setImageResource(android.R.drawable.ic_menu_delete)
             layoutParams = LinearLayout.LayoutParams(80, 80).apply {
-                setMargins(8, 0, 0, 0) // 버튼과 이미지 간격
+                setMargins(8, 0, 0, 0) // 버튼과 미디어 간격
             }
             background = null
             setOnClickListener {
                 mediaFiles.remove(mediaFile)
                 Log.d("mediafiles", "$mediaFiles")
 
-                val previewContainer = (parent as ViewGroup)
-                previewContainer.removeView(this)
-                previewContainer.removeView(imageView)
-                imagePreviewLayout.removeView(previewContainer)
+                val previewParent = (parent as ViewGroup)
+                previewParent.removeView(this)
+                previewParent.removeViewAt(0) // 이미지 또는 비디오 뷰 삭제
+                imagePreviewLayout.removeView(previewParent)
             }
         }
-
-        val previewContainer = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(16, 16, 16, 16)
-            background = context.getDrawable(R.drawable.preview_background) // 그림자 효과
-            addView(imageView)
-            addView(deleteButton)
-        }
+        previewContainer.addView(deleteButton)
 
         imagePreviewLayout.addView(previewContainer)
     }
+
+    // 비디오 썸네일을 생성하는 함수
+    private fun getVideoThumbnail(uri: Uri): Bitmap? {
+        return ThumbnailUtils.createVideoThumbnail(File(uri.path).toString(), MediaStore.Images.Thumbnails.MINI_KIND)
+    }
+
 
 
     private fun getSelectedCategory(): String {
@@ -219,6 +253,46 @@ class CategorySelectionFragment : Fragment() {
         }
     }
 
+    private fun gatherReviewData(): Triple<String, String, String> {
+        val titleBuilder = StringBuilder()
+        val descriptionBuilder = StringBuilder()
+        val infoBuilder = JSONObject()
+
+        var fieldCount = 0
+        for (i in 0 until templateContent.childCount) {
+            val view = templateContent.getChildAt(i)
+            when (view) {
+                is TextInputLayout -> {
+                    val editText = view.editText
+                    val text = editText?.text?.toString() ?: ""
+
+                    when (fieldCount) {
+                        0 -> titleBuilder.append(text)
+                        1 -> descriptionBuilder.append(text)
+                        2 -> {
+                            infoBuilder.put("advantages", text)
+                        }
+
+                        3 -> {
+                            infoBuilder.put("disadvantages", text)
+                        }
+                        4 -> {infoBuilder.put("max_issued_count",  text.toIntOrNull() ?: 0)}
+                    }
+                    fieldCount++
+                }
+
+                is RatingBar -> {
+                    infoBuilder.put("rating", view.rating)
+                }
+            }
+        }
+        return Triple(
+            titleBuilder.toString(),
+            descriptionBuilder.toString(),
+            infoBuilder.toString()
+        )
+    }
+
     private fun gatherContentData(): Triple<String, String, String> {
         val titleBuilder = StringBuilder()
         val descriptionBuilder = StringBuilder()
@@ -227,18 +301,33 @@ class CategorySelectionFragment : Fragment() {
         var fieldCount = 0
         for (i in 0 until templateContent.childCount) {
             val view = templateContent.getChildAt(i)
-            if (view is TextInputLayout) {
-                val editText = view.editText
-                val text = editText?.text?.toString() ?: ""
+            when (view) {
+                is TextInputLayout -> {
+                    val editText = view.editText
+                    val text = editText?.text?.toString() ?: ""
 
-                when (fieldCount) {
-                    0 -> titleBuilder.append(text)
-                    1 -> descriptionBuilder.append(text)
-                    else -> infoBuilder.put("field${fieldCount - 1}", text)
+                    when (fieldCount) {
+                        0 -> titleBuilder.append(text)
+                        1 -> descriptionBuilder.append(text)
+                        2 -> infoBuilder.put("product_name", text)
+                        3 -> infoBuilder.put("max_issued_count", text.toIntOrNull() ?: 0)
+                        4 -> infoBuilder.put("discount_amount", text.toIntOrNull() ?: 0)
+                    }
+                    fieldCount++
                 }
-                fieldCount++
-            } else if (view is RatingBar) {
-                infoBuilder.put("rating", view.rating)
+                is RatingBar ->{
+                    infoBuilder.put("rating", view.rating)
+                }
+                is RadioGroup -> {
+                    val selectedId = view.checkedRadioButtonId
+                    if (selectedId != -1) {
+                        val selectedBtn = view.findViewById<RadioButton>(selectedId)
+                        infoBuilder.put("discount_type",
+                            if (selectedBtn.text == getString(R.string.discount_type_percent)) "PERCENTAGE"
+                            else "FIXED"
+                        )
+                    }
+                }
             }
         }
 
@@ -268,7 +357,11 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun setupCategories() {
-        val categories = listOf("광고", "쿠폰요청", "리뷰")
+        val categories = listOf(
+            getString(R.string.category_ad),
+            getString(R.string.category_coupon),
+            getString(R.string.category_review)
+        )
         categories.forEach { category ->
             val chip = Chip(context)
             chip.text = category
@@ -296,17 +389,17 @@ class CategorySelectionFragment : Fragment() {
             templateTitle.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0)
         }
 
-        is_ads = category == "광고"
+        is_ads = category == getString(R.string.category_ad)
         when (category) {
-            "광고" -> {
+            getString(R.string.category_ad) -> {
                 showAdTemplate()
                 setupTags(getAdTags())
             }
-            "쿠폰요청" -> {
+            getString(R.string.category_coupon) -> {
                 showDiscountRequestTemplate()
                 setupTags(getDiscountRequestTags())
             }
-            "리뷰" -> {
+            getString(R.string.category_review) -> {
                 showReviewTemplate()
                 setupTags(getReviewTags())
             }
@@ -314,80 +407,70 @@ class CategorySelectionFragment : Fragment() {
     }
 
     private fun showAdTemplate() {
-        templateTitle.text = "광고"
-        addStyledField("타이틀", R.style.TemplateStyle_Distribution)
-        addStyledField("세부사항", R.style.TemplateStyle_Distribution, true)
-        addStyledField("상품명", R.style.TemplateStyle_Distribution)
-        addStyledField("판매 수량", R.style.TemplateStyle_Distribution)
-        addStyledField("할인율 또는 할인가", R.style.TemplateStyle_Distribution)
+        templateTitle.text = getString(R.string.category_ad)
+
+        // 할인 타입 라디오 그룹 추가
+        val radioGroup = RadioGroup(context).apply {
+            orientation = RadioGroup.HORIZONTAL
+            val percentBtn = RadioButton(context).apply {
+                text = getString(R.string.discount_type_percent)
+                id = View.generateViewId()
+            }
+            val fixedBtn = RadioButton(context).apply {
+                text = getString(R.string.discount_type_fixed)
+                id = View.generateViewId()
+            }
+            addView(percentBtn)
+            addView(fixedBtn)
+        }
+
+        addStyledField(getString(R.string.field_title), R.style.TemplateStyle_Distribution)
+        addStyledField(getString(R.string.field_details), R.style.TemplateStyle_Distribution, true)
+        addStyledField(getString(R.string.field_product_name), R.style.TemplateStyle_Distribution)
+        addStyledField(getString(R.string.field_quantity), R.style.TemplateStyle_Distribution)
+        templateContent.addView(radioGroup)
+        addStyledField(getString(R.string.field_discount_amount), R.style.TemplateStyle_Distribution)
     }
 
+
     private fun showDiscountRequestTemplate() {
-        templateTitle.text = "쿠폰요청"
-        addStyledField("상품명", R.style.TemplateStyle_DiscountRequest)
-        addStyledField("요청 할인율", R.style.TemplateStyle_DiscountRequest)
-        addStyledField("요청 사유", R.style.TemplateStyle_DiscountRequest, true)
+        templateTitle.text = getString(R.string.category_coupon)
+        addStyledField(getString(R.string.field_title), R.style.TemplateStyle_DiscountRequest)
+        addStyledField(getString(R.string.field_discount_amount), R.style.TemplateStyle_DiscountRequest)
+        // Radio buttons for discount type
+        val radioGroup = RadioGroup(context).apply {
+            orientation = RadioGroup.HORIZONTAL
+            val percentBtn = RadioButton(context).apply {
+                text = getString(R.string.discount_type_percent)
+                id = View.generateViewId()
+            }
+            val fixedBtn = RadioButton(context).apply {
+                text = getString(R.string.discount_type_fixed)
+                id = View.generateViewId()
+            }
+            addView(percentBtn)
+            addView(fixedBtn)
+        }
+        templateContent.addView(radioGroup)
+        addStyledField(getString(R.string.field_request_reason), R.style.TemplateStyle_DiscountRequest, true)
+        addStyledField(getString(R.string.field_max_issued_count), R.style.TemplateStyle_DiscountRequest)
     }
 
 
     private fun showReviewTemplate() {
-        templateTitle.text = "리뷰"
-        val styleResId = getStyleForType("리뷰")
-        addStyledField("제품명 / 서비스명", styleResId)
-        addStyledField("제품/서비스 위치", styleResId)
+        templateTitle.text = getString(R.string.category_review)
+        val styleResId = getStyleForType(getString(R.string.category_review))
+        addStyledField(getString(R.string.review_product_name), styleResId)
+        addStyledField(getString(R.string.review_product_location), styleResId)
         addRatingBar(styleResId)
-        addStyledField("장점", styleResId, true)
-        addStyledField("단점", styleResId, true)
+        addStyledField(getString(R.string.review_advantages), styleResId, true)
+        addStyledField(getString(R.string.review_disadvantages), styleResId, true)
     }
 
-//    private fun showAttractionTemplate(styleResId: Int) {
-//        addStyledField("명소 이름", styleResId)
-//        addStyledField("한 줄 소개", styleResId)
-//        addStyledField("명소 위치", styleResId)
-//        addStyledField("최적의 방문 시기 (계절, 월 또는 시간대)", styleResId)
-//        addStyledField("특별한 이유", styleResId, true)
-//        addStyledField("꼭 봐야 할 것들", styleResId, true)
-//        addStyledField("알아두면 좋은 팁", styleResId, true)
-//        addStyledField("이런 분들한테 추천", styleResId, true)
-//        addStyledField("인생샷 스팟", styleResId, true)
-//        addStyledField("한마디 표현", styleResId, true)
-//    }
-//
-//
-//    private fun showMeetingPointTemplate(styleResId: Int) {
-//        addStyledField("약속 장소", styleResId)
-//        addStyledField("목적", styleResId)
-//        addStyledField("장소 위치", styleResId)
-//        addStyledField("누구와", styleResId)
-//        addStyledField("언제", styleResId)
-//        addStyledField("준비물", styleResId, true)
-//    }
-//
-//
-//    private fun showTravelNoteTemplate(styleResId: Int) {
-//        addStyledField("장소 이름", styleResId)
-//        addStyledField("장소 위치", styleResId)
-//        addStyledField("날짜", styleResId)
-//        addStyledField("순간의 감정", styleResId, true)
-//        addStyledField("오감 (시각, 청각, 촉각, 후각, 미각)", styleResId, true)
-//        addStyledField("인상 깊은 장면&순간", styleResId, true)
-//        addStyledField("특별히 기억에 남는 사람 & 대화", styleResId, true)
-//        addStyledField("예상치 못한 경험", styleResId, true)
-//        addStyledField("이곳에서의 나의 감정 & 생각 & 변화", styleResId, true)
-//        addStyledField("떠오르는 생각들", styleResId, true)
-//        addStyledField("남기고 싶은 한마디", styleResId, true)
-//    }
-//
-//
-//    private fun showDiscountRequestTemplate(styleResId: Int) {
-//        addStyledField("상품명", styleResId)
-//        addStyledField("현재 가격", styleResId)
-//        addStyledField("요청 할인율", styleResId)
-//        addStyledField("요청 사유", styleResId, true)
-//    }
-
-
     private fun setupTags(tags: List<String>) {
+        val customTagContainer = view?.findViewById<LinearLayout>(R.id.customTagContainer)
+        val customTagInput = view?.findViewById<EditText>(R.id.customTagInput)
+        val confirmButton = view?.findViewById<Button>(R.id.confirmButton)
         tagChipGroup.removeAllViews()
         tagChipGroup.isSingleSelection = false
         tags.forEach { tag ->
@@ -395,6 +478,10 @@ class CategorySelectionFragment : Fragment() {
                 text = tag
                 isCheckable = true  // 다중 선택 가능하도록 설정
                 setOnCheckedChangeListener { _, isChecked ->
+                    if (text == getString(R.string.tag_other) && isChecked) {
+                        // "기타" 태그 클릭 시 사용자 정의 태그 입력창 표시
+                        customTagContainer?.visibility = View.VISIBLE
+                    }
                     val selectedTagsCount = getSelectedTags().size
                     if (isChecked && selectedTagsCount > 10) {
                         Toast.makeText(context, "최대 10개의 태그만 선택할 수 있습니다.", Toast.LENGTH_SHORT).show()
@@ -403,19 +490,69 @@ class CategorySelectionFragment : Fragment() {
             }
             tagChipGroup.addView(chip)
         }
+        confirmButton?.setOnClickListener {
+            val newTag = customTagInput?.text.toString()
+            if (newTag.isNotBlank()) {
+                addCustomTag(newTag)
+                customTagInput?.text?.clear()
+                customTagContainer?.visibility = View.GONE  // 태그 입력 후 숨기기
+            }
+        }
+    }
+
+    private fun addCustomTag(tag: String) {
+        val customChip = Chip(context).apply {
+            text = tag
+            isCheckable = true
+        }
+        tagChipGroup.addView(customChip)
     }
 
 
     private fun getAdTags(): List<String> {
-        return listOf("뷰티", "전자기기", "가구", "식품", "생활용품", "베스트셀러", "도서", "스포츠/레저", "자동차용품", "의류")
+        return listOf(
+            getString(R.string.tag_food_drink),
+            getString(R.string.tag_clothing_shoes),
+            getString(R.string.tag_beauty_health),
+            getString(R.string.tag_sports_leisure),
+            getString(R.string.tag_convenience_mart),
+            getString(R.string.tag_culture_entertainment),
+            getString(R.string.tag_education_books),
+            getString(R.string.tag_automotive),
+            getString(R.string.tag_life_service),
+            getString(R.string.tag_event),
+            getString(R.string.tag_other)
+        )
     }
 
     private fun getDiscountRequestTags(): List<String> {
-        return listOf("뷰티", "전자기기", "가구", "식품", "생활용품", "베스트셀러", "도서", "스포츠/레저", "자동차용품", "의류")
+        return listOf(
+            getString(R.string.tag_food_drink),
+            getString(R.string.tag_clothing_shoes),
+            getString(R.string.tag_beauty_health),
+            getString(R.string.tag_sports_leisure),
+            getString(R.string.tag_convenience_mart),
+            getString(R.string.tag_culture_entertainment),
+            getString(R.string.tag_education_books),
+            getString(R.string.tag_automotive),
+            getString(R.string.tag_life_service),
+            getString(R.string.tag_event),
+            getString(R.string.tag_other))
     }
 
     private fun getReviewTags(): List<String> {
-        return listOf("뷰티", "전자기기", "가구", "식품", "생활용품", "베스트셀러", "도서", "스포츠/레저", "자동차용품", "의류")
+        return listOf(
+            getString(R.string.tag_food_drink),
+            getString(R.string.tag_clothing_shoes),
+            getString(R.string.tag_beauty_health),
+            getString(R.string.tag_sports_leisure),
+            getString(R.string.tag_convenience_mart),
+            getString(R.string.tag_culture_entertainment),
+            getString(R.string.tag_education_books),
+            getString(R.string.tag_automotive),
+            getString(R.string.tag_life_service),
+            getString(R.string.tag_event),
+            getString(R.string.tag_other))
     }
 
     private fun getSelectedTags(): List<String> {
@@ -448,42 +585,42 @@ class CategorySelectionFragment : Fragment() {
 
     private fun getStyleForType(type: String): Int {
         return when (type) {
-            "광고" -> R.style.TemplateStyle_Distribution
+            getString(R.string.category_ad) -> R.style.TemplateStyle_Distribution
             "F&B" -> R.style.TemplateStyle_FnB
             "행사 알림" -> R.style.TemplateStyle_Event
-            "리뷰" -> R.style.TemplateStyle_Review
+            getString(R.string.category_review) -> R.style.TemplateStyle_Review
             "명소 추천" -> R.style.TemplateStyle_Attraction
             "약속 장소" -> R.style.TemplateStyle_MeetingPoint
             "여행 메모" -> R.style.TemplateStyle_TravelNote
-            "쿠폰 요청" -> R.style.TemplateStyle_DiscountRequest
+            getString(R.string.category_coupon) -> R.style.TemplateStyle_DiscountRequest
             else -> R.style.TemplateStyle_Default
         }
     }
 
     private fun getColorForType(type: String): Int {
         return when (type) {
-            "광고" -> R.color.template_distribution
+            getString(R.string.category_ad) -> R.color.template_distribution
             "F&B" -> R.color.template_fnb
             "행사 알림" -> R.color.template_event
-            "리뷰" -> R.color.template_review
+            getString(R.string.category_review) -> R.color.template_review
             "명소 추천" -> R.color.template_attraction
             "약속 장소" -> R.color.template_meeting_point
             "여행 메모" -> R.color.template_travel_note
-            "쿠폰 요청" -> R.color.template_discount_request
+            getString(R.string.category_coupon) -> R.color.template_discount_request
             else -> R.color.template_default
         }
     }
 
     private fun getIconForType(type: String): Int {
         return when (type) {
-            "광고" -> R.drawable.ic_distribution
+            getString(R.string.category_ad) -> R.drawable.ic_ad_creation
             "F&B" -> R.drawable.ic_food
             "행사 알림" -> R.drawable.ic_event
-            "리뷰" -> R.drawable.ic_review
+            getString(R.string.category_review) -> R.drawable.ic_review
             "명소 추천" -> R.drawable.ic_attraction
             "약속 장소" -> R.drawable.ic_meeting
             "여행 메모" -> R.drawable.ic_travel
-            "쿠폰 요청" -> R.drawable.ic_discount
+            getString(R.string.category_coupon) -> R.drawable.ic_discount
             else -> R.drawable.ic_default
         }
     }

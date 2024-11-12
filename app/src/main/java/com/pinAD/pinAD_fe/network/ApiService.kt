@@ -1,7 +1,9 @@
 package com.pinAD.pinAD_fe.network
 
+import com.pinAD.pinAD_fe.Data.notification.Notification
 import com.pinAD.pinAD_fe.Data.coupon.CouponResponse
 import com.pinAD.pinAD_fe.Data.coupon.CouponVerifyRequest
+import com.pinAD.pinAD_fe.Data.coupon.RequestedCouponResponse
 import com.pinAD.pinAD_fe.Data.pin.FltPinData
 import com.pinAD.pinAD_fe.Data.location.LocationUpdateRequest
 import com.pinAD.pinAD_fe.Data.login_register.LoginRequest
@@ -13,9 +15,15 @@ import com.pinAD.pinAD_fe.Data.user_data.ProfileData
 import com.pinAD.pinAD_fe.Data.purchase.PurchaseInfo
 import com.pinAD.pinAD_fe.Data.login_register.RegisterAccount
 import com.pinAD.pinAD_fe.Data.login_register.RegisteredAccount
+import com.pinAD.pinAD_fe.Data.notification.BaseNotification
+import com.pinAD.pinAD_fe.Data.notification.BusinessNotification
+import com.pinAD.pinAD_fe.Data.notification.CouponApprovalResponse
+import com.pinAD.pinAD_fe.Data.notification.NotificationResBusiness
+import com.pinAD.pinAD_fe.Data.notification.NotificationResponse
 import com.pinAD.pinAD_fe.Data.pin_review.ReviewRequest
 import com.pinAD.pinAD_fe.Data.pin.TagSearchResponse
-import com.pinAD.pinAD_fe.Data.user_data.UserAccount
+import com.pinAD.pinAD_fe.Data.pin.like_comment.Comment
+import com.pinAD.pinAD_fe.Data.pin.like_comment.LikeResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -41,7 +49,7 @@ interface ApiService {
     fun registerUser(@Body RegisterAccount: RegisterAccount): Call<Void>
 
     @POST("users/login/")
-    suspend fun loginown(@Body RegisteredAccount: RegisteredAccount): Response<Void>
+    suspend fun loginown(@Body RegisteredAccount: RegisteredAccount): Response<LoginResponse>
 
     @Multipart
     @PUT("users/")
@@ -94,6 +102,24 @@ interface ApiService {
     ): Response<PinDataResponse>
 
     @Multipart
+    @POST("users/coupon/")
+    suspend fun saveCouponPinWithMedia(
+        @Part("product_name") title: RequestBody,
+        @Part("discount_amount") discount_amount: RequestBody,
+        @Part("discount_type") discount_type: RequestBody,
+        @Part("latitude") latitude: RequestBody,
+        @Part("longitude") longitude: RequestBody,
+        @Part("max_num") max_num : RequestBody,
+//        @Part("range") range: RequestBody,
+//        @Part("duration") duration: RequestBody,
+//        @Part("pin_type") pin_type: RequestBody,
+//        @Part media_files: List<MultipartBody.Part>,
+//        @Part("tag_ids") tag_ids: ArrayList<RequestBody>,
+//        @Part("visibility") visibility: RequestBody,
+//        @Part("is_ads") is_ads: RequestBody,
+    ): Response<PinDataResponse>
+
+    @Multipart
     @POST("pins/")
     suspend fun saveReviewDataWithMedia(
         @Part("title") title: RequestBody,
@@ -135,11 +161,43 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<CouponResponse>>
 
+    @GET("/users/get_user_coupon_request/")
+    suspend fun showRequestedCoupons(
+        @Header("Authorization") token: String
+    ): Response<List<RequestedCouponResponse>>
+
     @POST("coupons/verify/")
     suspend fun verifyCoupon(
         @Body request: CouponVerifyRequest
     ): Response<Void>
 
+    @POST("pins/like/{pinId}/")
+    fun likePin(@Path("pinId") pinId: Int): Call<LikeResponse>
+
+    @GET("pins/get_comments/{pinId}/")
+    fun getComments(@Header("Authorization") token: String, @Path("pinId") pinId: Int): Call<List<Comment>>
+
+    @POST("pins/add_comment/{pinId}/")
+    fun addComment(@Path("pinId") pinId: Int, @Body content: Map<String, String>): Call<Comment>
+
+    @DELETE("pins/delete_comments/{commentId}/")
+    fun deleteComment(@Path("commentId")  commentId: Int): Call<ResponseBody>
+
+    @GET("users/get_notification/")
+    suspend fun getUserNotifications(): Response<List<BaseNotification>>
+
+    @GET("users/get_business_notification/")
+    suspend fun getBusinessUserNotifications(): Response<List<BaseNotification>>
+
+    @POST("users/coupon/approve/")
+    suspend fun approveCouponRequest(
+        @Body notificationResBusiness: NotificationResBusiness
+    ): Response<CouponApprovalResponse>
+
+    @POST("users/coupon/response/")
+    suspend fun respondToCoupon(
+        @Body notificationResponse: NotificationResponse
+    ): Response<ResponseBody>
 
     @POST("purchases/verify")
     suspend fun verifyPurchase(

@@ -73,14 +73,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="위치 검색"
+                android:hint="@string/LocationSearch"
                 android:inputType="text" />
 
             <Button
                 android:id="@+id/searchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="검색" />
+                android:text="@string/Search" />
         </LinearLayout>
 
         <!-- 지도 뷰 -->
@@ -95,7 +95,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Ad Range:"
+            android:text="@string/RangeSelect"
             android:textSize="18sp"
             android:textColor="@color/label_color"
             android:layout_marginBottom="8dp"/>
@@ -111,7 +111,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ad Duration:"
+            android:text="@string/DurationSelect"
             android:textSize="18sp"
             android:textColor="@color/label_color"
             android:layout_marginBottom="8dp"/>
@@ -134,7 +134,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Public Visibility"
+                android:text="@string/PublicVisibility"
                 android:textSize="18sp"
                 android:textColor="@color/label_color"
                 android:layout_marginEnd="8dp"/>
@@ -150,7 +150,7 @@
             android:id="@+id/btn_complete_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="완료"
+            android:text="@string/End"
             android:textColor="@color/button_text_color"
             android:background="@drawable/button_background"
             android:layout_marginTop="16dp"/>

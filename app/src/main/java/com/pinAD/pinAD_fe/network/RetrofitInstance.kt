@@ -1,15 +1,18 @@
 package com.pinAD.pinAD_fe.network
 
 import com.google.gson.GsonBuilder
+import com.pinAD.pinAD_fe.Data.notification.BaseNotification
 import com.pinAD.pinAD_fe.Data.pin.CustomDateTypeAdapter
+import com.pinAD.pinAD_fe.NotificationTypeAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
-    const val BASE_URL = "https://f5e9-175-198-127-14.ngrok-free.app/"
+    const val BASE_URL = "http://15.165.179.77:8000/"
     private var accessToken: String? = null
     private var refreshToken: String? = null
 
@@ -29,6 +32,7 @@ object RetrofitInstance {
 
     private val gson = GsonBuilder()
         .registerTypeAdapter(Date::class.java, CustomDateTypeAdapter())
+        .registerTypeAdapter(BaseNotification::class.java, NotificationTypeAdapter())
         .setLenient()
         .create()
 
@@ -63,6 +67,9 @@ object RetrofitInstance {
             }
             // 기존의 HttpLoggingInterceptor 추가
             .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 

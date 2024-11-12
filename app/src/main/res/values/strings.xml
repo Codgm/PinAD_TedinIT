@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">PinAD</string>
-    <string name="default_web_client_id">YOUR_CLIENT_ID</string>
-    <string name="kakao_app_key">607b30fba1f577a8f048920ea64a6d50</string>
-    <string name="naver_client_id">dXtaisFDzZtaLMIyRRtW</string>
-    <string name="naver_client_secret">b7cyVWDy7b</string>
     <string name="feature_image_description">Feature image for the onboarding screen</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
@@ -67,10 +63,84 @@
         <item>960 minutes (1800 Points)</item>
         <item>1440 minutes (2760 Points)</item>
     </string-array>
-    <string name="qr_code">QR 코드</string>
+    <string name="qr_code">qr_code</string>
     <string name="thumbnail_list">thumbnail_list</string>
     <string name="onboarding_image">onboarding_image</string>
     <string name="feature_title">feature_title</string>
     <string name="feature_description">feature_description</string>
     <string name="page_indicator">page_indicator</string>
+    <string name="Searchbar">Tag, Id, Name</string>
+    <string name="TagSelect">Select Interests</string>
+    <string name="Add">Add</string>
+    <string name="NewTagAdd">Enter New Interest</string>
+    <string name="SelectCategory">Select Category</string>
+    <string name="Next">Next</string>
+    <string name="Login">Login</string>
+    <string name="PlanSelection">Plan Selection</string>
+    <string name="LocationSelect">Select Location</string>
+    <string name="ReviewLocationSelection">Select the Location of the Review on the Map</string>
+    <string name="LocationSearch">Address/Store Name/Place</string>
+    <string name="Search">Search</string>
+    <string name="ShotFormVideo">Add Short-form Video</string>
+    <string name="Recipt">Add Receipt</string>
+    <string name="End">Finish</string>
+    <string name="RangeSelect">Select Range:</string>
+    <string name="DurationSelect">Select Duration:</string>
+    <string name="PublicVisibility">Public Visibility</string>
+    <string name="HotPin">Popular Posts</string>
+    <string name="PlanSelect">Select Plan</string>
+    <string name="CouponBox">Coupon Box</string>
+    <string name="Interest">Interests</string>
+    <string name="Points">Points</string>
+    <string name="Charge">Charge</string>
+    <string name="Setting">Settings</string>
+    <string name="NotificationSetting">Notification Settings</string>
+    <string name="Logout">Logout</string>
+    <string name="DeleteAccount">Delete Account</string>
+    <string name="language_setting">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_korean">Korean</string>
+    <string name="Welcome_to_pinAD">Welcome_to_pinAD!</string>
+    <string name="Notification">Notification</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="Accept">Accept</string>
+    <string name="Refuse">Refuse</string>
+    <string name="Requested_CouponBox">Requested CouponBox</string>
+    <string name="Verifying_Coupons">Verifying Coupons</string>
+    <string name="type_coupon_code">Please enter the coupon code</string>
+
+    <!-- Categories -->
+    <string name="category_ad">Advertisement</string>
+    <string name="category_coupon">Coupon Request</string>
+    <string name="category_review">Review</string>
+
+    <!-- Fields -->
+    <string name="field_title">Title</string>
+    <string name="field_details">Details</string>
+    <string name="field_product_name">Product Name</string>
+    <string name="field_quantity">Quantity</string>
+    <string name="field_discount_amount">Discount Amount</string>
+    <string name="field_max_issued_count">maximum number of people</string>
+    <string name="field_request_reason">Reason for request</string>
+    <string name="review_product_name">Product / Service Name</string>
+    <string name="review_product_location">Product / Service Location</string>
+    <string name="review_advantages">Advantages</string>
+    <string name="review_disadvantages">Disadvantages</string>
+
+    <!-- Discount Types -->
+    <string name="discount_type_percent">Percent Discount</string>
+    <string name="discount_type_fixed">Fixed Discount</string>
+
+    <!-- Tags -->
+    <string name="tag_food_drink">Food/Drinks</string>
+    <string name="tag_clothing_shoes">Clothing/Shoes</string>
+    <string name="tag_beauty_health">Beauty/Health</string>
+    <string name="tag_sports_leisure">Sports/Leisure</string>
+    <string name="tag_convenience_mart">Convenience/Mart</string>
+    <string name="tag_culture_entertainment">Culture/Entertainment</string>
+    <string name="tag_education_books">Education/Books</string>
+    <string name="tag_automotive">Automotive</string>
+    <string name="tag_life_service">Life Service</string>
+    <string name="tag_event">Events</string>
+    <string name="tag_other">Other</string>
 </resources>

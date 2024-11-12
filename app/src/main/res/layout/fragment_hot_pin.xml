@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
-            app:title="Hot Pins"
+            app:title="@string/HotPin"
             app:titleTextColor="@color/colorTextPrimaryLight"
             app:titleTextAppearance="@style/ToolbarTitleStyle">
 
@@ -55,10 +55,9 @@
         <View
             android:id="@+id/underlineView"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:background="@color/black"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="0dp"/>
     </LinearLayout>
 
 

@@ -1,6 +1,9 @@
 package com.pinAD.pinAD_fe.Login_Sign
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -23,14 +26,16 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.navercorp.nid.oauth.view.NidOAuthLoginButton
+import com.pinAD.pinAD_fe.BaseActivity
 import com.pinAD.pinAD_fe.user_setting.UserSettingsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -39,8 +44,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnGoogleSignIn: SignInButton
-    private lateinit var btnNaverSignIn: NidOAuthLoginButton
-    private lateinit var btnKakaoSignIn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +56,6 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin: Button = findViewById(R.id.btn_login)
         val btnRegister: Button = findViewById(R.id.btn_register)
         btnGoogleSignIn = findViewById(R.id.btn_google_sign_in)
-        btnKakaoSignIn = findViewById(R.id.btn_kakao_sign_in)
-        btnNaverSignIn = findViewById(R.id.btn_naver_sign_in)
 
         // Google Sign-In 설정
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -88,15 +89,6 @@ class LoginActivity : AppCompatActivity() {
             signInWithGoogle()
         }
 
-        // 카카오 로그인
-        btnKakaoSignIn.setOnClickListener {
-//            signInWithKakao()
-        }
-
-        btnNaverSignIn.setOnClickListener {
-//            signInWithNaver()
-        }
-
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
@@ -115,6 +107,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveTokens(accessToken: String?, refreshToken: String?) {
+        val preferences = getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
+        preferences.edit().apply {
+            putString("ACCESS_TOKEN", accessToken)
+            putString("REFRESH_TOKEN", refreshToken)
+            apply()
+        }
+    }
+
     private fun login(email: String, password: String) {
         // FCM 토큰 가져오기
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -129,9 +130,11 @@ class LoginActivity : AppCompatActivity() {
                             when (response.code()) {
                                 200 -> {
                                     // 로그인 성공
+                                    val loginResponse = response.body()
+                                    saveTokens(loginResponse?.access_token, loginResponse?.refresh_token)
+                                    RetrofitInstance.setTokens(loginResponse?.access_token, loginResponse?.refresh_token)
                                     Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
-                                    }
+                                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java)
                                     startActivity(intent)
                                     finish()
                                 }
@@ -186,7 +189,7 @@ class LoginActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     when (response.code()) {
-                        201 -> { // 로그인 성공
+                        201, 200 -> { // 로그인 성공
                             val loginResponse = response.body()
                             val accessToken = loginResponse?.access_token // 서버에서 발급한 access_token
                             val refreshToken = loginResponse?.refresh_token
@@ -194,29 +197,12 @@ class LoginActivity : AppCompatActivity() {
                             if (accessToken != null) {
                                 Log.d("AccessToken", "Access Token: $accessToken")
                                 // access_token을 이용한 추가 작업 처리
+                                saveTokens(loginResponse.access_token, loginResponse.refresh_token)
                                 RetrofitInstance.setTokens(accessToken, refreshToken)
 
-                                // UserSettingActivity로 이동
-                                val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
-                                    putExtra("ACCESS_TOKEN", accessToken)
-                                }
-                                startActivity(intent)
-                                finish() // 현재 액티비티 종료
+                                checkUserSettings(loginResponse.access_token)
                             } else {
                                 Log.e("AccessTokenError", "Access Token is null")
-                            }
-                        }
-                        200 -> { // 이미 로그인된 상태
-                            val loginResponse = response.body()
-                            val accessToken = loginResponse?.access_token
-                            val refreshToken = loginResponse?.refresh_token
-                            Log.d("LoginStatus", "User is already logged in.")
-                            Log.d("AccessToken", "Access Token: $accessToken")
-                            if (accessToken != null) {
-                                RetrofitInstance.setTokens(accessToken, refreshToken)
-                                checkUserSettings(accessToken)
-                            } else {
-                                Log.e("LoginError", "Access token is null when checking user settings")
                             }
                         }
                         else -> { // 다른 오류 처리
@@ -266,105 +252,6 @@ class LoginActivity : AppCompatActivity() {
             else -> Toast.makeText(this, "카카오 로그인 실패: ${error.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
-//    // 카카오 사용자 정보 가져오는 함수
-//    private fun fetchKakaoUserInfo(accessToken: String) {
-//        UserApiClient.instance.me { user, error ->
-//            if (error != null) {
-//                Toast.makeText(this, "카카오 사용자 정보 가져오기 실패: ${error.message}", Toast.LENGTH_SHORT).show()
-//            } else if (user != null) {
-//                val userId = user.id.toString()
-//                val userAccount = UserAccount(
-//                    idToken = accessToken,
-//                    emailId = user.kakaoAccount?.email,
-//                    nickname = user.kakaoAccount?.profile?.nickname
-//                )
-//                saveUserAccountToFirebase(userId, userAccount)
-//            }
-//        }
-//    }
-
-
-//    private fun signInWithNaver() {
-//        val oauthLoginCallback = object : OAuthLoginCallback {
-//            override fun onSuccess() {
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    try {
-//                        val accessToken = NaverIdLoginSDK.getAccessToken()
-//                        val userInfo = fetchNaverUserInfo(accessToken.toString())
-//                        if (userInfo != null) {
-//                            val userId = userInfo.emailId ?: "naver_${System.currentTimeMillis()}"
-//                            saveUserAccountToFirebase(userId, userInfo)
-//                        } else {
-//                            withContext(Dispatchers.Main) {
-//                                Toast.makeText(this@LoginActivity, "Naver 사용자 정보를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    } catch (e: Exception) {
-//                        withContext(Dispatchers.Main) {
-//                            Toast.makeText(this@LoginActivity, "네이버 로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(httpStatus: Int, message: String) {
-//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-//                Toast.makeText(this@LoginActivity, "errorCode: $errorCode, errorDesc: $errorDescription", Toast.LENGTH_SHORT).show()
-//            }
-//
-//            override fun onError(errorCode: Int, message: String) {
-//                onFailure(errorCode, message)
-//            }
-//        }
-//
-//        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
-//    }
-
-
-//    private fun fetchNaverUserInfo(accessToken: String): UserAccount? {
-//        val client = OkHttpClient()
-//        val request = Request.Builder()
-//            .url("https://openapi.naver.com/v1/nid/me")
-//            .addHeader("Authorization", "Bearer $accessToken")
-//            .build()
-//
-//        return try {
-//            val response = client.newCall(request).execute()
-//            val responseBody = response.body?.string()
-//            if (response.isSuccessful && responseBody != null) {
-//                val jsonObject = JSONObject(responseBody)
-//                val responseObj = jsonObject.getJSONObject("response")
-//
-//                // 사용자 정보 추출
-//                val email = responseObj.optString("email")
-//                val nickname = responseObj.optString("nickname")
-//
-//                // UserAccount 객체 생성 및 반환
-//                UserAccount(
-//                    idToken = accessToken,
-//                    emailId = email,
-//                    nickname = nickname
-//                )
-//            } else {
-//                null
-//            }
-//        } catch (e: Exception) {
-//            null
-//        }
-//    }
-//
-//    private fun saveUserAccountToFirebase(userId: String, userAccount: UserAccount) {
-//        val database: DatabaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
-//        database.setValue(userAccount)
-//            .addOnSuccessListener {
-//                checkUserSettings() // 설정 확인 및 화면 전환
-//            }
-//            .addOnFailureListener { e ->
-//                Toast.makeText(this, "Failed to save user account: ${e.message}", Toast.LENGTH_SHORT).show()
-//            }
-//    }
 
     private fun checkUserSettings(accessToken: String?) {
         if (accessToken == null) {

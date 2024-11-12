@@ -1,6 +1,12 @@
 package com.pinAD.pinAD_fe
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,16 +19,43 @@ import com.pinAD.pinAD_fe.Profile.ProfileFragment
 import com.pinAD.pinAD_fe.Search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pinAD.pinAD_fe.user_setting.UserSettingsActivity
+import com.pinAD.pinAD_fe.utils.NotificationHelper
+import java.util.Locale
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var addPinLauncher: ActivityResultLauncher<Intent>
 
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 123
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // 테마를 super.onCreate() 전에 설정
         super.onCreate(savedInstanceState)
+        NotificationHelper.createNotificationChannels(this)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationHelper.hasNotificationPermission(this)) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    PERMISSION_REQUEST_CODE
+                )
+            }
+        }
         setContentView(R.layout.activity_main)
+
+        val pinId = intent.getStringExtra("pin_id")
+
+        // pin_id가 존재하면 HomeFragment에 전달하여 핀 정보를 보여줌
+        if (pinId != null) {
+            navigateToPinDetail(pinId)
+        } else {
+            // pin_id가 없으면 일반적으로 HomeFragment로 이동
+            replaceFragment(HomeFragment())
+        }
 
         // 초기화 블록을 try-catch로 감싸서 안전하게 처리
         try {
@@ -31,6 +64,11 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
             handleInitializationError()
         }
+    }
+
+    private fun navigateToPinDetail(pinId: String) {
+        val homeFragment = HomeFragment.newInstance(pinId, true)
+        replaceFragment(homeFragment)
     }
 
     private fun initializeApp(savedInstanceState: Bundle?) {
@@ -50,6 +88,21 @@ class MainActivity : AppCompatActivity() {
 
         if (!isSettingsComplete) {
             navigateToUserSettings()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 승인됨
+                NotificationHelper.createNotificationChannels(this)
+            }
         }
     }
 

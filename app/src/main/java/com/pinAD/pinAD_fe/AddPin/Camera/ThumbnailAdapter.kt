@@ -17,6 +17,7 @@ class ThumbnailAdapter(
 
     inner class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val thumbnailImageView: ImageView = view.findViewById(R.id.thumbnailImageView)
+        val playIcon: ImageView = view.findViewById(R.id.playIcon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
@@ -30,6 +31,8 @@ class ThumbnailAdapter(
 
         // 썸네일 이미지 설정
         holder.thumbnailImageView.setImageURI(Uri.parse(mediaFile.uri))
+
+        holder.playIcon.visibility = if (mediaFile.type == "video") View.VISIBLE else View.GONE
 
         // 클릭 시 전체화면 프리뷰로 전환
         holder.thumbnailImageView.setOnClickListener {
