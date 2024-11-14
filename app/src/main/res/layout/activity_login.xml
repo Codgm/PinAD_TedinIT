@@ -49,7 +49,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#C894FB"
+        android:backgroundTint="#c98e95"
         android:text="@string/Login"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"

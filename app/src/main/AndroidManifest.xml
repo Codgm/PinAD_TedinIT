@@ -80,7 +80,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name=".splash.SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -96,8 +96,8 @@
             android:exported="false" />
         <activity
             android:name=".Login_Sign.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.pinAD_fe" >
+            android:exported="false"
+            android:theme="@style/Theme.pinAD_fe">
         </activity>
         <activity
             android:name=".Login_Sign.RegisterActivity"

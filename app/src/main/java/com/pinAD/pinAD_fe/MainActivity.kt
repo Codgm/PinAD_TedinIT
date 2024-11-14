@@ -2,24 +2,33 @@ package com.pinAD.pinAD_fe
 
 import android.Manifest
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.pinAD.pinAD_fe.AddPin.AddPinActivity
 import com.pinAD.pinAD_fe.Home.HomeFragment
 import com.pinAD.pinAD_fe.HotPin.HotPinFragment
 import com.pinAD.pinAD_fe.Profile.ProfileFragment
 import com.pinAD.pinAD_fe.Search.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.pinAD.pinAD_fe.Login_Sign.LoginActivity
+import com.pinAD.pinAD_fe.network.RetrofitInstance
+import com.pinAD.pinAD_fe.network.UserDataManager
 import com.pinAD.pinAD_fe.user_setting.UserSettingsActivity
 import com.pinAD.pinAD_fe.utils.NotificationHelper
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainActivity : BaseActivity() {
@@ -62,7 +71,6 @@ class MainActivity : BaseActivity() {
             initializeApp(savedInstanceState)
         } catch (e: Exception) {
             e.printStackTrace()
-            handleInitializationError()
         }
     }
 
@@ -73,22 +81,40 @@ class MainActivity : BaseActivity() {
 
     private fun initializeApp(savedInstanceState: Bundle?) {
         // 사용자 설정 확인
-//        checkUserSettings()
+        checkUser()
 
         // UI 초기화
         initializeUI(savedInstanceState)
 
         // ActivityResultLauncher 초기화
         initializeActivityLauncher()
+
+        loadUserProfile()
     }
 
-    private fun checkUserSettings() {
-        val userSettings = getSharedPreferences("UserSettings", MODE_PRIVATE)
-        val isSettingsComplete = userSettings.getBoolean("settings_complete", false)
-
-        if (!isSettingsComplete) {
-            navigateToUserSettings()
+    private fun loadUserProfile() {
+        lifecycleScope.launch {
+            UserDataManager.getUserData()?.let { userAccount ->
+            } ?: run {
+                Toast.makeText(baseContext, "profile load failed", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+
+    private fun checkUser() {
+        val accessToken = RetrofitInstance.getAccessToken()
+        if (accessToken == null) {
+            Log.d("MainActivity", "ACCESS_TOKEN is missing. Redirecting to LoginActivity.")
+            navigateToLoginActivity()
+            return
+        }
+    }
+
+    private fun navigateToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun onRequestPermissionsResult(
@@ -166,14 +192,5 @@ class MainActivity : BaseActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_body_container, fragment)
             .commit()
-    }
-
-    private fun navigateToUserSettings() {
-        startActivity(Intent(this, UserSettingsActivity::class.java))
-        finish()
-    }
-
-    private fun handleInitializationError() {
-        navigateToUserSettings()
     }
 }

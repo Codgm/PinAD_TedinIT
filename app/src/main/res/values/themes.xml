@@ -19,6 +19,11 @@
         <item name="colorOnError">@color/colorOnErrorLight</item>
     </style>
 
+    <style name="ShapeAppearance_App_Circular">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <!-- Base template style -->
     <style name="TemplateStyle">
         <item name="android:layout_width">match_parent</item>

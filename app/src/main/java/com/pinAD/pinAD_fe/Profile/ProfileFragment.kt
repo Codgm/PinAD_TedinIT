@@ -2,18 +2,24 @@ package com.pinAD.pinAD_fe.Profile
 
 import PlanSelectionFragment
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +35,7 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.gson.Gson
 import com.pinAD.pinAD_fe.Data.user_data.ProfileData
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import com.pinAD.pinAD_fe.R
@@ -37,6 +44,11 @@ import com.pinAD.pinAD_fe.Profile.coupon.CouponScannerFragment
 import com.pinAD.pinAD_fe.Profile.notification.NotificationDialogFragment
 import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class ProfileFragment : Fragment() {
 
@@ -55,6 +67,8 @@ class ProfileFragment : Fragment() {
     private lateinit var btnSelectPlan: Button
     private lateinit var inviteButton: Button
     private lateinit var chipGroup: ChipGroup
+    private var currentUserData: ProfileData? = null
+    private var selectedImagePath: String? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -104,13 +118,16 @@ class ProfileFragment : Fragment() {
             openSettingFragment()
         }
 
+        enableEditing()
+
         // 프로필 데이터 로드
         loadUserProfile()
+
 
         // 포인트 충전 버튼 클릭
         btnChargePoints.setOnClickListener {
             if (!::billingClient.isInitialized || !billingClient.isReady) {
-                Toast.makeText(context, "결제 시스템을 초기화 중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "결제 시스템을 초기화 중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show()
                 setupBillingClient()
                 return@setOnClickListener
             }
@@ -265,7 +282,7 @@ class ProfileFragment : Fragment() {
                         if (productDetailsList.isNotEmpty()) {
                             showPointPackageDialog()
                         } else {
-                            Toast.makeText(context, "사용 가능한 상품이 없습니다.", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(context, "사용 가능한 상품이 없습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -289,7 +306,7 @@ class ProfileFragment : Fragment() {
 
     private fun showPointPackageDialog() {
         if (productDetailsList.isEmpty()) {
-            Toast.makeText(context, "상품 정보를 불러오는 중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "상품 정보를 불러오는 중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show()
             queryAvailableProducts()
             return
         }
@@ -464,11 +481,10 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
-
     private fun loadUserProfile() {
         lifecycleScope.launch {
             UserDataManager.getUserData()?.let { userAccount ->
+                currentUserData = userAccount
                 updateUIWithUserData(userAccount)
             } ?: run {
                 handleError("프로필 로딩 실패")
@@ -481,23 +497,31 @@ class ProfileFragment : Fragment() {
         activity?.runOnUiThread {
             tvUserGender.text = userAccount.gender ?: "이메일 정보 없음"
             tvUserNickname.text = userAccount.nickname ?: "닉네임 정보 없음"
-            tvPoints.text = "${userAccount.points ?: 0} P"
+            tvPoints.text = "${userAccount.points ?: 10000} P"
             chipGroup.removeAllViews()
 
             userAccount.tags?.let { tags ->
                 if (tags.isNotEmpty()) {
                     for (tag in tags) {
-                        val chip = Chip(requireContext())
-                        chip.text = tag
-                        chip.isClickable = true
-                        chip.isCheckable = false  // 선택할 수 없게 설정
+                        val chip = Chip(requireContext()).apply {
+                            text = tag
+                            isClickable = true
+                            isCheckable = false
+                            setOnClickListener {
+                                showTagEditDialog()  // 각 Chip을 클릭했을 때 수정 다이얼로그 표시
+                            }
+                        }
 
                         // Chip을 ChipGroup에 추가
                         chipGroup.addView(chip)
                     }
                 } else {
-                    val noTagsChip = Chip(requireContext())
-                    noTagsChip.text = "관심사를 입력해주세요"
+                    val noTagsChip = Chip(requireContext()).apply {
+                        text = "관심사를 입력해주세요"
+                        setOnClickListener {
+                            showTagEditDialog()
+                        }
+                    }
                     chipGroup.addView(noTagsChip)
                 }
             }
@@ -507,6 +531,148 @@ class ProfileFragment : Fragment() {
                 Glide.with(requireContext())
                     .load(imageUrl)  // URL을 Glide로 로드
                     .into(imgProfilePicture)  // ImageView에 설정
+            }
+        }
+    }
+
+    private fun enableEditing() {
+        chipGroup.setOnClickListener(null)
+        tvUserNickname.setOnClickListener { showEditDialog("nickname") }
+        imgProfilePicture.setOnClickListener { selectImage() }
+    }
+
+    private fun selectImage() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        getContent.launch(intent)
+    }
+
+    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                val selectedImagePath = getRealPathFromURI(uri)
+                // 이미지 경로를 이용해 서버에 업로드 처리 추가
+                selectedImagePath?.let {
+                    updateField("profile_picture", it)
+                }
+            }
+        }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        context?.contentResolver?.query(uri, projection, null, null, null)?.use { cursor ->
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            if (cursor.moveToFirst()) {
+                return cursor.getString(columnIndex)
+            }
+        }
+        return uri.toString()
+    }
+
+    private fun showEditDialog(field: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("수정")
+            .setMessage("이 필드를 수정하시겠습니까?")
+            .setPositiveButton("수정") { _, _ -> openEditField(field) }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun openEditField(field: String) {
+        // 필드에 따라 EditText 열기
+        when (field) {
+            "nickname" -> showEditTextDialog(tvUserNickname.toString(), "닉네임 수정")
+            // 필요한 다른 필드들 추가
+        }
+    }
+
+    private fun showTagEditDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.dialog_edit_tags, null)
+
+        val editText = dialogView.findViewById<EditText>(R.id.editTags)
+        val currentTags = currentUserData?.tags?.joinToString(", ") ?: ""
+        editText.setText(currentTags)
+
+        builder.setView(dialogView)
+            .setTitle("관심사 수정")
+            .setPositiveButton("저장") { dialog, _ ->
+                val tagsText = editText.text.toString()
+                val tagsList = tagsText.split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
+                updateField("tags", tagsList.toString())
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun showEditTextDialog(field: String, currentValue: String) {
+        val input = EditText(requireContext()).apply {
+            setText(currentValue)
+            setSingleLine()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("${field.capitalize()} 수정")
+            .setView(input)
+            .setPositiveButton("저장") { _, _ ->
+                val newValue = input.text.toString()
+                if (newValue.isNotBlank()) {
+                    updateField(field, newValue)
+                }
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun updateField(field: String, newValue: String) {
+        val token = RetrofitInstance.getAccessToken()
+        currentUserData?.let { userData ->
+            val updatedData = when (field) {
+                "tags" -> {
+                    // 문자열로 받은 태그를 리스트로 변환
+                    val tagsList = newValue.removeSurrounding("[", "]")
+                        .split(",")
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+                    userData.copy(tags = tagsList)
+                }
+                "nickname" -> userData.copy(nickname = newValue)
+                "profile_picture" -> userData.copy(profile_picture = newValue)
+                else -> userData
+            }
+            Log.d("UpdateField", "Updated Data: $updatedData")
+
+            lifecycleScope.launch {
+                try {
+                    val imagePart = if (field == "profile_picture") {
+                        val file = File(newValue)
+                        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                        MultipartBody.Part.createFormData("image", file.name, requestFile)
+                    } else null
+
+                    val userAccountJson = Gson().toJson(updatedData)
+                    val userDataBody = RequestBody.create(
+                        "application/json".toMediaTypeOrNull(),
+                        userAccountJson
+                    )
+
+                    val response = RetrofitInstance.api.updateUserProfile("Bearer $token", userDataBody, imagePart)
+                    if (response.isSuccessful) {
+                        currentUserData = updatedData
+                        UserDataManager.updateUserData(updatedData)
+                        Toast.makeText(context, "프로필이 업데이트되었습니다.", Toast.LENGTH_SHORT).show()
+                        Log.d("UpdateField", "Profile updated successfully")
+                    } else {
+                        Log.e("UpdateField", "Profile update failed: ${response.message()}")
+                        Toast.makeText(context, "업데이트 실패: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("UpdateField", "Network error: ${e.message}")
+                    Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

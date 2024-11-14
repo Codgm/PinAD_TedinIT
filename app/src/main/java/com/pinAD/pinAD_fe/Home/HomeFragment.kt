@@ -35,6 +35,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.bumptech.glide.Glide
@@ -447,7 +448,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private suspend fun createMarkerIcon(borderColor: Int, profilePictureUrl: String): BitmapDescriptor? {
+    private fun createMarkerIcon(borderColor: Int, profilePictureUrl: String): BitmapDescriptor? {
         val size = 100 // 핀 크기
         val borderWidth = 10 // 테두리 두께
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -466,43 +467,35 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         paint.style = Paint.Style.FILL
         canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth - 1, paint)
 
-        // Coil을 사용하여 프로필 이미지 로드
+        // Glide로 프로필 이미지 로드
         if (profilePictureUrl.isNotEmpty()) {
-            val imageLoader = context?.let { ImageLoader(it) }
-            val request = context?.let {
-                ImageRequest.Builder(it)
-                    .data(profilePictureUrl)
-                    .size(size - borderWidth * 2) // 이미지 크기 조정
-                    .crossfade(true)
-                    .target(
-                        onSuccess = { drawable ->
-                            val profileBitmap = drawable.toBitmap()
-                            // 프로필 이미지를 원형으로 그리기
-                            val shader = BitmapShader(profileBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-                            paint.shader = shader
+            try {
+                val profileBitmap = context?.let {
+                    Glide.with(it)
+                        .asBitmap()
+                        .load(profilePictureUrl)
+                        .submit(size - borderWidth * 2, size - borderWidth * 2) // 이미지 크기 조정
+                        .get()
+                }
 
-                            canvas.drawCircle(
-                                size / 2f,
-                                size / 2f,
-                                size / 2f - borderWidth - 1,
-                                paint
-                            )
-                        },
-                        onError = {
-                            Log.e("CreateMarkerIcon", "Error loading profile picture")
-                        }
-                    )
-                    .build()
-            }
+                // 프로필 이미지를 원형으로 그리기
+                val shader = profileBitmap?.let { BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP) }
+                paint.shader = shader
 
-            // 요청 실행 (Coil 비동기 로드 대기)
-            if (imageLoader != null) {
-                (request?.let { imageLoader.execute(it) } as? SuccessResult)?.drawable
+                canvas.drawCircle(
+                    size / 2f,
+                    size / 2f,
+                    size / 2f - borderWidth - 1,
+                    paint
+                )
+            } catch (e: Exception) {
+                Log.e("CreateMarkerIcon", "Error loading profile picture with Glide", e)
             }
         }
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+
 
 
 

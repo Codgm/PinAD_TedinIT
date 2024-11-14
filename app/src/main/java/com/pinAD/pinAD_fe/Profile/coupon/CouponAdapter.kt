@@ -38,7 +38,7 @@ class CouponAdapter(private val onCouponClick: (CouponResponse) -> Unit) :
 
         fun bind(couponResponse: CouponResponse) {
             couponCodeTextView.text = couponResponse.coupon.code
-            discountTextView.text = "${couponResponse.coupon.discount_amount}% 할인"
+            discountTextView.text = "${couponResponse.coupon.discount_amount}% ${itemView.context.getString(R.string.coupon_discount_format)}"
         }
     }
 }

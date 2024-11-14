@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Light theme colors -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="colorAccent">#9C27B0</color> <!-- 보라색 계열 -->
-    <color name="colorChipBackground">#D1C4E9</color> <!-- 연한 보라색 -->
-    <color name="colorPrimary">#8A2BE2</color> <!-- 파란 제비 꽃색 -->
-    <color name="colorPrimaryVariant">#8E24AA</color> <!-- 어두운 보라색 -->
-    <color name="colorOnPrimary">#FFFFFF</color> <!-- 흰색 -->
-    <color name="colorSecondary">#CE93D8</color> <!-- 연한 보라색 -->
-    <color name="colorSecondaryVariant">#AB47BC</color> <!-- 보라색 -->
-    <color name="colorOnSecondary">#000000</color> <!-- 검정색 -->
-    <color name="backgroundLight">#F3E5F5</color> <!-- 연한 보라색 배경 -->
-    <color name="colorTextPrimaryLight">#000000</color> <!-- 텍스트 기본색상 라이트 모드 -->
-    <color name="colorTextSecondaryLight">#7A7A7A</color> <!-- 텍스트 보조색상 라이트 모드 -->
-    <color name="colorOnBackgroundLight">#4A148C</color> <!-- 어두운 보라색 텍스트 -->
-    <color name="surfaceLight">#E1BEE7</color> <!-- 보라색 계열의 표면 색상 -->
-    <color name="colorOnSurfaceLight">#4A148C</color> <!-- 어두운 보라색 텍스트 -->
-    <color name="errorLight">#FF0000</color> <!-- 붉은색 -->
+    <color name="black">#131b23</color> <!-- 그대로 유지 -->
+    <color name="white">#FFFFFF</color> <!-- 그대로 유지 -->
+    <color name="colorAccent">#079ca8</color> <!-- 청록색 계열 포인트 색상 -->
+    <color name="colorChipBackground">#c98e95</color> <!-- 연한 핑크빛 보라색 계열 -->
+    <color name="colorPrimary">#eb445b</color> <!-- 밝은 레드 계열 -->
+    <color name="colorPrimaryVariant">#c5871d</color> <!-- 머스터드 색상 강조 -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="colorSecondary">#6b4430</color> <!-- 부드러운 브라운 계열 -->
+    <color name="colorSecondaryVariant">#079ca8</color> <!-- 청록색 변형 -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="backgroundLight">#ebe7e8</color> <!-- 밝은 핑크빛 배경 -->
+    <color name="colorTextPrimaryLight">#131b23</color> <!-- 진한 블랙 텍스트 -->
+    <color name="colorTextSecondaryLight">#606c72</color> <!-- 중간 그레이 텍스트 -->
+    <color name="colorOnBackgroundLight">#123036</color> <!-- 어두운 청록색 텍스트 -->
+    <color name="surfaceLight">#ecb82d</color> <!-- 밝은 옐로우 표면 색상 -->
+    <color name="colorOnSurfaceLight">#04141d</color> <!-- 어두운 네이비 텍스트 -->
+    <color name="errorLight">#eb445b</color> <!-- 밝은 레드 에러 색상 -->
     <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
-    <color name="tag_background">#F0F0F0</color>
-    <color name="tag_selected_background">#E0E0E0</color>
-    <color name="tag_text_color">#333333</color>
-    <color name="tag_selected_text_color">#000000</color>
+    <color name="tag_background">#e0e0e0</color> <!-- 밝은 그레이 태그 배경 -->
+    <color name="tag_selected_background">#F0F0F0</color> <!-- 매우 연한 그레이 태그 선택 배경 -->
+    <color name="tag_text_color">#353638</color> <!-- 진한 그레이 태그 텍스트 -->
+    <color name="tag_selected_text_color">#131b23</color> <!-- 블랙 태그 선택 텍스트 -->
+
 
     <!-- Base Colors -->
     <color name="background">#F5F5F5</color>
@@ -52,9 +53,9 @@
     <color name="free_text">#1A1919</color>
 
     <!-- 현재 포인트 색상 -->
-    <color name="points_color">#B200FF</color>
+    <color name="points_color">#079ca8</color>
     <!-- 차감 예정 포인트 색상 -->
-    <color name="estimated_cost_color">#8745FF</color>
+    <color name="estimated_cost_color">#123036</color>
     <!-- 레이블 색상 -->
     <color name="label_color">#1E88E5</color>
     <!-- 버튼 텍스트 색상 -->

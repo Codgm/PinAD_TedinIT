@@ -26,7 +26,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="닉네임을 입력해주세요"
+                android:text="@string/Please_enter_your_nickname"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -34,7 +34,7 @@
                 android:id="@+id/etNickname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="닉네임"/>
+                android:hint="@string/nickname"/>
         </LinearLayout>
 
         <!-- Page 2: Gender -->
@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="성별을 선택해주세요"
+                android:text="@string/Please_choose_your_gender"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -60,19 +60,19 @@
                     android:id="@+id/radioMale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="남성"/>
+                    android:text="@string/male"/>
 
                 <RadioButton
                     android:id="@+id/radioFemale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="여성"/>
+                    android:text="@string/female"/>
 
                 <RadioButton
                     android:id="@+id/radioOther"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="기타"/>
+                    android:text="@string/Other"/>
             </RadioGroup>
         </LinearLayout>
 
@@ -86,7 +86,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="연령대를 선택해주세요"
+                android:text="@string/Please_choose_your_age_group"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -99,31 +99,31 @@
                     android:id="@+id/radio10s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10대"/>
+                    android:text="@string/Teenage"/>
 
                 <RadioButton
                     android:id="@+id/radio20s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20대"/>
+                    android:text="@string/Twenties"/>
 
                 <RadioButton
                     android:id="@+id/radio30s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="30대"/>
+                    android:text="@string/Thirties"/>
 
                 <RadioButton
                     android:id="@+id/radio40s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="40대"/>
+                    android:text="@string/Forty"/>
 
                 <RadioButton
                     android:id="@+id/radio50sPlus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50대 이상"/>
+                    android:text="@string/people_in_their_50s_or_older"/>
             </RadioGroup>
         </LinearLayout>
 
@@ -138,7 +138,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="프로필 사진 업로드"
+                android:text="@string/Upload_a_profile_picture"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -154,7 +154,7 @@
                 android:id="@+id/btnUploadProfilePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="사진 선택"
+                android:text="@string/Select_a_picture"
                 android:layout_marginTop="16dp"/>
 
         </LinearLayout>
@@ -169,7 +169,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="관심있는 쇼핑 품목을 선택해주세요"
+                android:text="@string/Please_select_the_shopping_items_you_are_interested_in"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -181,61 +181,61 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="식사/음료"
+                    android:text="@string/tag_food_drink"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="의류/신발"
+                    android:text="@string/tag_clothing_shoes"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="뷰티/헬스"
+                    android:text="@string/tag_beauty_health"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="스포츠/레저"
+                    android:text="@string/tag_sports_leisure"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="편의점/마트"
+                    android:text="@string/tag_convenience_mart"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="문화/엔터"
+                    android:text="@string/tag_culture_entertainment"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="교육/도서"
+                    android:text="@string/tag_education_books"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="자동차"
+                    android:text="@string/tag_automotive"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="생활서비스"
+                    android:text="@string/tag_life_service"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="행사/이벤트"
+                    android:text="@string/tag_event"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -250,13 +250,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 쇼핑 품목 추가"/>
+                    android:hint="@string/Add_New_Shopping_Items"/>
 
                 <Button
                     android:id="@+id/btnAddShoppingInterest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="추가"/>
+                    android:text="@string/Add"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -270,7 +270,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="주로 쇼핑하는 지역을 선택해주세요"
+                android:text="@string/Please_choose_the_area_where_you_usually_shop"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -282,31 +282,31 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="서울"
+                    android:text="@string/Seoul"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="부산"
+                    android:text="@string/Busan"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="대구"
+                    android:text="@string/Daegu"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="광주"
+                    android:text="@string/Gwangju"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="인천"
+                    android:text="@string/Incheon"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -321,13 +321,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 지역 추가"/>
+                    android:hint="@string/Add_a_new_area"/>
 
                 <Button
                     android:id="@+id/btnAddShoppingArea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="추가"/>
+                    android:text="@string/Add"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -341,7 +341,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="선호하는 브랜드를 선택해주세요"
+                android:text="@string/Please_choose_your_preferred_brand"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -353,19 +353,19 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="나이키"
+                    android:text="@string/Nike"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="아디다스"
+                    android:text="@string/Adidas"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="삼성"
+                    android:text="@string/Samsung"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
@@ -377,7 +377,7 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="애플"
+                    android:text="Apple"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -392,13 +392,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 브랜드 추가"/>
+                    android:hint="@string/Add_a_new_brand"/>
 
                 <Button
                     android:id="@+id/btnAddBrand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="추가"/>
+                    android:text="@string/Add"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -412,7 +412,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="쇼핑 시 중요 요소를 선택해주세요"
+                android:text="@string/Please_select_an_important_factor_when_shopping"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -426,25 +426,25 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="가격"
+                    android:text="@string/Price"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="품질"
+                    android:text="@string/Quality"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="디자인"
+                    android:text="@string/Design"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="브랜드"
+                    android:text="@string/Brand"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -459,13 +459,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 중요요소 추가"/>
+                    android:hint="@string/Add_New_Critical_Factors"/>
 
                 <Button
                     android:id="@+id/btnAddPriority"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="추가"/>
+                    android:text="@string/Add"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -479,7 +479,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="관심사를 선택해주세요"
+                android:text="@string/Please_choose_your_interest"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/chipGroupImportance"/>
@@ -495,25 +495,25 @@
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="운동"
+                    android:text="@string/Exercise"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="음악"
+                    android:text="@string/Music"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="여행"
+                    android:text="@string/Travel"
                     android:checkable="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="요리"
+                    android:text="@string/Cook"
                     android:checkable="true"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -528,13 +528,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="새로운 관심사 및 취미 추가"/>
+                    android:hint="@string/Add_new_interests_and_hobbies"/>
 
                 <Button
                     android:id="@+id/btnAddHobby"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="추가"/>
+                    android:text="@string/Add"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -548,7 +548,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="선호하는 오프라인 쇼핑 시간대를 선택해주세요"
+                android:text="@string/Please_select_your_preferred_offline_shopping_time_zone"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/chipGroupInterests"/>
@@ -564,31 +564,31 @@
                     android:id="@+id/radioMorning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="오전"/>
+                    android:text="@string/AM"/>
 
                 <RadioButton
                     android:id="@+id/radioAfternoon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="오후"/>
+                    android:text="@string/afternoon"/>
 
                 <RadioButton
                     android:id="@+id/radioEvening"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="저녁"/>
+                    android:text="@string/evening"/>
 
                 <RadioButton
                     android:id="@+id/radioNight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="야간"/>
+                    android:text="@string/Night_time"/>
 
                 <RadioButton
                     android:id="@+id/radioAnyTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="제한없음"/>
+                    android:text="@string/No_restrictions"/>
             </RadioGroup>
         </LinearLayout>
 
@@ -602,7 +602,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="푸시 알림 수신 반경을 선택해주세요"
+                android:text="@string/Please_select_a_push_notification_reception_radius"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroupShoppingTime"/>
@@ -646,7 +646,7 @@
                     android:id="@+id/radioButtonUnlimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="무제한" />
+                    android:text="@string/Unlimited" />
             </RadioGroup>
         </LinearLayout>
 
@@ -660,7 +660,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="하루 최대 푸시 알림 개수를 선택해주세요"
+                android:text="@string/Please_select_the_maximum_number_of_push_notifications_per_day"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/spinnerNotificationRadius"/>
@@ -674,113 +674,41 @@
                     android:id="@+id/radioButton1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1개" />
+                    android:text="1" />
 
                 <RadioButton
                     android:id="@+id/radioButton3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3개" />
+                    android:text="3" />
 
                 <RadioButton
                     android:id="@+id/radioButton5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5개" />
+                    android:text="5" />
 
                 <RadioButton
                     android:id="@+id/radioButton10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10개" />
+                    android:text="10" />
 
                 <RadioButton
                     android:id="@+id/radioButtonAny"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="제한 없음" />
+                    android:text="@string/No_restrictions" />
             </RadioGroup>
         </LinearLayout>
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            &lt;!&ndash; 쿠폰 선물 대상 입력 &ndash;&gt;-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="쿠폰 선물 대상을 입력해주세요"-->
-<!--                android:textSize="18sp"-->
-<!--                android:layout_marginBottom="8dp"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/spinnerMaxNotifications"/>-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/etCouponGift"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="대상 이름"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/spinnerMaxNotifications"/>-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/imageViewInterestProduct"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:background="@android:color/darker_gray" />-->
-
-<!--            &lt;!&ndash; 관심 제품 이미지 업로드 버튼 &ndash;&gt;-->
-<!--            <Button-->
-<!--                android:id="@+id/btnUploadInterestImage"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="관심 제품 이미지 업로드"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/etCouponRecipient"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/imageViewRelatedProduct"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:background="@android:color/darker_gray" />-->
-
-<!--            &lt;!&ndash; 관련 제품 이미지 업로드 버튼 &ndash;&gt;-->
-<!--            <Button-->
-<!--                android:id="@+id/btnUploadRelatedImage"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="관련 제품 이미지 업로드"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/btnUploadInterestImage"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/etCouponRecipient" />-->
-
-<!--        </LinearLayout>-->
     </ViewFlipper>
 
     <Button
         android:id="@+id/btnPrevious"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이전"
+        android:text="@string/back"
+        android:backgroundTint="#c98e95"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"/>
@@ -789,7 +717,8 @@
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="다음"
+        android:text="@string/Next"
+        android:backgroundTint="#c98e95"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"/>

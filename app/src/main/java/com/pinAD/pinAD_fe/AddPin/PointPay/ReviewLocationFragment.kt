@@ -84,6 +84,7 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
     private var isReceiptUploaded = false
     private val visibility = "public"
     private var pin_type: Int = 0
+    private var currentLocation: LatLng? = null
 
     companion object {
         private const val FILE_PICKER_REQUEST_CODE = 100
@@ -147,9 +148,10 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient.lastLocation.addOnCompleteListener { task ->
                 val location = task.result
                 if (location != null) {
-                    val userLatLng = LatLng(location.latitude, location.longitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
-                    googleMap.addMarker(MarkerOptions().position(userLatLng).title("내 위치"))
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation!!, 15f))
+                    googleMap.addMarker(MarkerOptions().position(currentLocation!!).title("내 위치"))
+                    selectedLocation = currentLocation
                 } else {
                     Toast.makeText(context, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -522,11 +524,12 @@ class ReviewLocationFragment : Fragment(), OnMapReadyCallback {
                 it1
             )
         } }
-        if (selectedLocation == null) {
-            Toast.makeText(context, "위치를 선택해주세요", Toast.LENGTH_SHORT).show()
-            return null
+        if (selectedLocation == null && currentLocation != null) {
+            selectedLocation = currentLocation
         }
-
+        if (selectedLocation == null) {
+            Toast.makeText(context, "위치 정보를 가져올 수 없습니다. 위치를 선택해주세요.", Toast.LENGTH_SHORT).show()
+        }
         val tags = selectedTags.map { FTag(it) }
         val infoJsonStr = info
         val processedInfo = try {

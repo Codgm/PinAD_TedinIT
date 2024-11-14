@@ -52,7 +52,7 @@ class CouponDialogFragment : DialogFragment() {
         if (accessToken != null) {
             fetchCoupons(accessToken)
         } else {
-            Toast.makeText(requireContext(), "인증되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.unauthenticated_user), Toast.LENGTH_SHORT).show()
         }
 
         buttonVerifyCoupon.setOnClickListener {
@@ -60,7 +60,7 @@ class CouponDialogFragment : DialogFragment() {
             if (couponCode.isNotEmpty()) {
                 issueCoupon(couponCode)
             } else {
-                Toast.makeText(requireContext(), "쿠폰 코드를 입력하세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.coupon_code_prompt), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -75,7 +75,7 @@ class CouponDialogFragment : DialogFragment() {
                 if (couponCode.isNotEmpty()) {
                     issueCoupon(couponCode)
                 } else {
-                    Toast.makeText(requireContext(), "쿠폰 코드를 입력하세요.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.coupon_code_prompt), Toast.LENGTH_SHORT).show()
                 }
                 true
             } else {
@@ -88,6 +88,7 @@ class CouponDialogFragment : DialogFragment() {
 
     private fun issueCoupon(couponCode: String) {
         val couponRequest = mapOf("coupon_code" to couponCode)
+        val accessToken = RetrofitInstance.getAccessToken()
 
         val call = RetrofitInstance.api.issueCoupon(couponRequest)
         call.enqueue(object : Callback<ResponseBody> {
@@ -95,18 +96,21 @@ class CouponDialogFragment : DialogFragment() {
                 if (response.isSuccessful) {
                     Log.d("CouponIssue", "Coupon issued successfully")
                     // 성공 메시지 표시
-                    Toast.makeText(context, "쿠폰 발급 성공", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_issue_success), Toast.LENGTH_SHORT).show()
+                    if (accessToken != null) {
+                        fetchCoupons(accessToken)
+                    }
                 } else {
                     Log.e("CouponIssue", "Error issuing coupon: ${response.errorBody()?.string()}")
                     // 오류 메시지 표시
-                    Toast.makeText(context, "쿠폰 발급 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_issue_failure), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.e("CouponIssue", "Failure: ${t.message}", t)
                 // 네트워크 오류 메시지 표시
-                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -128,22 +132,22 @@ class CouponDialogFragment : DialogFragment() {
                         couponAdapter.submitCoupons(couponList)
                     } else {
                         // 데이터가 없을 때의 처리 (예: 사용자에게 알림)
-                        Toast.makeText(requireContext(), "쿠폰이 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.no_coupons_found), Toast.LENGTH_SHORT).show()
                     } // 어댑터에 배열 전달
                 } else {
                     handleError(response)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun handleError(response: Response<List<CouponResponse>>) {
         when (response.code()) {
-            404 -> Toast.makeText(requireContext(), "쿠폰을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            else -> Toast.makeText(requireContext(), "알 수 없는 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            404 -> Toast.makeText(requireContext(), getString(R.string.coupon_not_found), Toast.LENGTH_SHORT).show()
+            else -> Toast.makeText(requireContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show()
         }
     }
 

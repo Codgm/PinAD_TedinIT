@@ -77,8 +77,7 @@ class UserSettingsActivity : AppCompatActivity() {
 
 
         // Intent로부터 access_token을 받음
-        accessToken = intent.getStringExtra("ACCESS_TOKEN")
-        Log.d("token", "$accessToken")
+        accessToken = RetrofitInstance.getAccessToken()
 
         viewFlipper = findViewById(R.id.viewFlipper)
         btnNext = findViewById(R.id.btnNext)
@@ -346,10 +345,16 @@ class UserSettingsActivity : AppCompatActivity() {
         when (viewFlipper.displayedChild) {
             0 -> {
                 // 닉네임 저장
-                val nickname = findViewById<EditText>(R.id.etNickname).text.toString().trim()
+                val etNickname = findViewById<EditText>(R.id.etNickname)
+                val nickname = etNickname.text.toString().trim()
                 if (nickname.isNotEmpty()) {
                     userResponses["nickname"] = nickname
+                } else {
+                    etNickname.error = "닉네임을 입력해주세요."
+                    etNickname.requestFocus()
+                    return
                 }
+
             }
             1 -> {
                 // 성별 저장
@@ -357,9 +362,10 @@ class UserSettingsActivity : AppCompatActivity() {
                 val gender = if (selectedGenderId != -1) {
                     findViewById<RadioButton>(selectedGenderId).text.toString()
                 } else {
-                    null
+                    Toast.makeText(this, "성별을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    return
                 }
-                gender?.let {
+                gender.let {
                     userResponses["gender"] = it
                 }
             }
@@ -369,9 +375,10 @@ class UserSettingsActivity : AppCompatActivity() {
                 val ageGroup = if (selectedAgeGroupId != -1) {
                     findViewById<RadioButton>(selectedAgeGroupId).text.toString()
                 } else {
-                    null
+                    Toast.makeText(this, "연령대를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    return
                 }
-                ageGroup?.let {
+                ageGroup.let {
                     userResponses["age"] = it
                 }
             }
@@ -480,6 +487,12 @@ class UserSettingsActivity : AppCompatActivity() {
 //                    userResponses["relatedProductImage"] = it.toString()
 //                }
             }
+        }
+        if (viewFlipper.displayedChild < viewFlipper.childCount - 1) {
+            viewFlipper.showNext()
+            updateButtonVisibility()
+        } else {
+            saveUserSettings()
         }
         Log.d("UserResponsesData", "Current userResponses: $userResponses")
     }
@@ -662,7 +675,6 @@ class UserSettingsActivity : AppCompatActivity() {
                 )
 
                 if (response.isSuccessful) {
-                    saveSettingsCompletionStatus()
                     navigateToMainActivity()
                 } else {
                     Toast.makeText(
@@ -701,13 +713,6 @@ class UserSettingsActivity : AppCompatActivity() {
 //            productImage = userResponses["productImage"] as? String,
 //            relatedImage = userResponses["relatedImage"] as? String
         )
-    }
-
-    private fun saveSettingsCompletionStatus() {
-        getSharedPreferences("UserSettings", MODE_PRIVATE).edit().apply {
-            putBoolean("isSettingsCompleted", true)
-            apply()
-        }
     }
 
     private fun navigateToMainActivity() {

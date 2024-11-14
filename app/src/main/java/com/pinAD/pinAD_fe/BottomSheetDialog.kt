@@ -98,7 +98,6 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                         if (pinData.visibility == "public") {
                             setupLikeButton(view)
                             setupComments(view)
-                            loadComments()
                         } else {
                             // private인 경우 좋아요와 댓글 UI 숨기기
                             hideInteractionUI(view)
@@ -135,14 +134,14 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupUI(view: View, pinData: FltPinData, mediaUrls: List<String>, coupon: Coupon?) {
         view.findViewById<TextView>(R.id.tvTitle).text = pinData.title
-        view.findViewById<TextView>(R.id.tvDescription).text = "설명: ${pinData.description}"
+        view.findViewById<TextView>(R.id.tvDescription).text = "${getString(R.string.description)}: ${pinData.description}"
         tvDiscountAmount = view.findViewById(R.id.tvDiscountAmount)
         val infoJson = JSONObject(pinData.info.toString())
 
         if (pinData.pin_type == 0 || pinData.pin_type == 1) {
             val discountAmount = coupon?.discount_amount
             tvDiscountAmount.text =
-                "할인: ${discountAmount} ${infoJson.optString("discount_type", "N/A")}"
+                "${getString(R.string.coupon_discount_format)}: ${discountAmount} ${infoJson.optString("discount_type", "N/A")}"
         } else {
             tvDiscountAmount.visibility = View.GONE
         }
@@ -207,7 +206,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                 }
 
                 override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
-                    Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -274,7 +273,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             }
 
             override fun onFailure(call: Call<Comment>, t: Throwable) {
-                Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -291,7 +290,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -360,11 +359,11 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                 val elapsedMillis = chronometer.base - SystemClock.elapsedRealtime()
                 if (elapsedMillis <= 0) {
                     chronometer.stop()
-                    chronometer.text = "Expired"
+                    chronometer.text = "${getString(R.string.Expired)}"
                 }
             }
         } else {
-            chronometer.text = "Expired"
+            chronometer.text = "${getString(R.string.Expired)}"
         }
     }
 
@@ -394,34 +393,12 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             progressBar.max = maxParticipants
             progressBar.progress = remain
 
-            tvParticipantInfo.text = "Current participants: $currentParticipants / $maxParticipants"
+            tvParticipantInfo.text = "${getString(R.string.current_participants)}: $currentParticipants / $maxParticipants"
         } catch (e: Exception) {
             Log.e("ProgressBar", "Error setting up progress bar: ${e.message}")
         }
     }
 
-//    private fun approveCouponRequest(pinId: String) {
-//        val approvalRequest = mapOf("pin_id" to pinId)
-//
-//        val call = RetrofitInstance.api.approveCouponRequest(approvalRequest)
-//        call.enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                if (response.isSuccessful) {
-//                    Log.d("CouponApproval", "Coupon request approved successfully")
-//                    Toast.makeText(context, "쿠폰 요청이 승인되었습니다.", Toast.LENGTH_SHORT).show()
-//                    navigateToProfileFragment() // 승인 후 사용자 프로필로 이동
-//                } else {
-//                    Log.e("CouponApproval", "Error approving coupon request: ${response.errorBody()?.string()}")
-//                    Toast.makeText(context, "쿠폰 승인 실패", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                Log.e("CouponApproval", "Failure: ${t.message}", t)
-//                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
 
     private fun issueCoupon(couponCode: String) {
         val couponRequest = mapOf("coupon_code" to couponCode)
@@ -432,19 +409,19 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                 if (response.isSuccessful) {
                     Log.d("CouponIssue", "Coupon issued successfully")
                     // 성공 메시지 표시
-                    Toast.makeText(context, "쿠폰 발급 성공", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_issue_success), Toast.LENGTH_SHORT).show()
                     navigateToProfileFragment()
                 } else {
                     Log.e("CouponIssue", "Error issuing coupon: ${response.errorBody()?.string()}")
                     // 오류 메시지 표시
-                    Toast.makeText(context, "쿠폰 발급 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_issue_failure), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.e("CouponIssue", "Failure: ${t.message}", t)
                 // 네트워크 오류 메시지 표시
-                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -481,10 +458,11 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
         tvMoreDetails.setOnClickListener {
             isExpanded = !isExpanded
             if (isExpanded) {
+                loadComments()
                 interactionLayout.visibility = View.VISIBLE
                 contentLayout.visibility = View.VISIBLE
                 recyclerViewMedia.visibility = View.VISIBLE
-                tvMoreDetails.text = "접기"
+                tvMoreDetails.text = getString(R.string.collapse)
 
                 val behavior = BottomSheetBehavior.from(view.parent as View)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -492,7 +470,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
                 interactionLayout.visibility = View.GONE
                 contentLayout.visibility = View.GONE
                 recyclerViewMedia.visibility = View.GONE
-                tvMoreDetails.text = "자세히 보기"
+                tvMoreDetails.text = getString(R.string.see_more)
 
                 // BottomSheet를 중간 크기로 변경
                 val behavior = BottomSheetBehavior.from(view.parent as View)
@@ -515,18 +493,18 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
 //            }
 
             if (pinData.pin_type == 0) {
-                tvField1.text = "상품명 : ${infoJson.optString("product_name", "N/A")}"
+                tvField1.text = "${getString(R.string.product_name)} : ${infoJson.optString("product_name", "N/A")}"
                 tvField1.visibility = View.VISIBLE
-                tvField2.visibility = View.VISIBLE
-                tvField3.visibility = View.VISIBLE
+                tvField2.visibility = View.GONE
+                tvField3.visibility = View.GONE
             } else if (pinData.pin_type == 1) {
-                tvField1.text = "요청 사유 : ${infoJson.optString("product_name", "N/A")}"
+                tvField1.text = "${getString(R.string.request_reason)} : ${infoJson.optString("product_name", "N/A")}"
                 tvField1.visibility = View.VISIBLE
                 tvField2.visibility = View.GONE
                 tvField3.visibility = View.GONE
             } else {
-                tvField1.text = "장점 : ${infoJson.optString("advantages", "N/A")}"
-                tvField2.text = "단점 : ${infoJson.optString("disadvantages", "N/A")}"
+                tvField1.text = "${getString(R.string.advantages)} : ${infoJson.optString("advantages", "N/A")}"
+                tvField2.text = "${getString(R.string.disadvantages)} : ${infoJson.optString("disadvantages", "N/A")}"
                 tvField1.visibility = View.VISIBLE
                 tvField2.visibility = View.VISIBLE
                 tvField3.visibility = View.GONE

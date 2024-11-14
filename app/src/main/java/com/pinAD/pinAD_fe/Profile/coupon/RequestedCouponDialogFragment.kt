@@ -33,10 +33,7 @@ class RequestedCouponDialogFragment : DialogFragment() {
         recyclerViewCoupons = view.findViewById(R.id.recyclerViewCoupons)
         recyclerViewCoupons.layoutManager = LinearLayoutManager(context)
 
-        couponAdapter = RequestedCouponAdapter { couponResponse ->
-            // QR 코드 표시
-            showQrCodeDialog(decodeBase64ToBitmap(couponResponse.coupon_code))
-        }
+        couponAdapter = RequestedCouponAdapter(viewLifecycleOwner.lifecycleScope)
         recyclerViewCoupons.adapter = couponAdapter
 
         // 쿠폰 데이터 가져오기
@@ -44,7 +41,7 @@ class RequestedCouponDialogFragment : DialogFragment() {
         if (accessToken != null) {
             fetchCoupons(accessToken)
         } else {
-            Toast.makeText(requireContext(), "인증되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.unauthenticated_user), Toast.LENGTH_SHORT).show()
         }
 
         return view
@@ -59,33 +56,23 @@ class RequestedCouponDialogFragment : DialogFragment() {
                     if (couponList.isNotEmpty()) {
                         couponAdapter.submitRequestedCoupons(couponList)
                     } else {
-                        Toast.makeText(requireContext(), "요청된 쿠폰이 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.no_requested_coupons), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     handleError(response)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun handleError(response: Response<List<RequestedCouponResponse>>) {
         when (response.code()) {
-            404 -> Toast.makeText(requireContext(), "요청된 쿠폰을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            else -> Toast.makeText(requireContext(), "알 수 없는 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            404 -> Toast.makeText(requireContext(), getString(R.string.coupon_not_found), Toast.LENGTH_SHORT).show()
+            else -> Toast.makeText(requireContext(), getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun decodeBase64ToBitmap(base64: String): Bitmap {
-        val decodedString = Base64.decode(base64, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-    }
-
-    private fun showQrCodeDialog(qrCodeBitmap: Bitmap) {
-        val qrCodeDialog = QrCodeDialogFragment(qrCodeBitmap)
-        qrCodeDialog.show(childFragmentManager, "QrCodeDialog")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

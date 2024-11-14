@@ -41,17 +41,17 @@ class RegisterActivity : AppCompatActivity() {
 
         // 입력 유효성 검사
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "모든 필드를 입력해주세요", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (password.length < 6) {
-            Toast.makeText(this, "비밀번호는 최소 6자 이상이어야 합니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (password != confirmPassword) {
-            Toast.makeText(this, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Password doesn't match", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -68,7 +68,7 @@ class RegisterActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Toast.makeText(
                         this@RegisterActivity,
-                        "회원가입이 완료되었습니다. 이메일을 확인해주세요.",
+                        "Your membership has been registered. Please check your email.",
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -81,16 +81,16 @@ class RegisterActivity : AppCompatActivity() {
                         // 에러 응답 처리
                         response.errorBody()?.string()?.let { errorString ->
                             val message = when {
-                                errorString.contains("email") -> "이미 등록된 이메일입니다"
-                                errorString.contains("password") -> "비밀번호 형식이 올바르지 않습니다"
-                                else -> "회원가입에 실패했습니다. 다시 시도해주세요"
+                                errorString.contains("email") -> "This email is already registered"
+                                errorString.contains("password") -> "Invalid password format"
+                                else -> "Membership registration failed. Please try again"
                             }
                             Toast.makeText(this@RegisterActivity, message, Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
                         Toast.makeText(
                             this@RegisterActivity,
-                            "오류가 발생했습니다. 다시 시도해주세요.",
+                            "An error has occurred. Please try again.",
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -100,7 +100,7 @@ class RegisterActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 Toast.makeText(
                     this@RegisterActivity,
-                    "네트워크 오류가 발생했습니다. 연결을 확인해주세요.",
+                    getString(R.string.network_error),
                     Toast.LENGTH_LONG
                 ).show()
                 t.printStackTrace()

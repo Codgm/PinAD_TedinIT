@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFE5FF"
+    android:background="@color/white"
     tools:context=".Login_Sign.RegisterActivity">
 
     <!-- 화면 제목 -->
@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Mappin 회원가입"
+        android:text="@string/pinAD_Register"
         android:textColor="#333333"
         android:textSize="26sp"
         android:textStyle="bold"
@@ -30,7 +30,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_background"
-        android:hint="이메일을 입력하세요"
+        android:hint="@string/enter_email"
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:textColor="#333333"
@@ -48,7 +48,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_background"
-        android:hint="비밀번호를 입력하세요"
+        android:hint="@string/enter_password"
         android:inputType="textPassword"
         android:padding="16dp"
         android:textColor="#333333"
@@ -66,7 +66,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_background"
-        android:hint="비밀번호 확인"
+        android:hint="@string/check_password"
         android:inputType="textPassword"
         android:padding="16dp"
         android:textColor="#333333"
@@ -74,72 +74,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
-
-    <!-- 전화번호 입력 필드 -->
-    <EditText
-        android:id="@+id/et_phone_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="전화번호를 입력하세요"
-        android:inputType="phone"
-        android:padding="16dp"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_send_verification"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_confirm_pwd" />
-
-    <!-- 인증 코드 전송 버튼 -->
-    <Button
-        android:id="@+id/btn_send_verification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/button_background"
-        android:text="인증번호 전송"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/et_phone_number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/et_phone_number" />
-
-    <!-- 인증 코드 입력 필드 -->
-    <EditText
-        android:id="@+id/et_verification_code"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="인증번호를 입력하세요"
-        android:inputType="number"
-        android:padding="16dp"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/btn_verify_code"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_phone_number" />
-
-    <!-- 인증 코드 확인 버튼 -->
-    <Button
-        android:id="@+id/btn_verify_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/button_background"
-        android:text="인증번호 확인"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/et_verification_code"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/et_verification_code" />
 
     <!-- 가입 버튼 -->
     <Button
@@ -151,14 +85,14 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/button_background"
-        android:text="가입하기"
+        android:text="@string/Sign_up"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_verification_code"
+        app:layout_constraintTop_toBottomOf="@+id/et_confirm_pwd"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

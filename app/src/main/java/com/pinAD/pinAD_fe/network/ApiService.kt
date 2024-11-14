@@ -1,7 +1,9 @@
 package com.pinAD.pinAD_fe.network
 
+import com.pinAD.pinAD_fe.Data.business.BusinessCreateRequest
 import com.pinAD.pinAD_fe.Data.notification.Notification
 import com.pinAD.pinAD_fe.Data.coupon.CouponResponse
+import com.pinAD.pinAD_fe.Data.coupon.CouponStatusResponse
 import com.pinAD.pinAD_fe.Data.coupon.CouponVerifyRequest
 import com.pinAD.pinAD_fe.Data.coupon.RequestedCouponResponse
 import com.pinAD.pinAD_fe.Data.pin.FltPinData
@@ -58,6 +60,14 @@ interface ApiService {
         @Part profile_picture: MultipartBody.Part?,
         @Part ("user_data") userAccount: RequestBody
     ): Response<Void>
+
+    @Multipart
+    @PUT("users/")
+    suspend fun updateUserProfile(
+        @Header("Authorization") token: String,
+        @Part("user_data") userData: RequestBody,
+        @Part profile_picture: MultipartBody.Part?
+    ): Response<ProfileData>
 
 
     @GET("users/")
@@ -199,10 +209,21 @@ interface ApiService {
         @Body notificationResponse: NotificationResponse
     ): Response<ResponseBody>
 
+    @GET("coupons/get_coupon_status/")
+    suspend fun getCouponStatus(
+        @Query("coupon_id") couponId: String
+    ): Response<CouponStatusResponse>
+
     @POST("purchases/verify")
     suspend fun verifyPurchase(
         @Header("Authorization") token: String,
         @Body purchaseInfo: PurchaseInfo
     ): Response<Any>
+
+    @GET("users/check_business/")
+    suspend fun checkBusiness() : Response<Boolean>
+
+    @POST("users/business/")
+    suspend fun createBusiness(@Body business: BusinessCreateRequest): Response<Void>
 
 }

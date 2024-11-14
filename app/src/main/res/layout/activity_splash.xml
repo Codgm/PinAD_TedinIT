@@ -5,16 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6c0a46"
+    android:background="#131b23"
     tools:context=".splash.SplashActivity">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageView"
-        android:layout_width="293dp"
-        android:layout_height="339dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@mipmap/pinad_logo"/>
+        android:src="@mipmap/pinad_logo_round"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance_App_Circular" />
 </androidx.constraintlayout.widget.ConstraintLayout>

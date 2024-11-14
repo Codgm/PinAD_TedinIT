@@ -55,7 +55,9 @@ class NotificationAdapter(
             contentView.text = when (notification) {
                 is BusinessNotification -> notification.content
                 is Notification -> with(notification.content) {
-                    "상품명: $product_name\n할인율: $discount_type $discount_amount\n유효기간: $valid_until"
+                    "${itemView.context.getString(R.string.product_name)}: $product_name\n${itemView.context.getString(
+                        R.string.discount_rate)}: $discount_type $discount_amount\n${itemView.context.getString(
+                        R.string.valid_until)}: $valid_until"
                 }
                 else -> ""
             }

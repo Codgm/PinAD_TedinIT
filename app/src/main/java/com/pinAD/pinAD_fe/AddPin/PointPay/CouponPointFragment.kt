@@ -81,6 +81,7 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
     private var product_name: String = ""
     private var discount_amount: String = ""
     private var discountInfo: JSONObject? = null
+    private var currentLocation: LatLng? = null
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 1
@@ -192,9 +193,12 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient.lastLocation.addOnCompleteListener { task ->
                 val location = task.result
                 if (location != null) {
-                    val userLatLng = LatLng(location.latitude, location.longitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
-                    googleMap.addMarker(MarkerOptions().position(userLatLng).title("내 위치"))
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                    latitude = location.latitude
+                    longitude = location.longitude
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation!!, 15f))
+                    googleMap.addMarker(MarkerOptions().position(currentLocation!!).title("내 위치"))
+                    selectedLocation = currentLocation
                 } else {
                     Toast.makeText(context, "위치 정보를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -293,6 +297,16 @@ class CouponPointFragment : Fragment(), OnMapReadyCallback {
 
         btnCompletePin.setOnClickListener {
             btnCompletePin.isEnabled = false
+            if (selectedLocation == null && currentLocation != null) {
+                selectedLocation = currentLocation
+                latitude = currentLocation!!.latitude
+                longitude = currentLocation!!.longitude
+            }
+            if (selectedLocation == null) {
+                Toast.makeText(context, "위치 정보를 가져올 수 없습니다. 위치를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                btnCompletePin.isEnabled = true
+                return@setOnClickListener
+            }
             UserUtils.fetchUserDetails { nickname, _ ->
                 if (calculateAndUpdatePoints()) {
                     val pinData = createPinData(nickname)

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pinAD.pinAD_fe.Data.notification.NotificationResBusiness
 import com.pinAD.pinAD_fe.Data.notification.NotificationResponse
+import com.pinAD.pinAD_fe.Profile.SettingFragment
 import com.pinAD.pinAD_fe.R
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import kotlinx.coroutines.launch
@@ -32,7 +33,8 @@ class NotificationDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        isBusinessUser = arguments?.getBoolean("business_user") ?: false
+        isBusinessUser = arguments?.getBoolean("business_user") ?: true
+        (targetFragment as? SettingFragment)?.updateBusinessStatus(isBusinessUser)
         recyclerView = view.findViewById(R.id.recyclerViewNotifications)
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = NotificationAdapter(
@@ -64,15 +66,15 @@ class NotificationDialogFragment : DialogFragment() {
                     if (notifications != null) {
                         adapter.submitList(notifications, isBusinessUser)
                     } else {
-                        Toast.makeText(context, "알림 목록이 비어있습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.empty_notification_list), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e("Notification", "Error: ${response.message()} Code: ${response.code()}")
-                    Toast.makeText(context, "알림을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.notification_load_failure), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("Notification", "Network or parsing error: ${e.message}")
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -83,13 +85,13 @@ class NotificationDialogFragment : DialogFragment() {
                 val couponResponse = NotificationResBusiness(requestId, action)
                 val response = RetrofitInstance.api.approveCouponRequest(couponResponse)
                 if (response.isSuccessful) {
-                    Toast.makeText(context, "쿠폰 요청이 승인되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,  getString(R.string.coupon_approve_success), Toast.LENGTH_SHORT).show()
                     loadNotifications() // 알림 목록 새로고침
                 } else {
-                    Toast.makeText(context, "쿠폰 승인에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_approve_failure), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -101,16 +103,16 @@ class NotificationDialogFragment : DialogFragment() {
                 val response = RetrofitInstance.api.respondToCoupon(couponResponse)
                 if (response.isSuccessful) {
                     Toast.makeText(context,
-                        if (action == "accept") "쿠폰을 수락했습니다."
-                        else "쿠폰을 거절했습니다.",
+                        if (action == "accept") getString(R.string.coupon_response_success_accept)
+                        else getString(R.string.coupon_response_success_reject),
                         Toast.LENGTH_SHORT
                     ).show()
                     loadNotifications() // 알림 목록 새로고침
                 } else {
-                    Toast.makeText(context, "쿠폰 응답에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.coupon_response_failure), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
     }

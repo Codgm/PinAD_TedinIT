@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import com.pinAD.pinAD_fe.R
 import com.pinAD.pinAD_fe.Login_Sign.LoginActivity
@@ -24,6 +25,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.pinAD.pinAD_fe.Login_Sign.GlobalApplication.GlobalApplication
 import com.pinAD.pinAD_fe.MainActivity
+import com.pinAD.pinAD_fe.Profile.notification.NotificationDialogFragment
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,6 +42,7 @@ class SettingFragment : Fragment() {
     private lateinit var btnLogout: Button
     private lateinit var btnDeleteAccount: Button
     private lateinit var btnBack: ImageButton
+    private lateinit var btnBussinessAccount: Button
 
     private lateinit var currentUserUid: String
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -46,6 +50,20 @@ class SettingFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var tvLanguage: TextView
+    private var isBusinessUser: Boolean = false
+    private var listener: OnBusinessStatusChangedListener? = null
+
+    interface OnBusinessStatusChangedListener {
+        fun onBusinessStatusChanged(isBusinessUser: Boolean)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Activity가 이 콜백을 구현했는지 확인
+        if (context is OnBusinessStatusChangedListener) {
+            listener = context
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +89,7 @@ class SettingFragment : Fragment() {
         tvInterestsSetting = view.findViewById(R.id.tvInterestsSetting)
         btnLogout = view.findViewById(R.id.btnLogout)
         btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount)
+        btnBussinessAccount = view.findViewById(R.id.btnSwitchToBusinessAccount)
 
 
         // SharedPreferences 초기화
@@ -100,6 +119,10 @@ class SettingFragment : Fragment() {
 //            } else {
 //                disablePushNotifications()
 //            }
+        }
+
+        btnBussinessAccount.setOnClickListener {
+            checkBusinessAccountStatus()
         }
 
 //        // 테마 변경 클릭 리스너
@@ -168,6 +191,73 @@ class SettingFragment : Fragment() {
             .apply()
     }
 
+    private fun checkBusinessAccountStatus() {
+        Log.d("isBussinessUser", "$isBusinessUser")
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.api.checkBusiness()
+                if (response.isSuccessful) {
+                    val serverResponse = response.body() ?: false
+
+                    // 현재 isBusinessUser 상태에 따른 처리
+                    if (!isBusinessUser) { // 원래 계정이 일반 계정인 경우
+                        if (serverResponse) {
+                            // 서버에서 비즈니스 계정으로 전환 가능한 상태로 응답한 경우
+                            Toast.makeText(context, getString(R.string.business_account_success), Toast.LENGTH_SHORT).show()
+                            isBusinessUser = true
+                            Log.d("isBussinessUser", "$isBusinessUser")
+                            showNotificationDialog() // 다이얼로그 표시
+                        } else {
+                            // 비즈니스 계정으로 전환 불가 응답인 경우
+                            Toast.makeText(
+                                context,
+                                getString(R.string.business_account_failure),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("isBussinessUser", "$isBusinessUser")
+                        }
+                    } else { // 원래 계정이 비즈니스 계정인 경우
+                        if (serverResponse) {
+                            // 계속 비즈니스 계정 유지 (true인 경우)
+                            Toast.makeText(context, getString(R.string.business_account_revert), Toast.LENGTH_SHORT).show()
+                            isBusinessUser = false // 일반 계정으로 변경
+                            showNotificationDialog()
+                            Log.d("isBussinessUser", "$isBusinessUser")
+                        } else {
+                            // 서버에서 여전히 비즈니스 계정으로 반환한 경우 (false)
+                            Toast.makeText(context, getString(R.string.business_account_maintained), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, getString(R.string.business_account_check_failed), Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private fun showNotificationDialog() {
+        NotificationDialogFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean("business_user", isBusinessUser)
+            }
+        }
+    }
+
+    fun updateBusinessStatus(isBusinessUser: Boolean) {
+        this.isBusinessUser = isBusinessUser
+        Log.d("isBussinessUser", "$isBusinessUser")
+        // UI 업데이트 등 추가 작업 가능
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+
 
 //    private fun loadNotificationSettings() {
 //        // 서버에서 푸시 알림 설정을 불러와 switch 상태 설정
@@ -225,7 +315,7 @@ class SettingFragment : Fragment() {
     private fun logout() {
         auth.signOut()
         // Google 로그아웃 처리
-        googleSignInClient.revokeAccess().addOnCompleteListener { task ->
+        googleSignInClient.signOut().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // 로그아웃 완료 후
                 RetrofitInstance.setTokens(null, null)
@@ -233,14 +323,15 @@ class SettingFragment : Fragment() {
                 // SharedPreferences에서 사용자 관련 데이터 제거
                 val preferences = requireActivity().getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
                 preferences.edit().apply {
-                    remove("user_token")
                     remove("ACCESS_TOKEN")
                     remove("REFRESH_TOKEN")
                     // 필요한 경우 다른 사용자 관련 데이터도 제거
                     apply()
                 }
 
-                Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+                UserDataManager.clearCache()
+
+                Toast.makeText(requireContext(), getString(R.string.logged_out), Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, LoginActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
@@ -248,7 +339,7 @@ class SettingFragment : Fragment() {
                 activity?.finish()
             } else {
                 // 로그아웃 실패 처리 (원하는 대로 처리 가능)
-                Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.logout_failed), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -319,13 +410,13 @@ class SettingFragment : Fragment() {
 
     private fun showDeleteAccountConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Confirm Account Deletion")
-            .setMessage("Are you sure you want to delete your account? This action cannot be undone and you will lose all your pins, stories, and other data.")
-            .setPositiveButton("Delete") { dialog, _ ->
+            .setTitle(getString(R.string.confirm_delete_account))
+            .setMessage(getString(R.string.delete_account_message))
+            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
                 deleteUserAccount()
                 dialog.dismiss()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
@@ -339,17 +430,19 @@ class SettingFragment : Fragment() {
                 if (response.isSuccessful) {
                     if (response.code() == 204) {
                         // 204 응답일 경우 로그인 화면으로 이동
-                        Toast.makeText(requireContext(), "Account Deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.account_deleted), Toast.LENGTH_SHORT).show()
                         logout()
                         // 필요시 사용자 데이터 정리 (아직 안짜짐)
-                        val intent = Intent(requireContext(), LoginActivity::class.java)
+                        val intent = Intent(requireContext(), LoginActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
                         startActivity(intent)
                         activity?.finish()  // 현재 액티비티 종료
                     } else {
-                        Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.delete_account_failed), Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Failed to Delete Account", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.delete_account_failed), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: HttpException) {
                 Toast.makeText(requireContext(), "Error: ${e.message()}", Toast.LENGTH_SHORT).show()

@@ -200,7 +200,18 @@ class LoginActivity : BaseActivity() {
                                 saveTokens(loginResponse.access_token, loginResponse.refresh_token)
                                 RetrofitInstance.setTokens(accessToken, refreshToken)
 
-                                checkUserSettings(loginResponse.access_token)
+                                if (checkUserSettingsVisited()) {
+                                    // 방문한 적이 있으면 MainActivity로 이동
+                                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    // 방문한 적이 없으면 UserSettingsActivity로 이동
+                                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java)
+                                    startActivity(intent)
+                                    setUserSettingsVisited()  // 방문 기록 저장
+                                }
+                                finish()
+
                             } else {
                                 Log.e("AccessTokenError", "Access Token is null")
                             }
@@ -216,6 +227,16 @@ class LoginActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun checkUserSettingsVisited(): Boolean {
+        val preferences = getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
+        return preferences.getBoolean("USER_SETTINGS_VISITED", false)
+    }
+
+    private fun setUserSettingsVisited() {
+        val preferences = getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
+        preferences.edit().putBoolean("USER_SETTINGS_VISITED", true).apply()
     }
 
 
@@ -250,29 +271,6 @@ class LoginActivity : BaseActivity() {
             error is ClientError && error.reason == ClientErrorCause.NotSupported ->
                 Toast.makeText(this, "카카오톡이 설치되어 있지 않습니다", Toast.LENGTH_SHORT).show()
             else -> Toast.makeText(this, "카카오 로그인 실패: ${error.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun checkUserSettings(accessToken: String?) {
-        if (accessToken == null) {
-            Log.e("CheckUserSettingsError", "Access Token is null")
-            return
-        }
-        val sharedPreferences = getSharedPreferences("UserSettings", MODE_PRIVATE)
-        val isSettingsCompleted = sharedPreferences.getBoolean("isSettingsCompleted", false)
-
-        if (isSettingsCompleted) {
-            // 설정이 완료된 경우 MainActivity로 이동
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            // 설정이 완료되지 않은 경우 UserSettingsActivity로 이동
-            val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java).apply {
-                putExtra("ACCESS_TOKEN", accessToken)
-            }
-            startActivity(intent)
-            finish()
         }
     }
 }
