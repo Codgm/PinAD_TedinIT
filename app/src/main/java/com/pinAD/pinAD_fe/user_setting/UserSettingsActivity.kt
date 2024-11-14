@@ -488,12 +488,6 @@ class UserSettingsActivity : AppCompatActivity() {
 //                }
             }
         }
-        if (viewFlipper.displayedChild < viewFlipper.childCount - 1) {
-            viewFlipper.showNext()
-            updateButtonVisibility()
-        } else {
-            saveUserSettings()
-        }
         Log.d("UserResponsesData", "Current userResponses: $userResponses")
     }
 

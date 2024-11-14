@@ -615,7 +615,7 @@ class ProfileFragment : Fragment() {
         }
 
         AlertDialog.Builder(requireContext())
-            .setTitle("${field.capitalize()} 수정")
+            .setTitle("닉네임 수정")
             .setView(input)
             .setPositiveButton("저장") { _, _ ->
                 val newValue = input.text.toString()
