@@ -558,7 +558,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                             val borderColor = when(pin.pin_type) {
                                 1 -> {Color.parseColor("#F44336")}
                                 2 -> {Color.parseColor("#9C27B0")}
-                                else -> {Color.parseColor("#C8E6C9")}
+                                else -> {Color.parseColor("#388E3C")}
                             }
 
                             // 마커 생성
@@ -676,7 +676,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                             val borderColor = when(pinType) {
                                 1 -> {Color.parseColor("#F44336")}
                                 2 -> {Color.parseColor("#9C27B0")}
-                                else -> {Color.parseColor("#C8E6C9")}
+                                else -> {Color.parseColor("#388E3C")}
                             }
 
                             // 마커 생성

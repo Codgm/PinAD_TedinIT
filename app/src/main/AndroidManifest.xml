@@ -71,7 +71,7 @@
             android:resource="@xml/shortcuts" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC2Gbij80UQ2cMdj3UkNNn9tNJkAXTMQlI" />
+            android:value="AIzaSyDWfZeJPlQQk8pWmzoabLGgcpE20k3bHKw" />
 
         <activity
             android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"

@@ -166,4 +166,6 @@
     <string name="check_password">비밀번호 확인</string>
     <string name="Sign_up">가입하기</string>
     <string name="enter_new_interests">관심사를 쉼표(,)로 구분하여 입력해주세요</string>
+    <string name="verify">Verify</string>
+    <string name="enter_verification_token">Enter verification token</string>
 </resources>

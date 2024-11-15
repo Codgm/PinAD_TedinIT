@@ -13,7 +13,6 @@
         android:padding="10dp"
         android:background="@android:color/white"
         android:drawableLeft="@android:drawable/ic_menu_search"
-        android:layout_margin="10dp"
         android:elevation="4dp"
         android:imeOptions="actionSearch"
         android:inputType="text"

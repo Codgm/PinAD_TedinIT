@@ -268,4 +268,6 @@
     <string name="check_password">Check the password</string>
     <string name="Sign_up">Sign Up</string>
     <string name="enter_new_interests">Please enter your interests separated by commas(,)</string>
+    <string name="verify">Verify</string>
+    <string name="enter_verification_token">Enter verification token</string>
 </resources>

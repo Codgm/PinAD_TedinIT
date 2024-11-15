@@ -22,6 +22,19 @@ class NotificationDialogFragment : DialogFragment() {
     private lateinit var adapter: NotificationAdapter
     private var isBusinessUser: Boolean = false
 
+    companion object {
+        private const val ARG_IS_BUSINESS_USER = "business_user"
+
+        fun newInstance(isBusinessUser: Boolean): NotificationDialogFragment {
+            val fragment = NotificationDialogFragment()
+            val args = Bundle().apply {
+                putBoolean(ARG_IS_BUSINESS_USER, isBusinessUser)
+            }
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,10 +46,17 @@ class NotificationDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        isBusinessUser = arguments?.getBoolean("business_user") ?: true
-        (targetFragment as? SettingFragment)?.updateBusinessStatus(isBusinessUser)
+        isBusinessUser = arguments?.getBoolean(ARG_IS_BUSINESS_USER, false) ?: false
+        Log.d("NotificationDialog", "Received isBusinessUser: $isBusinessUser")
+
+        setupRecyclerView(view)
+        loadNotifications()
+    }
+
+    private fun setupRecyclerView(view: View) {
         recyclerView = view.findViewById(R.id.recyclerViewNotifications)
         recyclerView.layoutManager = LinearLayoutManager(context)
+
         adapter = NotificationAdapter(
             onAcceptClick = { notificationId ->
                 if (isBusinessUser) {
@@ -45,75 +65,99 @@ class NotificationDialogFragment : DialogFragment() {
                     handleCouponResponse(notificationId, "accept")
                 }
             },
-            onRejectClick = { notificationId -> handleCouponResponse(notificationId, "reject") }
+            onRejectClick = { notificationId ->
+                if (isBusinessUser) {
+                    handleCouponApproval(notificationId, "reject")
+                } else {
+                    handleCouponResponse(notificationId, "reject")
+                }
+            }
         )
-        recyclerView.adapter = adapter
 
-        loadNotifications()
+        recyclerView.adapter = adapter
     }
 
+
     private fun loadNotifications() {
-        lifecycleScope.launch {
+        Log.d("NotificationDialog", "Loading notifications. isBusinessUser: $isBusinessUser")
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = if (isBusinessUser) {
+                    Log.d("NotificationDialog", "Requesting business notifications")
                     RetrofitInstance.api.getBusinessUserNotifications()
                 } else {
+                    Log.d("NotificationDialog", "Requesting user notifications")
                     RetrofitInstance.api.getUserNotifications()
                 }
-                Log.d("Notification", "Response: ${response.body()}")
+
+                Log.d("NotificationDialog", "Response received: ${response.code()}")
                 if (response.isSuccessful) {
                     val notifications = response.body()
                     if (notifications != null) {
                         adapter.submitList(notifications, isBusinessUser)
+                        Log.d("NotificationDialog", "Notifications loaded successfully")
                     } else {
-                        Toast.makeText(context, getString(R.string.empty_notification_list), Toast.LENGTH_SHORT).show()
+                        showToast(getString(R.string.empty_notification_list))
                     }
                 } else {
-                    Log.e("Notification", "Error: ${response.message()} Code: ${response.code()}")
-                    Toast.makeText(context, getString(R.string.notification_load_failure), Toast.LENGTH_SHORT).show()
+                    Log.e("NotificationDialog", "Error: ${response.message()} Code: ${response.code()}")
+                    showToast(getString(R.string.notification_load_failure))
                 }
             } catch (e: Exception) {
-                Log.e("Notification", "Network or parsing error: ${e.message}")
-                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+                Log.e("NotificationDialog", "Network or parsing error", e)
+                showToast(getString(R.string.network_error))
             }
         }
     }
 
     private fun handleCouponApproval(requestId: String, action: String) {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val couponResponse = NotificationResBusiness(requestId, action)
                 val response = RetrofitInstance.api.approveCouponRequest(couponResponse)
+
                 if (response.isSuccessful) {
-                    Toast.makeText(context,  getString(R.string.coupon_approve_success), Toast.LENGTH_SHORT).show()
-                    loadNotifications() // 알림 목록 새로고침
+                    showToast(
+                        if (action == "accept") getString(R.string.coupon_approve_success)
+                        else getString(R.string.coupon_approve_failure)
+                    )
+                    loadNotifications()
                 } else {
-                    Toast.makeText(context, getString(R.string.coupon_approve_failure), Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.coupon_approve_failure))
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+                Log.e("NotificationDialog", "Error in handleCouponApproval", e)
+                showToast(getString(R.string.network_error))
             }
         }
     }
 
     private fun handleCouponResponse(notificationId: String, action: String) {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val couponResponse = NotificationResponse(notificationId, action)
                 val response = RetrofitInstance.api.respondToCoupon(couponResponse)
+
                 if (response.isSuccessful) {
-                    Toast.makeText(context,
+                    showToast(
                         if (action == "accept") getString(R.string.coupon_response_success_accept)
-                        else getString(R.string.coupon_response_success_reject),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    loadNotifications() // 알림 목록 새로고침
+                        else getString(R.string.coupon_response_success_reject)
+                    )
+                    loadNotifications()
                 } else {
-                    Toast.makeText(context, getString(R.string.coupon_response_failure), Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.coupon_response_failure))
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+                Log.e("NotificationDialog", "Error in handleCouponResponse", e)
+                showToast(getString(R.string.network_error))
             }
         }
     }
+
+    private fun showToast(message: String) {
+        context?.let {
+            Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 }
+

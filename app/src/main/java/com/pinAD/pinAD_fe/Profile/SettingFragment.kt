@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import com.pinAD.pinAD_fe.R
@@ -51,19 +52,7 @@ class SettingFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var tvLanguage: TextView
     private var isBusinessUser: Boolean = false
-    private var listener: OnBusinessStatusChangedListener? = null
-
-    interface OnBusinessStatusChangedListener {
-        fun onBusinessStatusChanged(isBusinessUser: Boolean)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Activity가 이 콜백을 구현했는지 확인
-        if (context is OnBusinessStatusChangedListener) {
-            listener = context
-        }
-    }
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,6 +85,8 @@ class SettingFragment : Fragment() {
         sharedPreferences = requireActivity().getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE)
         Log.d("LanguageSettings", "$sharedPreferences")
         tvLanguage = view.findViewById(R.id.tvLanguage)
+
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         loadLanguagePreference()
 
@@ -205,8 +196,9 @@ class SettingFragment : Fragment() {
                             // 서버에서 비즈니스 계정으로 전환 가능한 상태로 응답한 경우
                             Toast.makeText(context, getString(R.string.business_account_success), Toast.LENGTH_SHORT).show()
                             isBusinessUser = true
+                            sharedViewModel.setBusinessUser(isBusinessUser)
                             Log.d("isBussinessUser", "$isBusinessUser")
-                            showNotificationDialog() // 다이얼로그 표시
+
                         } else {
                             // 비즈니스 계정으로 전환 불가 응답인 경우
                             Toast.makeText(
@@ -221,7 +213,7 @@ class SettingFragment : Fragment() {
                             // 계속 비즈니스 계정 유지 (true인 경우)
                             Toast.makeText(context, getString(R.string.business_account_revert), Toast.LENGTH_SHORT).show()
                             isBusinessUser = false // 일반 계정으로 변경
-                            showNotificationDialog()
+                            sharedViewModel.setBusinessUser(isBusinessUser)
                             Log.d("isBussinessUser", "$isBusinessUser")
                         } else {
                             // 서버에서 여전히 비즈니스 계정으로 반환한 경우 (false)
@@ -235,26 +227,6 @@ class SettingFragment : Fragment() {
                 Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-
-    private fun showNotificationDialog() {
-        NotificationDialogFragment().apply {
-            arguments = Bundle().apply {
-                putBoolean("business_user", isBusinessUser)
-            }
-        }
-    }
-
-    fun updateBusinessStatus(isBusinessUser: Boolean) {
-        this.isBusinessUser = isBusinessUser
-        Log.d("isBussinessUser", "$isBusinessUser")
-        // UI 업데이트 등 추가 작업 가능
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
 

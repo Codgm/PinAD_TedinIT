@@ -180,6 +180,7 @@ class PinDetailBottomSheet : BottomSheetDialogFragment() {
             }
             2 -> { // 일반 핀
                 // 모든 쿠폰 관련 UI는 이미 GONE으로 설정됨
+                Chronometer.GONE
             }
         }
 

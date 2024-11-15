@@ -17,6 +17,7 @@ import com.pinAD.pinAD_fe.Data.user_data.ProfileData
 import com.pinAD.pinAD_fe.Data.purchase.PurchaseInfo
 import com.pinAD.pinAD_fe.Data.login_register.RegisterAccount
 import com.pinAD.pinAD_fe.Data.login_register.RegisteredAccount
+import com.pinAD.pinAD_fe.Data.login_register.VerificationResponse
 import com.pinAD.pinAD_fe.Data.notification.BaseNotification
 import com.pinAD.pinAD_fe.Data.notification.BusinessNotification
 import com.pinAD.pinAD_fe.Data.notification.CouponApprovalResponse
@@ -49,6 +50,9 @@ interface ApiService {
     // 예: 사용자 등록 API
     @POST("users/register/")
     fun registerUser(@Body RegisterAccount: RegisterAccount): Call<Void>
+
+    @GET("users/verify-email/{token}/")
+    fun verifyEmailToken(@Path("token") token: String): Call<VerificationResponse>
 
     @POST("users/login/")
     suspend fun loginown(@Body RegisteredAccount: RegisteredAccount): Response<LoginResponse>

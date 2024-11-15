@@ -22,6 +22,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -69,6 +71,7 @@ class ProfileFragment : Fragment() {
     private lateinit var chipGroup: ChipGroup
     private var currentUserData: ProfileData? = null
     private var selectedImagePath: String? = null
+    private lateinit var sharedViewModel: SharedViewModel
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -90,6 +93,8 @@ class ProfileFragment : Fragment() {
         inviteButton = view.findViewById(R.id.btnInviteFriends)
         chipGroup = view.findViewById(R.id.chipGroupInterests)
         bellIcon = view.findViewById(R.id.imgBellIcon)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
 
         inviteButton.setOnClickListener {
             openFriendsInviteFragment()
@@ -105,7 +110,8 @@ class ProfileFragment : Fragment() {
         }
 
         bellIcon.setOnClickListener {
-            NotificationDialogFragment().show(parentFragmentManager, "NotificationDialog")
+            val isBusinessUser = sharedViewModel.isBusinessUser.value ?: false
+            showNotificationDialog(isBusinessUser)
         }
 
         btnCouponBox.setOnClickListener {
@@ -137,6 +143,11 @@ class ProfileFragment : Fragment() {
         setupBillingClient()
 
         return view
+    }
+
+    private fun showNotificationDialog(isBusinessUser: Boolean) {
+        val dialog = NotificationDialogFragment.newInstance(isBusinessUser)
+        dialog.show(parentFragmentManager, "NotificationDialog")
     }
 
     private fun openFriendsInviteFragment() {

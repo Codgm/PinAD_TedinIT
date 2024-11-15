@@ -262,15 +262,15 @@
                     android:inputType="textMultiLine"
                     android:textColor="@android:color/black"
                     android:textColorHint="@android:color/darker_gray"
-                    android:textSize="24sp"
+                    android:textSize="15sp"
                     android:maxLines="3"
                     android:padding="8dp"
                     android:background="@android:color/transparent"/>
 
                 <ImageButton
                     android:id="@+id/btnSendComment"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@android:drawable/ic_menu_send" />
             </LinearLayout>
