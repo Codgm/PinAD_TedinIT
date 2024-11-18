@@ -8,5 +8,6 @@ data class ProfileData(
     val nickname: String?,
     val tags: List<String>?,
     val points: Int?,
-    val profile_picture: String?
+    val profile_picture: String?,
+    val radius: Int?
 ) : Parcelable

@@ -270,4 +270,11 @@
     <string name="enter_new_interests">Please enter your interests separated by commas(,)</string>
     <string name="verify">Verify</string>
     <string name="enter_verification_token">Enter verification token</string>
+    <string name="radius_setting">Radius Setting</string>
+    <string name="radius_value_format_m">%d meters</string>
+    <string name="radius_value_format_km">%.1f kilometers</string>
+    <string name="radius_update_success">Radius updated successfully</string>
+    <string name="radius_update_failed">Failed to update radius</string>
+    <string name="confirm_save_radius">Confirm Save Radius</string>
+    <string name="save">Save</string>
 </resources>

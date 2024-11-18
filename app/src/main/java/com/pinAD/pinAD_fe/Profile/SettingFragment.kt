@@ -1,12 +1,15 @@
 package com.pinAD.pinAD_fe.Profile
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import com.pinAD.pinAD_fe.Login_Sign.GlobalApplication.GlobalApplication
 import com.pinAD.pinAD_fe.MainActivity
 import com.pinAD.pinAD_fe.Profile.notification.NotificationDialogFragment
@@ -31,6 +35,8 @@ import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.util.Locale
 
@@ -53,6 +59,9 @@ class SettingFragment : Fragment() {
     private lateinit var tvLanguage: TextView
     private var isBusinessUser: Boolean = false
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var seekBarRadius: SeekBar
+    private lateinit var tvRadiusValue: TextView
+    private var currentRadius: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +88,11 @@ class SettingFragment : Fragment() {
         btnLogout = view.findViewById(R.id.btnLogout)
         btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount)
         btnBussinessAccount = view.findViewById(R.id.btnSwitchToBusinessAccount)
+        seekBarRadius = view.findViewById(R.id.seekBarRadius)
+        tvRadiusValue = view.findViewById(R.id.tvRadiusValue)
 
+        val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        switchNotification.isChecked = notificationManager.areNotificationsEnabled()
 
         // SharedPreferences 초기화
         sharedPreferences = requireActivity().getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE)
@@ -89,6 +102,15 @@ class SettingFragment : Fragment() {
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         loadLanguagePreference()
+
+        lifecycleScope.launch {
+            UserDataManager.getUserData(true)?.let { profileData ->
+                // 서버에서 받은 미터 단위를 SeekBar 단위로 변환
+                currentRadius = convertMetersToProgress(profileData.radius ?: 100)
+                seekBarRadius.progress = currentRadius
+                updateRadiusText(currentRadius)
+            }
+        }
 
         // 언어 변경 클릭 리스너
         tvLanguage.setOnClickListener {
@@ -103,14 +125,42 @@ class SettingFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        // 알림 설정 스위치 리스너
         switchNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked != notificationManager.areNotificationsEnabled()) {
+                // 시스템 알림 설정 화면으로 이동
+                val intent = Intent().apply {
+                    action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                    putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                }
+                startActivity(intent)
+            }
+        }
+
+        // 알림 설정 스위치 리스너
+//        switchNotification.setOnCheckedChangeListener { _, isChecked ->
 //            if (isChecked) {
 //                enablePushNotifications()
 //            } else {
 //                disablePushNotifications()
 //            }
-        }
+//        }
+
+        seekBarRadius.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // SeekBar의 progress가 변경될 때마다 반경 텍스트 업데이트
+                updateRadiusText(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // SeekBar를 조작하기 시작할 때 호출
+                currentRadius = seekBar?.progress ?: 0  // 현재 반경 값을 저장
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // SeekBar를 멈출 때 변경된 값에 대해 확인 메시지 표시
+                showSaveCancelDialog(seekBar?.progress ?: 0)
+            }
+        })
 
         btnBussinessAccount.setOnClickListener {
             checkBusinessAccountStatus()
@@ -181,6 +231,91 @@ class SettingFragment : Fragment() {
             .putString(GlobalApplication.LANGUAGE_KEY, language)
             .apply()
     }
+
+    private fun convertProgressToMeters(progress: Int): Int {
+        return progress * 100  // 100m 단위로 변환
+    }
+
+    // 미터 단위를 SeekBar의 progress 값으로 변환
+    private fun convertMetersToProgress(meters: Int): Int {
+        return (meters / 100).coerceIn(1, 20)  // 1~20 범위로 제한
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    private fun showSaveCancelDialog(newProgress: Int) {
+        val meters = convertProgressToMeters(newProgress)  // 변경된 progress 값을 미터로 변환
+        val radiusText = if (meters >= 1000) {
+            getString(R.string.radius_value_format_km, meters / 1000.0)
+        } else {
+            getString(R.string.radius_value_format_m, meters)
+        }
+
+        // 다이얼로그 표시
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.radius_setting))  // 제목
+            .setMessage(getString(R.string.confirm_save_radius, radiusText))  // 메시지
+            .setPositiveButton(getString(R.string.save)) { _, _ ->
+                // 저장 버튼 클릭 시 서버에 반경 업데이트 요청
+                updateRadius(newProgress)
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                // 취소 버튼 클릭 시 SeekBar progress 되돌리기
+                seekBarRadius.progress = currentRadius
+            }
+            .show()
+    }
+
+    private fun updateRadiusText(progress: Int) {
+        val meters = convertProgressToMeters(progress)
+        val text = if (meters >= 1000) {
+            getString(R.string.radius_value_format_km, meters / 1000.0)
+        } else {
+            getString(R.string.radius_value_format_m, meters)
+        }
+        tvRadiusValue.text = text
+    }
+
+    fun createUserDataRequestBody(notification_radius: Int): RequestBody {
+        val userDataMap = mapOf("notification_radius" to notification_radius)  // Map으로 감싸기
+        val json = Gson().toJson(userDataMap)  // Map을 JSON으로 변환
+        return RequestBody.create("application/json".toMediaTypeOrNull(), json)  // RequestBody로 변환
+    }
+
+    private fun updateRadius(progress: Int) {
+        val meters = convertProgressToMeters(progress)
+        val userData = createUserDataRequestBody(meters)
+        val token = RetrofitInstance.getAccessToken()
+        Log.d("AccessToken", "Token: $token")
+
+        lifecycleScope.launch {
+            try {
+                if (token != null) {
+                    val response = RetrofitInstance.api.updateRadius("Bearer $token", userData)
+
+                    if (response.isSuccessful) {
+                        // 성공적으로 업데이트된 경우
+                        Toast.makeText(context, getString(R.string.radius_update_success), Toast.LENGTH_SHORT).show()
+                        // UserDataManager의 캐시된 데이터 업데이트
+                        UserDataManager.getUserData(true)
+                        currentRadius = progress  // 새로운 반경 값 저장
+                    } else {
+                        // 업데이트 실패
+                        Toast.makeText(context, getString(R.string.radius_update_failed), Toast.LENGTH_SHORT).show()
+                        // 이전 값으로 되돌리기
+                        seekBarRadius.progress = currentRadius
+                    }
+                } else {
+                    Toast.makeText(context, "token error", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                // 네트워크 오류 등 예외 처리
+                Log.e("UpdateRadiusError", "Error: ${e.message}")
+                Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+                seekBarRadius.progress = currentRadius
+            }
+        }
+    }
+
 
     private fun checkBusinessAccountStatus() {
         Log.d("isBussinessUser", "$isBusinessUser")

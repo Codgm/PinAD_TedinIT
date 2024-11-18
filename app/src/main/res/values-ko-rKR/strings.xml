@@ -253,4 +253,11 @@
     <string name="enter_new_interests">관심사를 쉼표(,)로 구분하여 입력해주세요</string>
     <string name="verify">인증</string>
     <string name="enter_verification_token">인증 토큰 입력</string>
+    <string name="radius_setting">알림 반경 설정</string>
+    <string name="radius_value_format_m">%d미터</string>
+    <string name="radius_value_format_km">%.1f킬로미터</string>
+    <string name="radius_update_success">반경이 업데이트되었습니다</string>
+    <string name="radius_update_failed">반경 업데이트에 실패했습니다</string>
+    <string name="confirm_save_radius">저장 반경 확인</string>
+    <string name="save">저장</string>
 </resources>

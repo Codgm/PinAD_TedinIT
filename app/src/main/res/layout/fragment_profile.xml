@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="false"
-    android:background="?attr/colorBackground"
+    android:background="@color/tag_background"
     style="@style/Base.Theme.pinAD_fe">
 
     <LinearLayout
@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/imgBellIcon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@android:drawable/ic_popup_reminder"
                 android:contentDescription="Bell Icon"
                 android:layout_gravity="start"
@@ -85,7 +85,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/PlanSelect"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/surfaceDark"/>
 
             <Button
                 android:id="@+id/btnInviteFriends"
@@ -100,7 +101,8 @@
                 android:id="@+id/btnCouponBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/CouponBox" />
+                android:text="@string/CouponBox"
+                android:backgroundTint="@color/surfaceDark"/>
         </LinearLayout>
 
         <!-- 관심사 표시 -->
@@ -164,7 +166,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Charge"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/surfaceDark"/>
         </LinearLayout>
 
         <Button
@@ -172,7 +175,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Setting"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/business_price"/>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

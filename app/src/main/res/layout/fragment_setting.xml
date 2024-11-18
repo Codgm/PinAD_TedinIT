@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="?attr/colorBackground"
+    android:background="@color/tag_background"
     style="@style/Base.Theme.pinAD_fe">
 
     <!-- 뒤로가기 버튼 -->
@@ -42,6 +42,7 @@
                 android:layout_weight="1"
                 android:text="@string/NotificationSetting"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"/>
 
             <androidx.appcompat.widget.SwitchCompat
@@ -55,7 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp"
+            android:padding="12dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -74,6 +76,48 @@
                 android:padding="8dp"
                 android:textSize="16sp" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/radiusSettingLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvRadiusLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:text="@string/radius_setting"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tvRadiusValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="100m"/>
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBarRadius"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="20"
+                android:min="1"
+                android:progress="1"/>
         </LinearLayout>
 
         <!-- 테마 설정 -->

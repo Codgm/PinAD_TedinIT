@@ -19,7 +19,7 @@
     <color name="colorOnSurfaceLight">#04141d</color> <!-- 어두운 네이비 텍스트 -->
     <color name="errorLight">#eb445b</color> <!-- 밝은 레드 에러 색상 -->
     <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
-    <color name="tag_background">#e0e0e0</color> <!-- 밝은 그레이 태그 배경 -->
+    <color name="tag_background">#EDEDED</color> <!-- 밝은 그레이 태그 배경 -->
     <color name="tag_selected_background">#F0F0F0</color> <!-- 매우 연한 그레이 태그 선택 배경 -->
     <color name="tag_text_color">#353638</color> <!-- 진한 그레이 태그 텍스트 -->
     <color name="tag_selected_text_color">#131b23</color> <!-- 블랙 태그 선택 텍스트 -->

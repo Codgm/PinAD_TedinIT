@@ -445,10 +445,14 @@ class UserSettingsActivity : AppCompatActivity() {
             10 -> {
                 // 알림 반경 및 제한 저장
                 val notificationRadiusId = findViewById<RadioGroup>(R.id.radioGroupNotificationRadius).checkedRadioButtonId
-                val notificationRadius = if (notificationRadiusId != -1) {
-                    findViewById<RadioButton>(notificationRadiusId).text.toString()
-                } else {
-                    null
+                val notificationRadius = when (notificationRadiusId) {
+                    R.id.radioButton100m -> 100
+                    R.id.radioButton200m -> 200
+                    R.id.radioButton500m -> 500
+                    R.id.radioButton1km -> 1000
+                    R.id.radioButton2km -> 2000
+                    R.id.radioButtonUnlimited -> 0
+                    else -> null
                 }
                 notificationRadius?.let {
                     userResponses["notificationRadius"] = it
@@ -701,7 +705,7 @@ class UserSettingsActivity : AppCompatActivity() {
             priority = userResponses["shoppingPriorities"] as? List<String>,
             hobby = userResponses["hobbiesInterests"] as? List<String>,
             shopping_time = userResponses["preferredShoppingTime"] as? String,
-            notification_radius = userResponses["notificationRadius"] as? Int,
+            notification_radius = (userResponses["notificationRadius"] as? Number)?.toInt(),
             notification_number = userResponses["maxPushNotifications"] as? Int,
 //            couponGift = userResponses["couponGift"] as? String,
 //            productImage = userResponses["productImage"] as? String,

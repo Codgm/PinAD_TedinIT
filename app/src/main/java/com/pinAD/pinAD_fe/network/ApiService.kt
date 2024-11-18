@@ -1,5 +1,6 @@
 package com.pinAD.pinAD_fe.network
 
+import com.google.gson.JsonObject
 import com.pinAD.pinAD_fe.Data.business.BusinessCreateRequest
 import com.pinAD.pinAD_fe.Data.notification.Notification
 import com.pinAD.pinAD_fe.Data.coupon.CouponResponse
@@ -73,10 +74,21 @@ interface ApiService {
         @Part profile_picture: MultipartBody.Part?
     ): Response<ProfileData>
 
+    @Multipart
+    @PUT("users/")
+    suspend fun updateRadius (
+        @Header("Authorization") token: String,
+        @Part("user_data") userData: RequestBody,
+    ): Response<ProfileData>
 
     @GET("users/")
     suspend fun getUserProfile(
     ): Response<ProfileData>
+
+    @GET("users/")
+    suspend fun checkUserProfile(
+        @Header("Authorization") token: String,
+    ): Response<JsonObject>
 
     @POST("users/update-location/")
     suspend fun updateUserLocation(

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/colorChipBackground">
+    android:background="@color/backgroundLight">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Requested_CouponBox"
-            android:layout_marginEnd="16dp" /> <!-- 오른쪽 여백 추가 -->
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/colorChipBackground"/> <!-- 오른쪽 여백 추가 -->
     </LinearLayout>
 
     <EditText
@@ -45,7 +46,8 @@
         android:id="@+id/buttonVerifyCoupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Verifying_Coupons" />
+        android:text="@string/Verifying_Coupons"
+        android:backgroundTint="@color/colorChipBackground"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCoupons"

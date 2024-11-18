@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.JsonObject
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.navercorp.nid.oauth.view.NidOAuthLoginButton
@@ -134,9 +135,7 @@ class LoginActivity : BaseActivity() {
                                     saveTokens(loginResponse?.access_token, loginResponse?.refresh_token)
                                     RetrofitInstance.setTokens(loginResponse?.access_token, loginResponse?.refresh_token)
                                     Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java)
-                                    startActivity(intent)
-                                    finish()
+                                    navigateToNextScreen(loginResponse?.access_token)
                                 }
                                 400 -> {
                                     // 로그인 실패
@@ -199,19 +198,7 @@ class LoginActivity : BaseActivity() {
                                 // access_token을 이용한 추가 작업 처리
                                 saveTokens(loginResponse.access_token, loginResponse.refresh_token)
                                 RetrofitInstance.setTokens(accessToken, refreshToken)
-
-                                if (checkUserSettingsVisited()) {
-                                    // 방문한 적이 있으면 MainActivity로 이동
-                                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                    startActivity(intent)
-                                } else {
-                                    // 방문한 적이 없으면 UserSettingsActivity로 이동
-                                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java)
-                                    startActivity(intent)
-                                    setUserSettingsVisited()  // 방문 기록 저장
-                                }
-                                finish()
-
+                                navigateToNextScreen(loginResponse?.access_token)
                             } else {
                                 Log.e("AccessTokenError", "Access Token is null")
                             }
@@ -229,48 +216,49 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun checkUserSettingsVisited(): Boolean {
-        val preferences = getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
-        return preferences.getBoolean("USER_SETTINGS_VISITED", false)
+    private suspend fun checkUserProfile(accessToken: String?): Boolean {
+        return try {
+            val response = accessToken?.let { RetrofitInstance.api.checkUserProfile(it) }
+            when (response?.code()) {
+                200 -> {
+                    val body = response.body()
+                    if (body is JsonObject) {
+                        when {
+                            body.has("message") && body["message"].asString == "유저 정보가 필요합니다." -> false
+                            body.has("nickname") -> true
+                            else -> false
+                        }
+                    } else {
+                        false
+                    }
+                }
+                401, 403 -> false
+                else -> {
+                    Log.e("ProfileCheck", "Unexpected response")
+                    throw Exception("네트워크 에러")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ProfileCheck", "Error checking user profile: ${e.message}")
+            false
+        }
     }
 
-    private fun setUserSettingsVisited() {
-        val preferences = getSharedPreferences("APP_PREFERENCES", MODE_PRIVATE)
-        preferences.edit().putBoolean("USER_SETTINGS_VISITED", true).apply()
-    }
-
-
-
-//    private fun signInWithKakao() {
-//        // 카카오톡으로 로그인 가능한지 확인하고, 가능한 경우 카카오톡으로 로그인 시도
-//        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-//            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-//                if (error != null) {
-//                    handleKakaoError(error)
-//                } else if (token != null) {
-//                    fetchKakaoUserInfo(token.accessToken)
-//                }
-//            }
-//        } else {
-//            // 카카오톡이 없으면 카카오 계정으로 로그인
-//            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
-//                if (error != null) {
-//                    handleKakaoError(error)
-//                } else if (token != null) {
-//                    fetchKakaoUserInfo(token.accessToken)
-//                }
-//            }
-//        }
-//    }
-
-    // 카카오 로그인 에러 처리 함수
-    private fun handleKakaoError(error: Throwable) {
-        when {
-            error is ClientError && error.reason == ClientErrorCause.Cancelled ->
-                Toast.makeText(this, "카카오 로그인을 취소했습니다", Toast.LENGTH_SHORT).show()
-            error is ClientError && error.reason == ClientErrorCause.NotSupported ->
-                Toast.makeText(this, "카카오톡이 설치되어 있지 않습니다", Toast.LENGTH_SHORT).show()
-            else -> Toast.makeText(this, "카카오 로그인 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+    private fun navigateToNextScreen(accessToken: String?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val hasProfile = checkUserProfile(accessToken)
+            withContext(Dispatchers.Main) {
+                if (hasProfile) {
+                    // 프로필이 설정되어 있으면 MainActivity로 이동
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    // 프로필 설정이 필요하면 UserSettingsActivity로 이동
+                    val intent = Intent(this@LoginActivity, UserSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+                finish()
+            }
         }
     }
 }

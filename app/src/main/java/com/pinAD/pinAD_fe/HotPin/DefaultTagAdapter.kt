@@ -7,12 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.pinAD.pinAD_fe.R
 
 class DefaultTagAdapter(private val onTagSelected: (String) -> Unit) :
     ListAdapter<String, DefaultTagAdapter.TagViewHolder>(TagDiffCallback()) {
 
-    private var selectedPosition = RecyclerView.NO_POSITION
+    private var selectedPosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -41,11 +42,19 @@ class DefaultTagAdapter(private val onTagSelected: (String) -> Unit) :
     }
 
     class TagViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tagTextView: TextView = itemView.findViewById(R.id.tagTextView)
+        private val chipTag: Chip = itemView.findViewById(R.id.recyclerViewTags)
 
         fun bind(tag: String, isSelected: Boolean) {
-            tagTextView.text = tag
-            itemView.isSelected = isSelected
+            chipTag.text = tag
+            chipTag.isChecked = isSelected
+
+            if (isSelected) {
+                chipTag.setChipBackgroundColorResource(R.color.colorSecondary)  // 선택된 색상
+                chipTag.setTextColor(itemView.context.getColor(R.color.white))
+            } else {
+                chipTag.setChipBackgroundColorResource(R.color.surfaceLight)  // 기본 색상
+                chipTag.setTextColor(itemView.context.getColor(R.color.black))
+            }
         }
     }
 

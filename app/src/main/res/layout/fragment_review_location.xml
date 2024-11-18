@@ -51,7 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/Search" />
+                android:text="@string/Search"
+                android:backgroundTint="@color/surfaceDark"/>
         </LinearLayout>
 
         <com.google.android.gms.maps.MapView
@@ -104,20 +105,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/ShotFormVideo" />
+                android:text="@string/ShotFormVideo"
+                android:backgroundTint="@color/surfaceDark"/>
 
             <Button
                 android:id="@+id/attachReceiptButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/Recipt" />
+                android:text="@string/Recipt"
+                android:backgroundTint="@color/surfaceDark"/>
 
             <Button
                 android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/End" />
+                android:text="@string/End"
+                android:backgroundTint="@color/business_price"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -168,4 +168,7 @@
     <string name="enter_new_interests">관심사를 쉼표(,)로 구분하여 입력해주세요</string>
     <string name="verify">Verify</string>
     <string name="enter_verification_token">Enter verification token</string>
+    <string name="radius_setting">radius_setting</string>
+    <string name="confirm_save_radius">Confirm Save Radius</string>
+    <string name="save">Save</string>
 </resources>
