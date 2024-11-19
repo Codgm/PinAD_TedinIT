@@ -3,9 +3,11 @@ package com.pinAD.pinAD_fe.Search
 import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.pinAD.pinAD_fe.Data.pin.FltPinData
 import com.pinAD.pinAD_fe.network.RetrofitInstance
 import com.pinAD.pinAD_fe.Data.pin.Tag
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.pinAD.pinAD_fe.network.UserDataManager
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
@@ -55,18 +59,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private var isMapReady = false
     private lateinit var searchQuery: String
     private var isTagSearch: Boolean = false
-
-    val jsonString = """ [{"id":34,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"3% Discount","description":"Smart Phone","media":"http://7636-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-02-06-31-46-902.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"240\\\",\\\"field3\\\":\\\"3%\\\"}\"}","tags":[{"id":2,"name":"전자기기"},{"id":6,"name":"베스트셀러"}],"created_at":"2024-10-02T06:32:27.849653Z","updated_at":"2024-10-02T06:32:27.880935Z"}, {"id":35,"user":7,"location":"SRID=4326;POINT (-122.084 37.4219983)","title":"Discount Event","description":"SmartPhone","media":"http://7636-175-198-127-14.ngrok-free.app/media/pins_images/2024-10-03-06-19-40-857.jpg","is_ads":true,"info":"{\"range\":3,\"duration\":8,\"additionalInfo\":\"{\\\"field1\\\":\\\"Samsung\\\",\\\"field2\\\":\\\"250\\\",\\\"field3\\\":\\\"5%\\\"}\"}","tags":[{"id":2,"name":"전자기기"},{"id":6,"name":"베스트셀러"}],"created_at":"2024-10-03T06:20:21.709845Z","updated_at":"2024-10-03T06:20:21.768391Z"}]
-"""
-    private val tagdata = """
-        {"tags":[{"name": "전자기기", "post_count": 2},{"name": "전자귀기", "post_count": 0}]}""".trimIndent()
-
-    // TagsDeserializer를 사용하는 Gson 인스턴스
-    private val gsonForTags = GsonBuilder()
-        .setLenient()
-        .registerTypeAdapter(object : TypeToken<List<Tag>>() {}.type, TagsDeserializer())
-        .create()
-
+    private var currentPage = 1
+    private var isLoading = false
+    private var hasMoreData = true
 
 
     override fun onCreateView(
@@ -114,6 +109,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+        setupScrollListener()
+
         // 지도 프래그먼트 동적으로 추가
         val mapFragment = SupportMapFragment.newInstance()
         childFragmentManager.beginTransaction()
@@ -129,13 +126,57 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    private val estimatedItemHeight by lazy {
+        resources.getDimensionPixelSize(R.dimen.search_result_item_height) // dimens.xml에 정의 필요
+    }
+
+    private fun calculatePageSize(): Int {
+        val layoutManager = searchResultsRecyclerView.layoutManager as LinearLayoutManager
+        val viewportHeight = searchResultsRecyclerView.height
+        val rowsPerScreen = viewportHeight / estimatedItemHeight
+        return (rowsPerScreen + 1) // 화면에 보이는 행 수 + 1행
+    }
+
+    private fun loadMorePins() {
+        if (!isLoading && hasMoreData) {
+            currentPage++
+            searchPins(searchQuery, isTagSearch = isTagSearch, loadMore = true)
+        }
+    }
+
+    private fun setupScrollListener() {
+        searchResultsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                // 화면의 마지막 아이템에 도달하기 전에 다음 페이지 로드
+                if (!isLoading && hasMoreData) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 3
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        loadMorePins()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun resetPagination() {
+        currentPage = 1
+        hasMoreData = true
+        searchResults.clear()
+        pinAdapter.notifyDataSetChanged()
+    }
+
     // 지도 준비 완료 시 호출되는 콜백
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         isMapReady = true
-
-        // 지도 스타일 적용
-        setMapStyle(map!!)
 
         map?.setOnMarkerClickListener { marker ->
             val pinId = marker.tag as? Int
@@ -183,26 +224,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         map?.uiSettings?.isZoomGesturesEnabled = true // 제스처로 확대/축소 가능
 
         getCurrentLocation()
-    }
-
-    private fun setMapStyle(map: GoogleMap) {
-        try {
-            val mapStyleResId = if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-                R.raw.map_style_dark // 다크 테마일 때
-            } else {
-                0  // 라이트 테마일 때
-            }
-            val success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    requireContext(), mapStyleResId
-                )
-            )
-            if (!success) {
-                Log.e("MapStyle", "Style parsing failed.")
-            }
-        } catch (e: Resources.NotFoundException) {
-            Log.e("MapStyle", "Can't find style. Error: ", e)
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -276,163 +297,121 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     // 임의의 검색 결과 리스트를 반환하는 함수 (추후 데이터베이스와 연동 필요)
     @SuppressLint("NotifyDataSetChanged")
-    private fun searchPins(query: String, isTagSearch: Boolean = false) {
-        val userLatitude = userLocation?.latitude ?: 37.7749 // 사용자 위치의 위도
-        val userLongitude = userLocation?.longitude ?: -122.4194 // 사용자 위치의 경도
-        val searchRadius = 1 // 10km 반경
+    private fun searchPins(query: String, isTagSearch: Boolean = false, loadMore: Boolean = false) {
+        if (!loadMore) {
+            resetPagination()
+        }
+
+        isLoading = true
+        val userLatitude = userLocation?.latitude ?: 37.7749
+        val userLongitude = userLocation?.longitude ?: -122.4194
+        val searchRadius = UserDataManager.userData?.radius
+        val dynamicPageSize = calculatePageSize()
 
         lifecycleScope.launch {
             try {
-                //핀 검색
-                val response = RetrofitInstance.api.searchPins(query, userLatitude, userLongitude, searchRadius)
-                Log.d("response", "$response")
+                val response = searchRadius?.let {
+                    RetrofitInstance.api.searchPins(
+                        query,
+                        userLatitude,
+                        userLongitude,
+                        it,
+                        page_size = dynamicPageSize // 동적으로 계산된 페이지 크기 사용
+                    )
+                }
 
-                if (response.isSuccessful()) {
-                    val pinDataList: List<FltPinData>? = response.body()
-                    Log.d("PinData", "$pinDataList")
+                if (response?.isSuccessful == true) {
+                    val paginatedResponse = response.body()
+                    val pinDataList = paginatedResponse?.results
+
+                    hasMoreData = paginatedResponse?.next != null
+
                     if (pinDataList.isNullOrEmpty()) {
-                        Log.d("SearchFragment", "No pins received")
-                        Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
-                        searchResultsRecyclerView.visibility = View.GONE
+                        if (!loadMore) {
+                            Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
+                            searchResultsRecyclerView.visibility = View.GONE
+                        }
                     } else {
-//                        val jsonArray = JSONArray(pinDataList)
-//                        Log.d("SearchFragment", "Parsed JSON array: $jsonArray")
-//                        searchResults.clear()
-//
-//                        for (i in 0 until jsonArray.length()) {
-//                            val jsonObject = jsonArray.getJSONObject(i)
-//
-//                            // JSON에서 데이터를 추출
-//                            val id = jsonObject.getString("id")
-//                            val latitude = jsonObject.getDouble("latitude")
-//                            val longitude = jsonObject.getDouble("longitude")
-//                            val location = jsonObject.getString("location")
-//                            val user = jsonObject.getInt("user")
-//                            val description = jsonObject.getString("description")
-//                            val tagsArray = jsonObject.optJSONArray("tags")
-//                            val tagsList = mutableListOf<FTag>()
-//                            tagsArray?.let {
-//                                for (j in 0 until it.length()) {
-//                                    val tagObject = it.getJSONObject(j)
-//                                    val tagName = tagObject.optString("name", "")
-//                                    if (tagName.isNotEmpty()) {
-//                                        tagsList.add(FTag(tagName)) // FTag 객체 생성
-//                                    }
-//                                }
-//                            }
-//                            val mediaFiles = jsonObject.getString("media")
-//                            jsonObject.put("tags", JSONArray(tagsList))
-//
-//                            val title = jsonObject.optString("title", "제목 없음")
-//                            Log.d("SearchFragment", "Pin title: $title")
-
-//                            val matchesSearch = if (isTagSearch) {
-//                                tagsList.any { it.name.equals(query, ignoreCase = true) } // FTag 객체의 name 속성을 사용하여 비교
-//                            } else {
-//                                tagsList.any { it.name.equals(query, ignoreCase = true) } || title.contains(query, ignoreCase = true)
-//                            }
-//
-//                            if (matchesSearch) {
-//                                val pinData = FltPinData(
-//                                    id = id,
-//                                    latitude = latitude,
-//                                    longitude = longitude,
-//                                    location = location,
-//                                    user = user,
-//                                    title = title,
-//                                    description = description,
-//                                    media = mediaFiles, // 필요 시 media 처리
-//                                    info = jsonObject.opt("info"),
-//                                    tags = tagsList,
-//                                    visibility = jsonObject.optString("visibility", "public"),
-//                                    is_ads = jsonObject.optBoolean("is_ads", false),
-//                                    created_at = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).parse(jsonObject.getString("created_at")),
-//                                    updated_at = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).parse(jsonObject.getString("updated_at"))
-//                                )
-//                                searchResults.add(pinData)
-//                            }
-                        searchResults.clear()
-
-                        // 핀 데이터 필터링
-                        for (pin in pinDataList) {
-                            val matchesSearch = if (isTagSearch) {
-                                pin.tags.any { it.name.equals(query, ignoreCase = true) } // FTag 객체의 name 속성을 사용하여 비교
+                        val filteredPins = pinDataList.filter { pin ->
+                            if (isTagSearch) {
+                                pin.tags.any { it.name.equals(query, ignoreCase = true) }
                             } else {
-                                pin.tags.any { it.name.equals(query, ignoreCase = true) } || pin.title.contains(query, ignoreCase = true)
-                            }
-
-                            if (matchesSearch) {
-                                searchResults.add(pin)
+                                pin.tags.any { it.name.equals(query, ignoreCase = true) } ||
+                                        pin.title.contains(query, ignoreCase = true)
                             }
                         }
 
-                        pinAdapter = PinAdapter(
-                            searchResults,
-                            { pin -> showPinOnMap(pin) },
-                            searchQuery,
-                            isTagSearch,
-                        )
-                        searchResultsRecyclerView.adapter = pinAdapter
-                        pinAdapter.notifyDataSetChanged()
+                        if (loadMore) {
+                            val oldSize = searchResults.size
+                            searchResults.addAll(filteredPins)
+                            pinAdapter.notifyItemRangeInserted(oldSize, filteredPins.size)
+                        } else {
+                            searchResults.clear()
+                            searchResults.addAll(filteredPins)
+                            pinAdapter.notifyDataSetChanged()
+                        }
+
                         searchResultsRecyclerView.visibility = View.VISIBLE
-                        Log.d("SearchFragment", "Search results count: ${searchResults.size}")
                     }
-                }
-                else {
-                    Log.d("SearchFragment", "No pins received")
-                    Toast.makeText(requireContext(), "No pins found", Toast.LENGTH_SHORT).show()
-                    searchResultsRecyclerView.visibility = View.GONE
+                } else {
+                    Log.e("SearchFragment", "Error: ${response?.errorBody()?.string()}")
+                    Toast.makeText(requireContext(), "Error loading pins", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("SearchFragment", "Error during search", e)
                 Toast.makeText(requireContext(), "Error during search: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                isLoading = false
             }
         }
     }
 
 
 
-    private fun createMarkerIcon(borderColor: Int): BitmapDescriptor {
-        val size = 100 // Pin size
-        val borderWidth = 10 // Border width
+    private fun createMarkerIcon(borderColor: Int, profilePictureUrl: String): BitmapDescriptor? {
+        val size = 100 // 핀 크기
+        val borderWidth = 10 // 테두리 두께
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
 
-        // Draw border
+        // 테두리 그리기
         paint.color = borderColor
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = borderWidth.toFloat()
+        paint.isAntiAlias = true
         canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f, paint)
 
-//        // Draw profile picture
-//        val profileBitmap = Bitmap.createBitmap(size - borderWidth * 2, size - borderWidth * 2, Bitmap.Config.ARGB_8888)
-//        val profileCanvas = Canvas(profileBitmap)
-//
-//        val profilePaint = Paint()
-//        profilePaint.isAntiAlias = true
-//
-//        try {
-//            // Ensure URL starts with a valid protocol
-//            val validProfilePicUrl = if (profilePicUrl.startsWith("http://") || profilePicUrl.startsWith("https://")) {
-//                profilePicUrl
-//            } else {
-//                "https://$profilePicUrl"
-//            }
-//
-//            // Load and draw profile picture
-//            val profilePic = BitmapFactory.decodeStream(URL(validProfilePicUrl).openStream())
-//            profileCanvas.drawBitmap(profilePic, null, Rect(0, 0, profileBitmap.width, profileBitmap.height), profilePaint)
-//
-//            // Draw the profile picture inside the border
-//            canvas.drawBitmap(profileBitmap, borderWidth.toFloat(), borderWidth.toFloat(), null)
-//        } catch (e: Exception) {
-//            Log.e("CreateMarkerIcon", "Error loading profile picture: ${e.message}")
-//        }
-        // Draw default icon (a circle in the center)
-        paint.color = Color.WHITE // Icon color
+        // 기본 배경 그리기 (프로필 이미지 로드 전)
+        paint.color = Color.WHITE
         paint.style = Paint.Style.FILL
-        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth / 2f - 1, paint)
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f - borderWidth - 1, paint)
+
+        // Glide로 프로필 이미지 로드
+        if (profilePictureUrl.isNotEmpty()) {
+            try {
+                val profileBitmap = context?.let {
+                    Glide.with(it)
+                        .asBitmap()
+                        .load(profilePictureUrl)
+                        .submit(size - borderWidth * 2, size - borderWidth * 2) // 이미지 크기 조정
+                        .get()
+                }
+
+                // 프로필 이미지를 원형으로 그리기
+                val shader = profileBitmap?.let { BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP) }
+                paint.shader = shader
+
+                canvas.drawCircle(
+                    size / 2f,
+                    size / 2f,
+                    size / 2f - borderWidth - 1,
+                    paint
+                )
+            } catch (e: Exception) {
+                Log.e("CreateMarkerIcon", "Error loading profile picture with Glide", e)
+            }
+        }
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
@@ -452,20 +431,21 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             val description = pin.description ?: "설명 없음"
             val isAds = pin.is_ads
             val media_files = pin.media
+            val profile_picture = pin.profile_picture
             Log.d("pindata", "$title, $description, $isAds")
             Log.d("pindata", "Media Files: $media_files")
 
             val pinLocation = LatLng(latitude.toDouble(), longitude.toDouble())
 
             // 광고 여부에 따라 색상 설정
-            val borderColor = if (isAds == true) {
-                Color.parseColor("#C8E6C9") // 광고용 색상
-            } else {
-                Color.parseColor("#FFAB91") // 일반 핀 색상
+            val borderColor = when(pin.pin_type) {
+                1 -> {Color.parseColor("#F44336")}
+                2 -> {Color.parseColor("#9C27B0")}
+                else -> {Color.parseColor("#388E3C")}
             }
 
             // 마커 생성
-            val markerIcon = createMarkerIcon(borderColor)
+            val markerIcon = createMarkerIcon(borderColor, profile_picture)
             val marker = map?.addMarker(
                 MarkerOptions()
                     .position(pinLocation)

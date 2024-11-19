@@ -94,6 +94,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var isMapReady = false
     private var pendingPinId: Int? = null
 
+
     companion object {
         private const val BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 1001
         private const val ARG_PIN_ID = "pin_id"
@@ -502,7 +503,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun loadAndShowPin() {
         val latitude = currentLocation?.latitude?: 37.7749
         val longitude = currentLocation?.longitude?: -122.4194
-        val radius = 1
+        val radius = UserDataManager.userData?.radius
         lifecycleScope.launch {
             try {
                 // 핀 데이터 가져오기

@@ -24,6 +24,7 @@ import com.pinAD.pinAD_fe.Data.notification.BusinessNotification
 import com.pinAD.pinAD_fe.Data.notification.CouponApprovalResponse
 import com.pinAD.pinAD_fe.Data.notification.NotificationResBusiness
 import com.pinAD.pinAD_fe.Data.notification.NotificationResponse
+import com.pinAD.pinAD_fe.Data.pin.PaginatedResponse
 import com.pinAD.pinAD_fe.Data.pin_review.ReviewRequest
 import com.pinAD.pinAD_fe.Data.pin.TagSearchResponse
 import com.pinAD.pinAD_fe.Data.pin.like_comment.Comment
@@ -100,7 +101,7 @@ interface ApiService {
     suspend fun getPins(
         @Query("latitude") latitude: Double?,
         @Query("longitude") longitude: Double?,
-        @Query("radius") radius: Int?
+        @Query("radius") radius: Int?,
     ): Response<List<FltPinData>>
 
     @GET("pins/user_pins/")
@@ -167,8 +168,9 @@ interface ApiService {
         @Query("keyword") keyword: String?,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("radius") radius: Int
-    ): Response<List<FltPinData>>
+        @Query("radius") radius: Int,
+        @Query("page_size") page_size: Int
+    ): Response<PaginatedResponse<FltPinData>>
 
     @GET("pins/search_tags/")
     suspend fun searchTags(
