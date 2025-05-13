@@ -1,0 +1,100 @@
+/* PinstoryModal.module.css */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    z-index: 1000;
+  }
+  
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .modalHeader h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  
+  .imageContainer {
+    margin-bottom: 15px;
+  }
+  
+  .placeholderImage {
+    background-color: #f0f0f0;
+    width: 100%;
+    height: 225px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    font-size: 24px;
+  }
+  
+  .noContent {
+    text-align: center;
+    color: #888;
+    margin-bottom: 15px;
+  }
+  
+  .interactionBar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .likeButton, .commentButton, .shareButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .socialLinks {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .youtubeButton, .instagramButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .youtubeButton {
+    background-color: #FF0000;
+    color: white;
+  }
+  
+  .instagramButton {
+    background-color: #C13584;
+    color: white;
+  }
+  

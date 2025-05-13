@@ -1,0 +1,88 @@
+/* 버튼 컨테이너 */
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  
+  /* 토글 버튼 */
+  .toggleButton1 {
+    flex: 1; /* 버튼이 컨테이너를 채우도록 설정 */
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #d9aaff; /* 부드러운 배경색 */
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s; /* 색상과 크기 변화에 애니메이션 추가 */
+  }
+  
+  .toggleButton1:hover {
+    background-color: #c68bfc; /* 버튼을 호버했을 때 색상 변경 */
+  }
+  
+  .toggleButton1.active {
+    background-color: #d900ff; /* 활성화된 버튼의 배경색 */
+    color: #fff; /* 활성화된 버튼의 글자색 */
+    font-weight: bold;
+    transform: scale(1.05); /* 활성화된 버튼이 살짝 커지도록 설정 */
+  }
+
+  .toggleButton2 {
+    flex: 1; /* 버튼이 컨테이너를 채우도록 설정 */
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #c4d6fa; /* 부드러운 배경색 */
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s; /* 색상과 크기 변화에 애니메이션 추가 */
+  }
+  
+  .toggleButton2:hover {
+    background-color: #8b96fc; /* 버튼을 호버했을 때 색상 변경 */
+  }
+  
+  .toggleButton2.active {
+    background-color: #d900ff; /* 활성화된 버튼의 배경색 */
+    color: #fff; /* 활성화된 버튼의 글자색 */
+    font-weight: bold;
+    transform: scale(1.05); /* 활성화된 버튼이 살짝 커지도록 설정 */
+  }
+  
+  /* 드롭다운 메뉴 */
+  .dropdownMenu {
+    position: relative; /* 드롭다운 위치를 조정할 수 있도록 설정 */
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* 드롭다운 옵션 */
+  .dropdownOptions {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff; /* 부드러운 배경색 */
+    color: #333;
+    cursor: pointer;
+    font-size: 16px; /* 텍스트 크기 설정 */
+    text-align: center; /* 텍스트 수평 가운데 정렬 */
+    transition: background-color 0.3s, color 0.3s; /* 색상 변화에 애니메이션 추가 */
+  }
+  
+  /* 드롭다운 옵션 호버 시 스타일 */
+  .dropdownOptions option {
+    background-color: #f9eaff;
+    padding: 10px; /* 여백 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+  }
+  
+  .dropdownOptions option:hover {
+    background-color: #e0bfff; /* 옵션을 호버했을 때 배경색 변경 */
+  }
+  

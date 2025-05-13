@@ -1,0 +1,68 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formGroup {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
+  .formGroup input,
+  .formGroup textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .formGroup textarea {
+    height: 100px;
+  }
+
+  .select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+
+
+  .input:focus,
+  .textarea:focus,
+  .select:focus {
+    border-color: #000000;
+    outline: none;
+  }
+
+  .dropdownButton {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+
+  .dropdownButton:hover {
+    background-color: #f0f0f0;
+  }
+
