@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:background="@color/tag_background"
+    style="@style/Base.Theme.pinAD_fe">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgBellIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@android:drawable/ic_popup_reminder"
+                android:contentDescription="Bell Icon"
+                android:layout_gravity="start"
+                android:layout_marginEnd="300dp"/>
+
+            <ImageView
+                android:id="@+id/btnQrScan"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/qr_code_icon"
+                android:visibility="visible"
+                android:layout_gravity="end"
+                android:contentDescription="@string/qr_code"/>
+        </LinearLayout>
+
+        <!-- 프로필 이미지 -->
+        <ImageView
+            android:id="@+id/imgProfilePicture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            android:background="?attr/colorBackground"
+            android:src="@drawable/ic_default_profile"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="Profile Picture"/>
+
+        <!-- 사용자 닉네임 -->
+        <TextView
+            android:id="@+id/tvUserNickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nickname"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:textColor="?attr/textColorPrimary"/>
+
+        <!-- 사용자 이메일 -->
+        <TextView
+            android:id="@+id/tvUserGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:textColor="?attr/textColorSecondary"
+            android:visibility="invisible"/>
+
+        <!-- 플랜 선택과 친구 초대하기 버튼을 가로로 정렬 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnSelectPlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/PlanSelect"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/surfaceDark"/>
+
+            <Button
+                android:id="@+id/btnInviteFriends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="친구 초대"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"/>
+
+            <!-- 내 쿠폰함 버튼 -->
+            <Button
+                android:id="@+id/btnCouponBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/CouponBox"
+                android:backgroundTint="@color/surfaceDark"/>
+        </LinearLayout>
+
+        <!-- 관심사 표시 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 관심사 제목 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Interest"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- HorizontalScrollView로 감싸서 태그들을 스크롤 가능하게 함 -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- ChipGroup으로 관심사 태그를 나열 -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupInterests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false">
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <!-- 포인트 표시 및 충전 -->
+        <LinearLayout
+            android:id="@+id/PointSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Points"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/tvPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1000"
+                android:textColor="?attr/textColorPrimary"/>
+
+            <Button
+                android:id="@+id/btnChargePoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Charge"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/surfaceDark"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Setting"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/business_price"/>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

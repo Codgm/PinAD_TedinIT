@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- 원형 배경 -->
+    <path
+        android:fillColor="#D3D3D3"
+        android:pathData="M 50, 50m -50, 0a 50,50 0 1,1 100,0a 50,50 0 1,1 -100,0" />
+
+    <!-- 간단한 사람 아이콘 (기본 이미지) -->
+    <path
+        android:fillColor="#808080"
+        android:pathData="M 50,30 A 20,20 0,1,1 30,50 Z M 50,70 C 70,70 80,80 80,90 L 20,90 C 20,80 30,70 50,70 Z"/>
+</vector>

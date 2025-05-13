@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme for light mode. -->
+    <style name="Base.Theme.pinAD_fe" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorBackground">@color/backgroundLight</item>
+        <item name="textColorPrimary">@color/colorTextPrimaryLight</item>
+        <item name="textColorSecondary">@color/colorTextSecondaryLight</item>
+        <item name="colorOnBackground">@color/colorOnBackgroundLight</item>
+        <item name="colorSurface">@color/surfaceLight</item>
+        <item name="colorOnSurface">@color/colorOnSurfaceLight</item>
+        <item name="colorError">@color/errorLight</item>
+        <item name="colorOnError">@color/colorOnErrorLight</item>
+    </style>
+
+    <style name="ShapeAppearance_App_Circular">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Base template style -->
+    <style name="TemplateStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Distribution template style -->
+    <style name="TemplateStyle.Distribution">
+        <item name="boxStrokeColor">@color/distribution_primary</item>
+        <item name="hintTextColor">@color/distribution_primary</item>
+        <item name="android:textColor">@color/distribution_text</item>
+    </style>
+
+    <!-- F&B template style -->
+    <style name="TemplateStyle.FnB">
+        <item name="boxStrokeColor">@color/fnb_primary</item>
+        <item name="hintTextColor">@color/fnb_primary</item>
+        <item name="android:textColor">@color/fnb_text</item>
+    </style>
+
+    <!-- Event template style -->
+    <style name="TemplateStyle.Event">
+        <item name="boxStrokeColor">@color/event_primary</item>
+        <item name="hintTextColor">@color/event_primary</item>
+        <item name="android:textColor">@color/event_text</item>
+    </style>
+
+    <!-- Review template style -->
+    <style name="TemplateStyle.Review">
+        <item name="boxStrokeColor">@color/review_primary</item>
+        <item name="hintTextColor">@color/review_primary</item>
+        <item name="android:textColor">@color/review_text</item>
+    </style>
+
+    <!-- Attraction template style -->
+    <style name="TemplateStyle.Attraction">
+        <item name="boxStrokeColor">@color/attraction_primary</item>
+        <item name="hintTextColor">@color/attraction_primary</item>
+        <item name="android:textColor">@color/attraction_text</item>
+    </style>
+
+    <!-- Meeting Point template style -->
+    <style name="TemplateStyle.MeetingPoint">
+        <item name="boxStrokeColor">@color/meeting_point_primary</item>
+        <item name="hintTextColor">@color/meeting_point_primary</item>
+        <item name="android:textColor">@color/meeting_point_text</item>
+    </style>
+
+    <!-- Travel Note template style -->
+    <style name="TemplateStyle.TravelNote">
+        <item name="boxStrokeColor">@color/travel_note_primary</item>
+        <item name="hintTextColor">@color/travel_note_primary</item>
+        <item name="android:textColor">@color/travel_note_text</item>
+    </style>
+
+    <!-- Discount Request template style -->
+    <style name="TemplateStyle.DiscountRequest">
+        <item name="boxStrokeColor">@color/discount_request_primary</item>
+        <item name="hintTextColor">@color/discount_request_primary</item>
+        <item name="android:textColor">@color/discount_request_text</item>
+    </style>
+
+    <!-- Default template style -->
+    <style name="TemplateStyle.Default">
+        <item name="boxStrokeColor">@color/default_primary</item>
+        <item name="hintTextColor">@color/default_primary</item>
+        <item name="android:textColor">@color/default_text</item>
+    </style>
+
+    <style name="ToolbarTitleStyle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Theme.pinAD_fe" parent="Base.Theme.pinAD_fe">
+        <!-- Additional customizations for the main theme -->
+    </style>
+</resources>

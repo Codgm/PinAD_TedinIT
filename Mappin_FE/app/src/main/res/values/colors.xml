@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme colors -->
+    <color name="black">#131b23</color> <!-- 그대로 유지 -->
+    <color name="white">#FFFFFF</color> <!-- 그대로 유지 -->
+    <color name="colorAccent">#079ca8</color> <!-- 청록색 계열 포인트 색상 -->
+    <color name="colorChipBackground">#c98e95</color> <!-- 연한 핑크빛 보라색 계열 -->
+    <color name="colorPrimary">#eb445b</color> <!-- 밝은 레드 계열 -->
+    <color name="colorPrimaryVariant">#c5871d</color> <!-- 머스터드 색상 강조 -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="colorSecondary">#6b4430</color> <!-- 부드러운 브라운 계열 -->
+    <color name="colorSecondaryVariant">#079ca8</color> <!-- 청록색 변형 -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="backgroundLight">#ebe7e8</color> <!-- 밝은 핑크빛 배경 -->
+    <color name="colorTextPrimaryLight">#131b23</color> <!-- 진한 블랙 텍스트 -->
+    <color name="colorTextSecondaryLight">#606c72</color> <!-- 중간 그레이 텍스트 -->
+    <color name="colorOnBackgroundLight">#123036</color> <!-- 어두운 청록색 텍스트 -->
+    <color name="surfaceLight">#ecb82d</color> <!-- 밝은 옐로우 표면 색상 -->
+    <color name="colorOnSurfaceLight">#04141d</color> <!-- 어두운 네이비 텍스트 -->
+    <color name="errorLight">#eb445b</color> <!-- 밝은 레드 에러 색상 -->
+    <color name="colorOnErrorLight">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="tag_background">#EDEDED</color> <!-- 밝은 그레이 태그 배경 -->
+    <color name="tag_selected_background">#F0F0F0</color> <!-- 매우 연한 그레이 태그 선택 배경 -->
+    <color name="tag_text_color">#353638</color> <!-- 진한 그레이 태그 텍스트 -->
+    <color name="tag_selected_text_color">#131b23</color> <!-- 블랙 태그 선택 텍스트 -->
+
+
+    <!-- Base Colors -->
+    <color name="background">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Enterprise Plan Colors -->
+    <color name="premium_stroke">#FFD700</color>
+    <color name="premium_background">#FFF5CD</color>
+    <color name="premium_text">#B8860B</color>
+    <color name="premium_price">#DAA520</color>
+
+    <!-- Business Plan Colors -->
+    <color name="business_stroke">#2196F3</color>
+    <color name="business_text">#1976D2</color>
+    <color name="business_background">#D5DAFF</color>
+    <color name="business_price">#4A148C</color>
+
+    <!-- Pro Plan Colors -->
+    <color name="pro_stroke">#4CAF50</color>
+    <color name="pro_text">#388E3C</color>
+    <color name="pro_background">#D1FAC7</color>
+    <color name="pro_price">#027864</color>
+
+    <!-- Free Plan Colors -->
+    <color name="free_stroke">#9E9E9E</color>
+    <color name="free_text">#1A1919</color>
+
+    <!-- 현재 포인트 색상 -->
+    <color name="points_color">#079ca8</color>
+    <!-- 차감 예정 포인트 색상 -->
+    <color name="estimated_cost_color">#123036</color>
+    <!-- 레이블 색상 -->
+    <color name="label_color">#1E88E5</color>
+    <!-- 버튼 텍스트 색상 -->
+    <color name="button_text_color">#FFFFFF</color>
+
+    <color name="backgroundDark">#3C3C3C</color> <!-- 어두운 보라색 배경 -->
+    <color name="colorTextPrimaryDark">#FFFFFF</color> <!-- 텍스트 기본색상 다크 모드 -->
+    <color name="colorTextSecondaryDark">#B0B0B0</color> <!-- 텍스트 보조색상 다크 모드 -->
+    <color name="colorOnBackgroundDark">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="surfaceDark">#6A1B9A</color> <!-- 보라색 계열의 어두운 표면 색상 -->
+    <color name="colorOnSurfaceDark">#FFFFFF</color> <!-- 흰색 텍스트 -->
+    <color name="errorDark">#CF6679</color> <!-- 붉은색 -->
+    <color name="colorOnErrorDark">#000000</color> <!-- 검정색 텍스트 -->
+
+    <!-- Distribution colors -->
+    <color name="distribution_primary">#4CAF50</color>
+    <color name="distribution_text">#1B5E20</color>
+    <color name="template_distribution">#E8F5E9</color>
+
+    <!-- F&B colors -->
+    <color name="fnb_primary">#FF9800</color>
+    <color name="fnb_text">#E65100</color>
+    <color name="template_fnb">#FFF3E0</color>
+
+    <!-- Event colors -->
+    <color name="event_primary">#2196F3</color>
+    <color name="event_text">#0D47A1</color>
+    <color name="template_event">#E3F2FD</color>
+
+    <!-- Review colors -->
+    <color name="review_primary">#9C27B0</color>
+    <color name="review_text">#4A148C</color>
+    <color name="template_review">#F3E5F5</color>
+
+    <!-- Attraction colors -->
+    <color name="attraction_primary">#FFC107</color>
+    <color name="attraction_text">#FF6F00</color>
+    <color name="template_attraction">#FFFDE7</color>
+
+    <!-- Meeting Point colors -->
+    <color name="meeting_point_primary">#009688</color>
+    <color name="meeting_point_text">#004D40</color>
+    <color name="template_meeting_point">#E0F2F1</color>
+
+    <!-- Travel Note colors -->
+    <color name="travel_note_primary">#3F51B5</color>
+    <color name="travel_note_text">#1A237E</color>
+    <color name="template_travel_note">#E8EAF6</color>
+
+    <!-- Discount Request colors -->
+    <color name="discount_request_primary">#F44336</color>
+    <color name="discount_request_text">#B71C1C</color>
+    <color name="template_discount_request">#FFEBEE</color>
+
+    <!-- Default colors -->
+    <color name="default_primary">#607D8B</color>
+    <color name="default_text">#263238</color>
+    <color name="template_default">#ECEFF1</color>
+</resources>

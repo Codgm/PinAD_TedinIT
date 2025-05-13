@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PinAD</string>
+    <string name="kakao_app_key">607b30fba1f577a8f048920ea64a6d50</string>
+    <string name="naver_client_id">dXtaisFDzZtaLMIyRRtW</string>
+    <string name="naver_client_secret">b7cyVWDy7b</string>
+    <string name="feature_image_description">Feature image for the onboarding screen</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="enter_the_password">enter the password</string>
+    <string name="enter_the_email">enter the email</string>
+    <string name="enter_nickname">Enter your nickname</string>
+    <string name="enter_interests">Select your interests</string>
+    <string name="title_activity_bottom_navigation_fragment">BottomNavigationFragment</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_add_pin">AddPin</string>
+    <string name="title_hot_pin">HotPin</string>
+    <string name="title_profile">Profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="desc_back">Go back</string>
+    <string name="start_capture">start_capture</string>
+    <string name="next">next</string>
+    <string name="take_photo">take_photo</string>
+    <string name="stop_capture">stop_capture</string>
+    <string name="back">back</string>
+    <string name="kakao">Kakao</string>
+    <string-array name="ad_ranges">
+        <item>100m (Free)</item>
+        <item>300m (90 Points)</item>
+        <item>500m (150 Points)</item>
+        <item>700m (210 Points)</item>
+        <item>1km (300 Points)</item>
+        <item>2km (600 Points)</item>
+    </string-array>
+    <string-array name="ad_durations">
+        <item>30 minutes (Free)</item>
+        <item>60 minutes (60 Points)</item>
+        <item>120 minutes (180 Points)</item>
+        <item>240 minutes (420 Points)</item>
+        <item>480 minutes (900 Points)</item>
+        <item>960 minutes (1860 Points)</item>
+        <item>1440 minutes (2820 Points)</item>
+    </string-array>
+
+    <string-array name="coupon_ranges">
+        <item>100m (Free)</item>
+        <item>300m (90 Points)</item>
+        <item>500m (150 Points)</item>
+        <item>700m (210 Points)</item>
+        <item>1km (300 Points)</item>
+        <item>2km (600 Points)</item>
+    </string-array>
+    <string-array name="coupon_durations">
+        <item>60 minutes (Free)</item>
+        <item>120 minutes (120 Points)</item>
+        <item>180 minutes (240 Points)</item>
+        <item>240 minutes (360 Points)</item>
+        <item>480 minutes (840 Points)</item>
+        <item>960 minutes (1800 Points)</item>
+        <item>1440 minutes (2760 Points)</item>
+    </string-array>
+    <string name="qr_code">QR 코드</string>
+    <string name="thumbnail_list">thumbnail_list</string>
+    <string name="onboarding_image">onboarding_image</string>
+    <string name="feature_title">feature_title</string>
+    <string name="feature_description">feature_description</string>
+    <string name="page_indicator">page_indicator</string>
+    <string name="Searchbar">태그, 아이디, 이름</string>
+    <string name="TagSelect">관심사 선택</string>
+    <string name="Add">추가</string>
+    <string name="NewTagAdd">새로운 관심사 입력</string>
+    <string name="SelectCategory">카테고리 선택</string>
+    <string name="Next">다음</string>
+    <string name="Login">로그인</string>
+    <string name="PlanSelection">플랜을 선택하세요</string>
+    <string name="LocationSelect">위치 선택</string>
+    <string name="ReviewLocationSelection">리뷰 장소의 위치를 지도에서 선택해주세요</string>
+    <string name="LocationSearch">주소/매장명/장소</string>
+    <string name="Search">검색</string>
+    <string name="ShotFormVideo">숏폼 영상 추가</string>
+    <string name="Recipt">영수증 추가</string>
+    <string name="End">완료</string>
+    <string name="RangeSelect">범위 선택:</string>
+    <string name="DurationSelect">시간 선택:</string>
+    <string name="PublicVisibility">공개 가시성</string>
+    <string name="HotPin">인기 게시물</string>
+    <string name="PlanSelect">플랜 선택</string>
+    <string name="CouponBox">쿠폰함</string>
+    <string name="Interest">관심사</string>
+    <string name="Points">포인트</string>
+    <string name="Charge">충전</string>
+    <string name="Setting">설정</string>
+    <string name="NotificationSetting">알림 설정</string>
+    <string name="Logout">로그아웃</string>
+    <string name="DeleteAccount">회원탈퇴</string>
+    <string name="Welcome_to_pinAD">pinAD에 오신 것을 환영합니다!</string>
+    <string name="Notification">알림</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="Accept">수락</string>
+    <string name="Refuse">거절</string>
+    <string name="Requested_CouponBox">요청된 쿠폰</string>
+    <string name="Verifying_Coupons">쿠폰 검증하기</string>
+    <string name="type_coupon_code">쿠폰 코드를 입력하세요</string>
+    <string name="business_general_account_switch">Business/General Account Switch</string>
+    <string name="Image_upload">이미지 업로드</string>
+    <string name="Please_enter_your_nickname">닉네임을 입력해주세요</string>
+    <string name="nickname">닉네임</string>
+    <string name="Please_choose_your_gender">성별을 선택해주세요</string>
+    <string name="Gender">남성</string>
+    <string name="female">여성</string>
+    <string name="Other">기타</string>
+    <string name="Please_choose_your_age_group">연령대를 선택해주세요</string>
+    <string name="Teenage">10대</string>
+    <string name="Twenties">20대</string>
+    <string name="Thirties">30대</string>
+    <string name="Forty">40대</string>
+    <string name="people_in_their_50s_or_older">50대 이상</string>
+    <string name="Upload_a_profile_picture">프로필 사진 업로드</string>
+    <string name="Select_a_picture">사진 선택</string>
+    <string name="Please_select_the_shopping_items_you_are_interested_in">관심있는 쇼핑 품목을 선택해주세요</string>
+    <string name="Add_New_Shopping_Items">새로운 쇼핑 품목 추가</string>
+    <string name="Please_choose_the_area_where_you_usually_shop">주로 쇼핑하는 지역을 선택해주세요</string>
+    <string name="Seoul">서울</string>
+    <string name="Busan">부산</string>
+    <string name="Daegu">대구</string>
+    <string name="Gwangju">광주</string>
+    <string name="Incheon">인천</string>
+    <string name="Add_a_new_area">새로운 지역 추가</string>
+    <string name="Please_choose_your_preferred_brand">선호하는 브랜드를 선택해주세요</string>
+    <string name="Nike">나이키</string>
+    <string name="Adidas">아디다스</string>
+    <string name="Samsung">삼성</string>
+    <string name="Add_a_new_brand">새로운 브랜드 추가</string>
+    <string name="Please_select_an_important_factor_when_shopping">쇼핑 시 중요 요소를 선택해주세요</string>
+    <string name="Price">가격</string>
+    <string name="Quality">품질</string>
+    <string name="Design">디자인</string>
+    <string name="Brand">브랜드</string>
+    <string name="Add_New_Critical_Factors">새로운 중요요소 추가</string>
+    <string name="Please_choose_your_interest">관심사를 선택해주세요</string>
+    <string name="Exercise">운동</string>
+    <string name="Music">음악</string>
+    <string name="Travel">여행</string>
+    <string name="Cook">요리</string>
+    <string name="Add_new_interests_and_hobbies">새로운 관심사 및 취미 추가</string>
+    <string name="Please_select_your_preferred_offline_shopping_time_zone">선호하는 오프라인 쇼핑 시간대를 선택해주세요</string>
+    <string name="AM">오전</string>
+    <string name="afternoon">오후</string>
+    <string name="evening">저녁</string>
+    <string name="Night_time">야간</string>
+    <string name="No_restrictions">제한없음</string>
+    <string name="Please_select_a_push_notification_reception_radius">푸시 알림 수신 반경을 선택해주세요</string>
+    <string name="Unlimited">무제한</string>
+    <string name="Please_select_the_maximum_number_of_push_notifications_per_day">하루 최대 푸시 알림 개수를 선택해주세요</string>
+    <string name="pinAD_Register">pinAD 회원가입</string>
+    <string name="enter_email">이메일을 입력하세요</string>
+    <string name="enter_password">비밀번호를 입력하세요</string>
+    <string name="check_password">비밀번호 확인</string>
+    <string name="Sign_up">가입하기</string>
+    <string name="enter_new_interests">관심사를 쉼표(,)로 구분하여 입력해주세요</string>
+    <string name="verify">Verify</string>
+    <string name="enter_verification_token">Enter verification token</string>
+    <string name="radius_setting">radius_setting</string>
+    <string name="confirm_save_radius">confirm_save_radius</string>
+    <string name="save">Save</string>
+</resources>

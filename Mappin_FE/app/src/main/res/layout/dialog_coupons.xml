@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundLight">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <!-- 텍스트뷰 (CouponBox) -->
+        <TextView
+            android:id="@+id/textViewCouponBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CouponBox"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_weight="1" /> <!-- 버튼을 오른쪽에 배치하기 위해 가중치를 줌 -->
+
+        <!-- 버튼 (RequestedCoupons) -->
+        <Button
+            android:id="@+id/buttonRequestedCoupons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Requested_CouponBox"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/colorChipBackground"/> <!-- 오른쪽 여백 추가 -->
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editTextCouponCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/type_coupon_code"
+        android:layout_marginBottom="8dp"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background" />
+
+    <Button
+        android:id="@+id/buttonVerifyCoupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Verifying_Coupons"
+        android:backgroundTint="@color/colorChipBackground"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCoupons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>
